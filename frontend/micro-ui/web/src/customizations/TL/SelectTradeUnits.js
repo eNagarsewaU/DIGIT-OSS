@@ -169,6 +169,18 @@ const SelectTradeUnits = ({ t, config, onSelect, userType, formData }) => {
   const { pathname: url } = useLocation();
   const editScreen = url.includes("/modify-application/");
 
+  function getBillingSlab(index,value){
+    let currentBillingSlab;
+    if(value?.code){
+      currentBillingSlab=billingSlabData.filter((item)=>{
+      return item.tradeType===value.code
+     })
+     let currentFields=[...fields];
+     currentFields[index].rate=currentBillingSlab?.[0].rate;
+     setFeilds([...currentFields])
+    }
+  }
+
   function selectTradeCategory(i, value) {
     let units = [...fields];
     units[i].tradecategory = value;
@@ -187,6 +199,7 @@ const SelectTradeUnits = ({ t, config, onSelect, userType, formData }) => {
   function selectTradeSubType(i, value) {
     let units = [...fields];
     units[i].tradesubtype = value;
+    getBillingSlab(i,value)
     setTradeSubType(value);
     if (value == null) {
       units[i].unit = null;
@@ -386,6 +399,25 @@ const SelectTradeUnits = ({ t, config, onSelect, userType, formData }) => {
                   pattern: "[0-9]+",
                   type: "text",
                   title: t("TL_WRONG_UOM_VALUE_ERROR"),
+                })}
+              />
+              <CardLabel>{`${t(
+                "TL_UNITRATE"
+              )}`}</CardLabel>
+              <TextInput
+                style={{ background: "#FAFAFA" }}
+                t={t}
+                type={"text"}
+                isMandatory={false}
+                optionKey="i18nKey"
+                name="TradeAmt"
+                value={field?.rate}
+                disable={true}
+                {...(validation = {
+                  isRequired: true,
+                  pattern: "/^(0)*[1-9][0-9]{0,5}$/",
+                  type: "text",
+                  title: t("ERR_DEFAULT_INPUT_FIELD_MSG"),
                 })}
               />
             </div>
