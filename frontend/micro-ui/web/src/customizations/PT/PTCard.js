@@ -36,14 +36,14 @@ const PTCard = () => {
       {
         count: total,
         label: t("ES_TITLE_INBOX"),
-        link: `/employee/pt-mutation/propertySearch`,
+        link: "/employee/pt-mutation/propertySearch",
       },
     ],
     links: [
       {
         count: isLoading ? "-" : total,
         label: t("ES_COMMON_INBOX"),
-        link: `/employee/pt-mutation/propertySearch`,
+        link: "/employee/pt-mutation/propertySearch",
       },
     ],
   };
@@ -52,7 +52,7 @@ const PTCard = () => {
   if (PT_CEMP && !propsForModuleCard.links?.[1]) {
     propsForModuleCard.links.push({
       label: t("ES_TITLE_NEW_REGISTRATION"),
-      link: `/property-tax/assessment-form-dataentry`,
+      link: "/employee/property-tax/assessment-form-dataentry",
     });
   }
 
