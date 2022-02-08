@@ -46,7 +46,7 @@ initLibraries();
 const enabledModules = [
   
   "Payment",
- 
+  "PT",
   "QuickPayLinks",
   "DSS",
   "MCollect",

@@ -18,7 +18,8 @@ import TLRenewTrade from "./TL/RenewTrade"
 import CitizenSearchResults from "./mCollect/SearchResults/index"
 import SearchChallanComponent from "./mCollect/SearchChallan/index"
 import FilterMcs from './mCollect/FilterInbox/index'
-
+import TLLinks from "./TL/TLLinks";
+import PTLinks from "./PT/PTLinks";
 
 export const customizations = [
   SelectTradeLicenceCustomization,
@@ -39,5 +40,7 @@ export const customizations = [
   FilterMcs,
   SearchChallanComponent,
   MCollectNewChallan,
-  TLRenewTrade
+  TLRenewTrade,
+  TLLinks,
+  PTLinks
 ];
