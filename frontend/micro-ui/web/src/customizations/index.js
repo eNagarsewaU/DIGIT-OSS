@@ -20,6 +20,7 @@ import SearchChallanComponent from "./mCollect/SearchChallan/index"
 import FilterMcs from './mCollect/FilterInbox/index'
 import TLLinks from "./TL/TLLinks";
 import PTLinks from "./PT/PTLinks";
+import PTCard from "./PT/PTCard";
 
 export const customizations = [
   SelectTradeLicenceCustomization,
@@ -42,5 +43,6 @@ export const customizations = [
   MCollectNewChallan,
   TLRenewTrade,
   TLLinks,
-  PTLinks
+  PTLinks,
+  PTCard
 ];

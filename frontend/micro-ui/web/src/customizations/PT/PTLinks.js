@@ -5,6 +5,9 @@ import { useTranslation } from "react-i18next";
 export const PTLinks = ({ matchPath, userType }) => {
 
     const { t } = useTranslation();
+    let PTlinksPath = matchPath; 
+    PTlinksPath = PTlinksPath.substr(0, PTlinksPath.length - 2);
+    
     const [params, setParams, clearParams] = window.Digit.Hooks.useSessionStorage("PT_CREATE_TRADE", {});
 
     useEffect(() => {
@@ -13,19 +16,19 @@ export const PTLinks = ({ matchPath, userType }) => {
 
     const links = [
       {
-        link: `${window.location.origin}/citizen/property-tax`,
+        link: `${PTlinksPath}/citizen/property-tax`,
         i18nKey: t("PROPERTYTAX_HOME"),
       },
       {
-        link: `${window.location.origin}/citizen/pt-mutation/propertySearch`,
+        link: `${PTlinksPath}/citizen/pt-mutation/propertySearch`,
         i18nKey: t("PT_PAY_PROPERTYTAX"),
       },
       {
-        link: `${window.location.origin}/citizen/property-tax/my-properties`,
+        link: `${PTlinksPath}/citizen/property-tax/my-properties`,
         i18nKey: t("PT_MY_PROPERTIES"),
       },
       {
-        link: `${window.location.origin}/citizen//pt-mutation/my-applications`,
+        link: `${PTlinksPath}/citizen//pt-mutation/my-applications`,
         i18nKey: t("PT_MY_APPLICATIONS"),
       },
     ];

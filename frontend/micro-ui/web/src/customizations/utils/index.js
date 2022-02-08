@@ -1100,3 +1100,13 @@ export const formatResponseDataToCreateTLApiObject = (data, formData) => {
   data.action = "APPLY";
   return { Licenses: [data] };
 };
+
+export const ptAccess = () => {
+  const userInfo = window.Digit.UserService.getUser();
+  const userRoles = userInfo.info.roles.map((roleData) => roleData.code);
+  const ptRoles = ["PT_APPROVER", "PT_CEMP", "PTCEMP", "PT_DOC_VERIFIER", "PT_FIELD_INSPECTOR"];
+
+  const PT_ACCESS = userRoles.filter((role) => ptRoles.includes(role));
+
+  return PT_ACCESS.length > 0;
+};
