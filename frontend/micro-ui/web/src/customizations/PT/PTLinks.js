@@ -16,19 +16,19 @@ export const PTLinks = ({ matchPath, userType }) => {
 
     const links = [
       {
-        link: `${PTlinksPath}/citizen/property-tax`,
+        link: "/citizen/property-tax",
         i18nKey: t("PROPERTYTAX_HOME"),
       },
       {
-        link: `${PTlinksPath}/citizen/pt-mutation/propertySearch`,
+        link: "/citizen/pt-mutation/propertySearch",
         i18nKey: t("PT_PAY_PROPERTYTAX"),
       },
       {
-        link: `${PTlinksPath}/citizen/property-tax/my-properties`,
+        link: "/citizen/property-tax/my-properties",
         i18nKey: t("PT_MY_PROPERTIES"),
       },
       {
-        link: `${PTlinksPath}/citizen//pt-mutation/my-applications`,
+        link: "/citizen//pt-mutation/my-applications",
         i18nKey: t("PT_MY_APPLICATIONS"),
       },
     ];
