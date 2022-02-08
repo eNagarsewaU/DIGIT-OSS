@@ -251,6 +251,10 @@ const TLCheckPage = ({ onSubmit, value }) => {
                   <ActionButton jumpTo={`${routeLink}/units-details`} />
                 }
               />
+              <Row
+                label={t("TL_UNITRATE")}
+                text={`${unit?.rate ? t(unit?.rate) : ""}`}
+              />
             </div>
           ))}
           {TradeDetails && TradeDetails.accessories &&
