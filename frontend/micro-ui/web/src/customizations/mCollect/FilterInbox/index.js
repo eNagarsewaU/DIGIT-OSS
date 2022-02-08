@@ -23,6 +23,8 @@ const FilterInbox = ({
   const [clearCheck, setclearCheck] = useState(false);
   const [searchLocality, setSearchLocality] = useState([]);
   const [locality, setlocality] = useState([]);
+  const [searchServiceCategory, setSearchServiceCategory] = useState([]);
+  const [_serviceCategory, setServiceCategory] = useState([]);
 
   const localParamChange = (filterParam) => {
     setclearCheck(false);
@@ -58,7 +60,31 @@ const FilterInbox = ({
       localParamChange({ locality: local.join(",") });
     }
   };
-
+  const selectServiceCatagory = (d, remove = false) => {
+    if (remove) {
+      setSearchServiceCategory(
+        searchServiceCategory.filter((value) => {
+          return value.code !== d.code;
+        })
+      );
+      let local = _serviceCategory.filter((value) => {
+        return value !== d.code;
+      });
+      setServiceCategory(local);
+      localParamChange({
+        businessService: _searchParams?.businessService.filter(
+          (e) => e !== d?.code
+        ),
+      });
+    } else {
+      let local = [..._serviceCategory, d.code];
+      setSearchServiceCategory([...searchServiceCategory, d]);
+      setServiceCategory(local);
+      localParamChange({
+        businessService: [..._searchParams?.businessService, d?.code],
+      });
+    }
+  };
   return (
     <React.Fragment>
       <div className="filter">
@@ -163,6 +189,7 @@ const FilterInbox = ({
             </div>
             <div>
               <ServiceCategory
+                selectServiceCatagory={selectServiceCatagory}
                 _searchParams={_searchParams}
                 setclearCheck={setclearCheck}
                 businessServices={_searchParams.services}
@@ -183,15 +210,24 @@ const FilterInbox = ({
                     });
                 }}
               />
+              <div className="tag-container">
+                {searchServiceCategory?.map((option, index) => {
+                  return (
+                    <RemoveableTag
+                      text={t(`${option.code1}`)}
+                      onClick={() => {
+                        selectServiceCatagory(option, true);
+                      }}
+                    />
+                  );
+                })}
+              </div>
             </div>
-
-            <div>
-              <SubmitBar
-                disabled={_.isEqual(_searchParams, searchParams)}
-                onSubmit={() => onFilterChange(_searchParams)}
-                label={t("ES_COMMON_APPLY")}
-              />
-            </div>
+            <SubmitBar
+              disabled={_.isEqual(_searchParams, searchParams)}
+              onSubmit={() => onFilterChange(_searchParams)}
+              label={t("ES_COMMON_APPLY")}
+            />
           </div>
         </div>
       </div>
