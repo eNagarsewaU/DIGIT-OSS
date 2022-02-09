@@ -215,7 +215,7 @@ class TableData extends Component {
       })
     }
 
-
+    initialInboxData=this.removeTLDATA(initialInboxData);
 
     let { taskboardData, tabData } = this.state;
     taskboardData[0].head = totalRows.length;
@@ -535,12 +535,24 @@ class TableData extends Component {
     const { prepareFinalObject } = this.props;
     prepareFinalObject('Loading.isLoading', false);
   }
+  removeTLDATA=(inboxData)=>{
+    let result=[...inboxData];
+    inboxData.forEach((element,index) => {
+      let data=[];
+      if(element.rows&&element.rows.length>0){
+        data=element.rows.filter(item=>{
+          return item[0].hiddenText!=='tl-services'
+        })
+      }
+      result[index].rows=data;
+    });
+    return result
+  }
   render() {
     const { value, moduleName, filter, searchFilter, businessServiceSla } = this.state;
     const { classes, onPopupOpen } = this.props;
     const { handleChangeFilter, clearFilter, handleChangeSearch, resetTyping } = this;
     let { taskboardData, tabData, inboxData } = this.state;
-
     if (this.state.loaded) {
       const filteredData = this.applyFilter();
       taskboardData = filteredData.taskboardData;
