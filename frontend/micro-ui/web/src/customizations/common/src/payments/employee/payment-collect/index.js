@@ -235,7 +235,7 @@ export const CollectPayment = (props) => {
             name: "payerName",
             validation: {
               required: true,
-              pattern: /^[A-Za-z]/,
+              pattern: /^[^{0-9}^\$\"'<>?\\\\~`!@#$%^()+={}\[\]*,._:;“”‘’]/,
             },
             error: t("PAYMENT_INVALID_NAME"),
             defaultValue: bill?.payerName || formState?.payerName || "",
