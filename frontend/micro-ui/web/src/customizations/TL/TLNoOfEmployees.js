@@ -31,7 +31,7 @@ const TLNoOfEmployees = ({ t, config, onSelect, value, userType, formData }) => 
         onSelect={goNext}
         onSkip={onSkip}
         t={t}
-        isDisabled={!noofemployees}
+        isDisabled={false}
       >
         <CardLabel>{`${t("TL_LOCALIZATION_NO_OF_EMPLOYEES")}`}</CardLabel>
         <TextInput
@@ -43,7 +43,7 @@ const TLNoOfEmployees = ({ t, config, onSelect, value, userType, formData }) => 
           value={noofemployees}
           onChange={setSelectnoofemployees}
           disable={isEdit}
-          {...(validation = { pattern: "^[0-9]*$", isRequired: true, type: "text", title: t("TL_INVALID_NO_EMPLOYEES") })}
+          {...(validation = { pattern: "^[0-9]*$", isRequired: false, type: "text", title: t("TL_INVALID_NO_EMPLOYEES") })}
         />
       </FormStep>
       {<CitizenInfoLabel info={t("CS_FILE_APPLICATION_INFO_LABEL")} text={t("TL_LICENSE_ISSUE_YEAR_INFO_MSG") } />}
