@@ -103,9 +103,12 @@ const SelectStreet = ({ t, config, onSelect, userType, formData, formState, setE
     }
   }, [formValue]);
 
+  inputs?.map((input,index)=>{
+    input.validation.title = t(input.validation.title);
+  })
+  
   if (userType === "employee") {
     return inputs?.map((input, index) => {
-      input.validation.title = t(input.validation.title);
       return (
         <LabelFieldPair key={index}>
           <CardLabel className="card-label-smaller">
@@ -141,7 +144,7 @@ const SelectStreet = ({ t, config, onSelect, userType, formData, formState, setE
     });
   }
   return (
-
+    
     <FormStep
       config={{ ...config, inputs }}
       _defaultValues={{ street: formData?.address.street, doorNo: formData?.address.doorNo }}
