@@ -402,7 +402,7 @@ class TableData extends Component {
 
   getBussinessServiceData() {
     let businessServiceData = JSON.parse(localStorageGet("businessServiceData"));
-    businessServiceData = businessServiceData ? businessServiceData : this.setBusinessServiceDataToLocalStorage([{ key: "tenantId", value: getTenantId() }]);;
+    businessServiceData = businessServiceData ? businessServiceData : this.setBusinessServiceDataToLocalStorage([{ key: "tenantId", value: getTenantId() },{ key: "businessServices", value: "NewTL" }]);;
     return businessServiceData;
   }
   getMaxSLA() {
@@ -441,7 +441,7 @@ class TableData extends Component {
     const inboxData = [{ headers: [], rows: [] }];
     try {
       this.showLoading();
-      this.setBusinessServiceDataToLocalStorage([{ key: "tenantId", value: getTenantId() }]);
+      this.setBusinessServiceDataToLocalStorage([{ key: "tenantId", value: getTenantId() },{ key: "businessServices", value: "NewTL" }]);
       const requestBody = [{ key: "tenantId", value: tenantId }];
       const responseData = await httpRequest("egov-workflow-v2/egov-wf/process/_search", "_search", requestBody);
       const assignedData = orderBy(
