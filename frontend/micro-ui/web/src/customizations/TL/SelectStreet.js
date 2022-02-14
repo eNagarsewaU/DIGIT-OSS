@@ -105,6 +105,7 @@ const SelectStreet = ({ t, config, onSelect, userType, formData, formState, setE
 
   if (userType === "employee") {
     return inputs?.map((input, index) => {
+      input.validation.title = t(input.validation.title);
       return (
         <LabelFieldPair key={index}>
           <CardLabel className="card-label-smaller">
