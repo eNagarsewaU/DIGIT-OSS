@@ -11,7 +11,7 @@ const PTCard = () => {
   const [total, setTotal] = useState("-");
   const { data, isLoading, isFetching, isSuccess } = window.Digit.Hooks.useNewInboxGeneral({
     tenantId: window.Digit.ULBService.getCurrentTenantId(),
-    ModuleCode: "PT",
+    ModuleCode: "pt-services",
     filters: { limit: 10, offset: 0, services: ["PT.CREATE", "PT.MUTATION"] },
     config: {
       select: (data) => {
