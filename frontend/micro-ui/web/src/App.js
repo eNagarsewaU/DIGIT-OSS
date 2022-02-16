@@ -40,20 +40,21 @@ import {
 import { customizations } from "./customizations";
 import { useLocalities } from "./customizations/utils";
 import { receipt_download } from "./customizations/utils";
+import { enabledModules} from "./moduleconfigfile";
 
 initLibraries();
 
-const enabledModules = [
+// const enabledModules = [
   
-  "Payment",
-  "PT",
-  "QuickPayLinks",
-  "DSS",
-  "MCollect",
-  "HRMS",
-  "TL",
-  "Receipts",
-];
+//   "Payment",
+//   "PT",
+//   "QuickPayLinks",
+//   "DSS",
+//   "MCollect",
+//   "HRMS",
+//   "TL",
+//   "Receipts",
+// ];
 
 window.Digit.ComponentRegistryService.setupRegistry({
   ...paymentConfigs,
@@ -101,7 +102,7 @@ window.Digit.LocalizationService.getLocale({
    locale: window.Digit.StoreData.getCurrentLanguage(),
    tenantId: window.Digit.ULBService.getCurrentTenantId()
   })
-
+  
   return (
     <DigitUI
       stateCode={stateCode}
