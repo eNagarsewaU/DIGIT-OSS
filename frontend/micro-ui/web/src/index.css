@@ -14,5 +14,5 @@
 
 .result{
   overflow-x: scroll;
-  width: calc(100% - 50px);
+  width: calc(100vw - 424px);
 }
