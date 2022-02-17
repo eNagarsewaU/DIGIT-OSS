@@ -114,7 +114,7 @@ const TLAcknowledgement = ({ data, onSuccess }) => {
     const data = getPDFData({ ...res }, tenantInfo, t);
     data.then((ress) => window.Digit.Utils.pdf.generate(ress));
   }; 
-
+  
   return (mutation2.isLoading || mutation2.isIdle) ? (
     <Loader />
   ) : (
@@ -123,7 +123,7 @@ const TLAcknowledgement = ({ data, onSuccess }) => {
       {(mutation2.isSuccess) && <CardText>{!isDirectRenewal?t("TL_FILE_TRADE_RESPONSE"):t("TL_FILE_TRADE_RESPONSE_DIRECT_REN")}</CardText>}
       {(!mutation2.isSuccess) && <CardText>{t("TL_FILE_TRADE_FAILED_RESPONSE")}</CardText>}
 {/*       //{!isEdit && mutation2.isSuccess && <SubmitBar label={t("TL_DOWNLOAD_ACK_FORM")}  />}     
- */}     
+ */}  
  {(mutation2.isSuccess) &&  (
         <LinkButton
           label={
@@ -154,7 +154,7 @@ const TLAcknowledgement = ({ data, onSuccess }) => {
           //style={{ width: "100px" }}
           onClick={handleDownloadPdf}
         />)}
-         {(mutation2.isSuccess) && (!isEdit) &&  (
+         {/* {(mutation2.isSuccess) && (!isEdit) &&  (
         <LinkButton
           label={
             <div className="response-download-button">
@@ -168,7 +168,7 @@ const TLAcknowledgement = ({ data, onSuccess }) => {
           }
           //style={{ width: "100px" }}
           onClick={handleDownloadPdf}
-        />)}
+        />)} */}
          {(mutation2.isSuccess) && (isEdit) &&  (
         <LinkButton
           label={
