@@ -385,7 +385,8 @@ const OwnerForm = (_props) => {
               name={"relationship"}
               defaultValue= {{code: owner?.relationship,
                 i18nKey: owner?.relationship &&  `TL_${owner?.relationship}`}}      
-               rules={{ required: "RelationShip Required" }}
+                rules={{ required: t("REQUIRED_FIELD"), validate: { pattern: (val) => (/^[^{0-9}^\$\"'<>?\\\\~`!@#$%^()+={}\[\]*,._:;“”‘’]+$/.test(val.code) ? true : t("INVALID_NAME")) } }}
+                // rules={{ required: "RelationShip Required" }}
               render={(props) => (
                 <Dropdown
                   className="form-field"
