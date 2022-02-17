@@ -1,6 +1,7 @@
 import { CaseIcon, CitizenHomeCard } from "@egovernments/digit-ui-react-components";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { Link, useParams } from "react-router-dom";
 
 export const PTLinks = ({ matchPath, userType }) => {
 
@@ -14,7 +15,7 @@ export const PTLinks = ({ matchPath, userType }) => {
       clearParams();
     }, []);
 
-    const links = [
+    /* const links = [
       {
         link: "/citizen/property-tax",
         i18nKey: t("PROPERTYTAX_HOME"),
@@ -31,9 +32,23 @@ export const PTLinks = ({ matchPath, userType }) => {
         link: "/citizen//pt-mutation/my-applications",
         i18nKey: t("PT_MY_APPLICATIONS"),
       },
-    ];
+    ]; */
 
-    return <CitizenHomeCard header={t("ACTION_TEST_PT")} links={links} Icon={() => <CaseIcon className="fill-path-primary-main" />} />;
+   
+
+    //return <CitizenHomeCard header={t("ACTION_TEST_PT")} links={links} Icon={() => <CaseIcon className="fill-path-primary-main" />} />;
+    return (
+        <div className="CitizenHomeCard">
+          <div className="header">
+            <h2>PT</h2>
+          </div>
+
+          <div className="links">
+            <Link to="/citizen/pt-mutation/propertySearch">{t("PROPERTYTAX_SEARCH")}</Link>
+            <a href="/citizen/pt-mutation/propertySearch">PT Search</a>
+          </div>
+        </div>
+    );
   };
 
 const customize = (props) => {
