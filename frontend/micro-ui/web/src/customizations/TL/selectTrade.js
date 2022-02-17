@@ -62,7 +62,7 @@ const SelectTradeName = ({
   if (isLoading) {
     return <Loader></Loader>;
   }
-
+  console.log("ayush",FY)
   return (
     <React.Fragment>
       <FormStep
@@ -96,7 +96,7 @@ const SelectTradeName = ({
       {
         <CitizenInfoLabel
           info={t("CS_FILE_APPLICATION_INFO_LABEL")}
-          text={t("TL_LICENSE_ISSUE_YEAR_INFO_MSG") + FY}
+          text={t("TL_LICENSE_ISSUE_YEAR_INFO_MSG") + ` ${FY?FY.name:""}`}
         />
       }
     </React.Fragment>
