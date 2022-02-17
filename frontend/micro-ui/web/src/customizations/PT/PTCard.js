@@ -69,10 +69,8 @@ const PTCard = () => {
               <h3>PT </h3>
           </div>
           <div className="links-wrapper">
-          <span className="link"><a href="/employee/property-tax">{t("PROPERTYTAX_HOME")}</a></span>
           <span className="link"><a href="/employee/pt-mutation/propertySearch">{t("PT_PAY_PROPERTYTAX")}</a></span>
-          <span className="link"><a href="/employee/property-tax/my-properties">{t("PT_MY_PROPERTIES")}</a></span>
-          <span className="link"><a href="/employee/pt-mutation/my-applications">{t("PT_MY_APPLICATIONS")}</a></span>
+          <span className="link"><a href="/employee/property-tax/assessment-form-dataentry">{t("PT_CREATE_PROPERTY")}</a></span>
           </div>
       </div>
   </div>
