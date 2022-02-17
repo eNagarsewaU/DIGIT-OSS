@@ -44,8 +44,10 @@ export const PTLinks = ({ matchPath, userType }) => {
           </div>
 
           <div className="links">
-            <Link to="/citizen/pt-mutation/propertySearch">{t("PROPERTYTAX_SEARCH")}</Link>
-            <a href="/citizen/pt-mutation/propertySearch">PT Search</a>
+            <a href="/citizen/property-tax">{t("PROPERTYTAX_HOME")}</a>
+            <a href="/citizen/pt-mutation/propertySearch">{t("PT_PAY_PROPERTYTAX")}</a>
+            <a href="/citizen/property-tax/my-properties">{t("PT_MY_PROPERTIES")}</a>
+            <a href="/citizen/pt-mutation/my-applications">{t("PT_MY_APPLICATIONS")}</a>
           </div>
         </div>
     );
