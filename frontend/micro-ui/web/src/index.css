@@ -5,3 +5,8 @@
 .citizen-home-footer {
   position: initial !important;
 }
+
+.result{
+  overflow-x: scroll;
+  width: calc(100% - 50px);
+}
