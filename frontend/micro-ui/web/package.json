@@ -4,7 +4,7 @@
   "private": true,
   "homepage": "/digit-ui",
   "dependencies": {
-    "@egovernments/digit-ui-css": "^1.0.0",
+    "@egovernments/digit-ui-css": "1.0.0",
     "@egovernments/digit-ui-libraries": "1.3.12",
     "@egovernments/digit-ui-module-common": "1.3.5",
     "@egovernments/digit-ui-module-core": "1.3.6",

@@ -5,3 +5,8 @@
 .citizen-home-footer {
   position: initial !important;
 }
+
+.CitizenHomeCard .links
+{
+  display: block;
+}
