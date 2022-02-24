@@ -399,8 +399,26 @@ app.post(
 
       var valid = validateRequest(req, res, key, tenantId, requestInfo);
 
-      logger.info("req---->",req);
-      logger.info("reqInfo----->", requestInfo);
+     
+
+      let challanData = get(req.body, "Challan");
+      if(challanData){
+        let billnumber = challanData.billNo;
+        let code = stringReplaceAll(billnumber, ".", "_");
+        const myArray = code.split("-");
+        let word = myArray[1];
+        word = word.toLocaleUpperCase();
+        word = `BILLINGSERVICE_BUSINESSSERVICE_${word}`;
+        let resposnseMap = await findLocalisation(
+          requestInfo,
+          ["rainmaker-uc"],
+          [word]
+        );
+        billnumber = myArray[0] + "-" + resposnseMap + "-" + myArray[2];
+        set(req.body, "challan.billNo", billnumber);
+      }
+
+       logger.info("req---->", req);
 
       if (valid) {
         let [
