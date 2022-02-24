@@ -71,7 +71,8 @@ public class UserService{
                 OwnerInfo ownerInfoBackup=owner;
                 String businessService = tradeLicense.getBusinessService();
                 if (owner.getName() == null && owner.getMobileNumber() == null && owner.getFatherOrHusbandName() == null && owner.getCorrespondenceAddress() == null && owner.getDob() == null && owner.getGender() == null) {
-                        throw new CustomException("OWNER DETAILS NOT PRESENT", "The owner detals for the given application are not present");
+                        throw new CustomException("OWNER DETAILS NOT PRESENT", "The owner details for the given application are not present");
+                }
                 if (businessService == null)
                     businessService = businessService_TL;
                 switch (businessService) {
