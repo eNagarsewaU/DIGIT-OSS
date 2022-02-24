@@ -14,8 +14,8 @@ const SelectOccupancyType = ({ t, config, onSelect, userType, formData }) => {
     window.location.href.includes("/edit-application/") ||
     window.location.href.includes("renew-trade");
   const menu = [
-    { i18nKey: "TL_OWNED", code: "OWNED" },
-    { i18nKey: "TL_RENTED", code: "RENTED" },
+    { i18nKey: "TL_OWNED", code: "OCCUPANCYTYPE.OWNED" },
+    { i18nKey: "TL_RENTED", code: "OCCUPANCYTYPE.RENTED" },
   ];
 
   const onSkip = () => onSelect();
