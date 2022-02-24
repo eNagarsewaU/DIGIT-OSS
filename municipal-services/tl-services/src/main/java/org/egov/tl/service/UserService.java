@@ -67,8 +67,7 @@ public class UserService{
                     ,requestInfo,tradeLicense.getTenantId());*/
 
             tradeLicense.getTradeLicenseDetail().getOwners().forEach(owner ->
-            {
-                if 
+            { 
                 OwnerInfo ownerInfoBackup=owner;
                 String businessService = tradeLicense.getBusinessService();
                 if (getOwners.getName().getMobileNumber().getFatherOrHusbandName().getCorrespondenceAddress().getDob().getGender() == null) {
