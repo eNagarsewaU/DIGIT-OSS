@@ -404,7 +404,7 @@ app.post(
       let challanData = get(req.body, "Challan");
       if(challanData){
         let billnumber = challanData.billNo;
-        let code = stringReplaceAll(billnumber, ".", "_");
+        let code = billnumber.replace(".", "_")
         const myArray = code.split("-");
         let word = myArray[1];
         word = word.toLocaleUpperCase();
