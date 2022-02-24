@@ -68,8 +68,11 @@ public class UserService{
 
             tradeLicense.getTradeLicenseDetail().getOwners().forEach(owner ->
             {
+                if 
                 OwnerInfo ownerInfoBackup=owner;
                 String businessService = tradeLicense.getBusinessService();
+                if (getOwners.getName().getMobileNumber().getFatherOrHusbandName().getCorrespondenceAddress().getDob().getGender() == null) {
+                        throw new CustomException("OWNER DETAILS MISSING", "The owner detals for the given application is missing");
                 if (businessService == null)
                     businessService = businessService_TL;
                 switch (businessService) {
