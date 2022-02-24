@@ -11,7 +11,7 @@ const PTCard = () => {
   const [total, setTotal] = useState("-");
   const { data, isLoading, isFetching, isSuccess } = window.Digit.Hooks.useNewInboxGeneral({
     tenantId: window.Digit.ULBService.getCurrentTenantId(),
-    ModuleCode: "pt-services",
+    ModuleCode: "PT",
     filters: { limit: 10, offset: 0, services: ["PT.CREATE", "PT.MUTATION"] },
     config: {
       select: (data) => {
@@ -56,7 +56,25 @@ const PTCard = () => {
     });
   }
 
-  return <EmployeeModuleCard {...propsForModuleCard} />;
+  return ptAccess() && <div className="employeeCard card-home">
+  <div className="complaint-links-container">
+      <div className="header">
+          <span className="text">PT</span>
+          <span className="logo">
+{/*               {Icon}
+ */}          </span>
+      </div>
+      <div className="body" style={{ margin: "0px", padding: "0px" }}>
+          <div className="flex-fit">
+              <h3>PT </h3>
+          </div>
+          <div className="links-wrapper">
+          <span className="link"><a href="/employee/pt-mutation/propertySearch">{t("PT_PAY_PROPERTYTAX")}</a></span>
+          <span className="link"><a href="/employee/property-tax/assessment-form-dataentry">{t("PT_CREATE_PROPERTY")}</a></span>
+          </div>
+      </div>
+  </div>
+</div>;
 };
 
 const customize = (props) => {
