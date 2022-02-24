@@ -399,6 +399,9 @@ app.post(
 
       var valid = validateRequest(req, res, key, tenantId, requestInfo);
 
+      logger.info("req---->",req);
+      logger.info("reqInfo----->",reqInfo);
+
       if (valid) {
         let [
           formatConfigByFile,
