@@ -400,7 +400,7 @@ app.post(
       var valid = validateRequest(req, res, key, tenantId, requestInfo);
 
       logger.info("req---->",req);
-      logger.info("reqInfo----->",reqInfo);
+      logger.info("reqInfo----->", requestInfo);
 
       if (valid) {
         let [
