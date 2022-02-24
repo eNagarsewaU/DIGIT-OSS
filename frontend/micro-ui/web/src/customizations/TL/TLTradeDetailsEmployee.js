@@ -235,8 +235,8 @@ const OwnerForm1 = (_props) => {
     }
   }
   const selectedOccupancyTypeOptions = [
-    { i18nKey: "TL_OWNED", code: "OWNED" },
-    { i18nKey: "TL_RENTED", code: "RENTED" },
+    { i18nKey: "TL_OWNED", code: "OCCUPANCYTYPE.OWNED" },
+    { i18nKey: "TL_RENTED", code: "OCCUPANCYTYPE.RENTED" },
   ];
 
   let isRenewal = window.location.href.includes("renew-application-details");
