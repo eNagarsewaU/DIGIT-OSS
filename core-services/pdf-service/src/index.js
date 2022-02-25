@@ -414,7 +414,7 @@ app.post(
           ["rainmaker-uc"],
           [word]
         );
-        if(resposnseMap){
+        if(resposnseMap.messages[0]){
           let locale = resposnseMap.messages[0].message;
           billnumber = myArray[0] + "-" + locale + "-" + myArray[2];
           set(req.body, "Challan.billNo", billnumber);}
