@@ -419,8 +419,6 @@ app.post(
         set(req.body, "Challan.billNo", billnumber);
       }
 
-       logger.info("req---->", req);
-
       if (valid) {
         let [
           formatConfigByFile,
