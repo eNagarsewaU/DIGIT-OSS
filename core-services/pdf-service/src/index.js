@@ -416,7 +416,7 @@ app.post(
         );
         let locale = resposnseMap.messages[0].message;
         billnumber = myArray[0] + "-" + locale + "-" + myArray[2];
-        set(req.body, "challan.billNo", billnumber);
+        set(req.body, "Challan.billNo", billnumber);
       }
 
        logger.info("req---->", req);
