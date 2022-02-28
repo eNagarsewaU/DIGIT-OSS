@@ -16,6 +16,11 @@
     overflow-x: scroll;
     width: calc(100vw - 424px);
   }
+  .download_tl{
+    position: absolute;
+    top: -56px;
+    right: 0px;
+  }
 }
 
 
