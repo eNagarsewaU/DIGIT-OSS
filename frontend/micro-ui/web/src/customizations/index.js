@@ -21,6 +21,7 @@ import FilterMcs from './mCollect/FilterInbox/index'
 import TLLinks from "./TL/TLLinks";
 import PTLinks from "./PT/PTLinks";
 import PTCard from "./PT/PTCard";
+import TlApplicationDetails from './TL/TLApplicationDetails'
 
 export const customizations = [
   SelectTradeLicenceCustomization,
@@ -44,5 +45,6 @@ export const customizations = [
   TLRenewTrade,
   TLLinks,
   PTLinks,
-  PTCard
+  PTCard,
+  TlApplicationDetails
 ];
