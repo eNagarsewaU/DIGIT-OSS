@@ -24,3 +24,12 @@
 }
 
 
+@media (min-width: 100px) and (max-width: 480px){
+  .search-form-wrapper .form-field{
+    width: calc(100% - 16px);
+    display: inline-block;
+    vertical-align: middle;
+  }
+}
+
+
