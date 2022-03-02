@@ -13,13 +13,49 @@ import {
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { useHistory, useRouteMatch } from "react-router-dom";
-
 import { Loader } from "@egovernments/digit-ui-react-components";
-
-
 import { pdfDocumentName, pdfDownloadLink } from "../utils";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useQuery, useQueryClient } from "react-query";
+
+const TLDocumentSearch = (data1, config)=> {
+  if (data1 === void 0) {
+    data1 = {};
+  }
+
+  var client = useQueryClient();
+  var tenantId = window.Digit.ULBService.getCurrentTenantId();
+  var tenant = tenantId.split(".")[0];
+  var filesArray = ["OwnerPhotoProof","ProofOfIdentity","ProofOfOwnership"]
+  var file=[];
+  var doucument=[]
+  filesArray.map(item=>{
+    if( data1?.value?.owners?.documents?.[item]?.fileStoreId){
+      file.push(data1?.value?.owners?.documents?.[item]?.fileStoreId)
+      doucument.push(data1?.value.owners.documents[item])
+    }
+  })
+  var _useQuery = useQuery(["tlDocuments-" + 1, filesArray], function () {
+    return window.Digit.UploadServices.Filefetch(filesArray, tenant);
+  }),
+      isLoading = _useQuery.isLoading,
+      error = _useQuery.error,
+      data = _useQuery.data;
+
+  return {
+    isLoading: isLoading,
+    error: error,
+    doucument,
+    data: {
+      pdfFiles: data === null || data === void 0 ? void 0 : data.data
+    },
+    revalidate: function revalidate() {
+      return client.invalidateQueries(["tlDocuments-" + 1, filesArray]);
+    }
+  };
+};
+
 
 const PDFSvg = ({ width = 20, height = 20, style }) => (
   <svg style={style} xmlns="http://www.w3.org/2000/svg" width={width} height={height} viewBox="0 0 20 20" fill="gray">
@@ -29,17 +65,33 @@ const PDFSvg = ({ width = 20, height = 20, style }) => (
 
 function TLDocument({ value = {} }) {
   const { t } = useTranslation();
-  const { isLoading, isError, error, data } = value && window.Digit.Hooks.tl.useTLDocumentSearch(
-    {
-      value
-    },
-    { value }
-  );
+  // const isLoading=false
+  // const data = {}
+
+
   let documents = [];
   documents.push(value && value.owners.documents["ProofOfIdentity"]);
   documents.push(value && value.owners.documents["ProofOfOwnership"]);
   documents.push(value && value.owners.documents["OwnerPhotoProof"]);
-  
+  console.log(documents)
+  console.log(value && value.owners);
+  let isLoading,data;
+  try{
+    const {  isLoading: loading, isError, error, data:data1, doucument } = TLDocumentSearch(
+      {
+        value
+      },
+      { value }
+    );
+    isLoading=loading;
+    data=data1;
+    documents=doucument;
+  }catch(e){
+    console.log(e)
+    isLoading=false;
+    data={}
+  }
+
 
   if (isLoading) {
     return <Loader />;
