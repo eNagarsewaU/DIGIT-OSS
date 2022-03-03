@@ -188,6 +188,18 @@ export const gettradeownerarray = (data) => {
         {
           oldowner.gender = newowner.gender.code;
         }
+        if(oldowner.pan !== newowner.pan)
+        {
+          oldowner.pan = newowner.pan;
+        }        
+        if(oldowner?.emailId !== newowner.emailId)
+        {
+          oldowner.emailId = newowner.emailId;
+        }
+        if(oldowner?.fatherOrHusbandName !== newowner.fatherOrHusbandName)
+        {
+          oldowner.fatherOrHusbandName = newowner.fatherOrHusbandName;
+        }               
         if(oldowner.mobileNumber !== newowner.mobileNumber)
         {
           oldowner.mobileNumber = newowner.mobileNumber;
@@ -217,9 +229,9 @@ export const gettradeownerarray = (data) => {
       tradeownerarray.push({
               mobileNumber: ob.mobileNumber,
               name: ob.name,
-              fatherOrHusbandName: "",
-              relationship: "",
-              dob: null,
+              fatherOrHusbandName:ob.fatherOrHusbandName,
+              relationship: ob.relationship,
+              dob: ob.dob,
               gender: ob.gender.code,
               permanentAddress: data?.owners?.permanentAddress,
             });
@@ -544,7 +556,7 @@ export const stringToBoolean = (value) => {
 export const convertToEditTrade = (data, fy = []) => {
   const currrentFYending = fy.filter(item => item.code === data?.financialYear)[0]
     .endingDate;
-    let nextFinancialYearForRenewal = fy.filter(item => item.startingDate === currrentFYending+1000)[0].code;
+    let nextFinancialYearForRenewal = fy.filter(item => item.startingDate === currrentFYending+1000)[0]?.code;
   let isDirectrenewal = stringToBoolean(sessionStorage.getItem("isDirectRenewal"));
   let formdata = {
     Licenses: [
@@ -587,7 +599,7 @@ export const convertToEditTrade = (data, fy = []) => {
       }
     ]
   }
-  console.log("formdata", formdata);
+  console.log("renewal payload formdata", formdata);
   return formdata;
 }
 

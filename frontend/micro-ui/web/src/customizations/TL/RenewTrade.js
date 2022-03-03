@@ -74,7 +74,7 @@ const getTradeEditDetails = (data) => {
         emailId: ob?.emailId,
         pan: ob?.pan,
         DOB: ob?.DOB,
-        id: ob.id,
+        id: ob?.id,
       })
     })
     return ownerarray;
