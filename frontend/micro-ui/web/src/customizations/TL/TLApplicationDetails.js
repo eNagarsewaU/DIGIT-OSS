@@ -200,7 +200,7 @@ const applicationDetails= async (t, tenantId, applicationNumber, userType) => {
     }
 
     response && employeeResponse.push(tradedetails);
-    response && employeeResponse.push(download);
+    // response && employeeResponse.push(download);
     response?.tradeLicenseDetail?.tradeUnits && employeeResponse.push(tradeUnits);
     response?.tradeLicenseDetail?.accessories && employeeResponse.push(accessories);
     response && employeeResponse.push(tradeAddress);
