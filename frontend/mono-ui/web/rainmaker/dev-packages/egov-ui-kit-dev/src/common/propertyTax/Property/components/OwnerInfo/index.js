@@ -127,7 +127,7 @@ export const getOwnerInformation = (latestPropertyDetails, generalMDMSDataById) 
               }
             : {
                 key: getTranslatedLabel("PT_OWNERSHIP_INFO_GENDER", localizationLabelsData),
-                value: owner.gender || "NA",
+                value: getTranslatedLabel("PT_GENDER_" + owner.gender.toUpperCase(), localizationLabelsData) || "NA",
               },
           isInstitution
             ? {
@@ -406,7 +406,7 @@ class OwnerInfo extends Component {
                 },
             {
               key: getTranslatedLabel("PT_FORM3_RELATIONSHIP", localizationLabelsData),
-              value: owner.relationship || "NA",
+              value: getTranslatedLabel("PT_" + owner.relationship.toUpperCase(), localizationLabelsData) || "NA",
             },
             isInstitution
               ? {
@@ -422,7 +422,7 @@ class OwnerInfo extends Component {
                 }
               : {
                   key: getTranslatedLabel("PT_OWNERSHIP_INFO_GENDER", localizationLabelsData),
-                  value: owner.gender || "NA",
+                  value: getTranslatedLabel("PT_GENDER_" + owner.gender.toUpperCase(), localizationLabelsData) || "NA",
                 },
             isInstitution
               ? {
