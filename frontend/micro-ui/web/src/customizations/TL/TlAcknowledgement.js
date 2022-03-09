@@ -124,7 +124,7 @@ const TLAcknowledgement = ({ data, onSuccess }) => {
       {(!mutation2.isSuccess) && <CardText>{t("TL_FILE_TRADE_FAILED_RESPONSE")}</CardText>}
 {/*       //{!isEdit && mutation2.isSuccess && <SubmitBar label={t("TL_DOWNLOAD_ACK_FORM")}  />}     
  */}  
- {(mutation2.isSuccess) &&  (
+{/*  {(mutation2.isSuccess) &&  (
         <LinkButton
           label={
             <div className="response-download-button">
@@ -138,7 +138,7 @@ const TLAcknowledgement = ({ data, onSuccess }) => {
           }
           //style={{ width: "100px" }}
           onClick={handleDownloadPdf}
-        />)}
+        />)} */}
          {(isEdit) &&  (
         <LinkButton
           label={
@@ -169,7 +169,7 @@ const TLAcknowledgement = ({ data, onSuccess }) => {
           //style={{ width: "100px" }}
           onClick={handleDownloadPdf}
         />)} */}
-         {(mutation2.isSuccess) && (isEdit) &&  (
+         {(mutation2.isSuccess) && (!isEdit) &&  (
         <LinkButton
           label={
             <div className="response-download-button">
