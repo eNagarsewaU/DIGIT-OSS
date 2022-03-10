@@ -192,6 +192,26 @@ const ApplicationDetails = () => {
                       textStyle={{ whiteSpace: "pre" }}
                     />
                     <Row
+                      label={`${t("TL_NEW_OWNER_DETAILS_PAN_LABEL")}`}
+                      text={t(ele.pan || "NA")}
+                      textStyle={{ whiteSpace: "pre" }}
+                    />
+                     <Row
+                      label={`${t("TL_NEW_OWNER_DETAILS_DOB_LABEL")}`}
+                      text={t(ele.dob || "NA")}
+                      textStyle={{ whiteSpace: "pre" }}
+                    />
+                     <Row
+                      label={`${t("TL_GUARDIAN_S_NAME_LABEL")}`}
+                      text={t(ele?.fatherOrHusbandName || "NA")}
+                      textStyle={{ whiteSpace: "pre" }}
+                    />
+                     <Row
+                      label={`${t("TL_RELATIONSHIP_WITH_GUARDIAN_LABEL")}`}
+                      text={t(ele?.relationship || "NA")}
+                      textStyle={{ whiteSpace: "pre" }}
+                    />
+                    <Row
                       label={`${t("TL_MOBILE_NUMBER_LABEL")}`}
                       text={t(ele.mobileNumber)}
                       textStyle={{ whiteSpace: "pre" }}
