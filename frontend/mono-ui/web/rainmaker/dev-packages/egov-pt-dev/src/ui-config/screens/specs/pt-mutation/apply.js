@@ -97,7 +97,7 @@ export const formwizardFirstStep = {
     transferorDetails: { ...ts1 },
     transferorInstitutionDetails: { ...ti1 },
     transfereeDetails,
-   // mutationDetails,
+    mutationDetails,
     registrationDetails
   }
 };
@@ -126,7 +126,7 @@ export const formwizardThirdStep = {
       transferorInstitutionSummary: { ...transferorInstitutionSummary },
       transfereeSummary: transfereeSummary,
       transfereeInstitutionSummary: transfereeInstitutionSummary,
-//      mutationSummary: mutationSummary,
+      mutationSummary: mutationSummary,
       registrationSummary: registrationSummary,
       documentsSummary: documentsSummary,
       declarationSummary: declarationSummary
@@ -473,9 +473,11 @@ const getMdmsTransferReasonData = async (action, state, dispatch) => {
       mdmsBody
     );
     
+    if(process.env.REACT_APP_NAME === "Citizen"){
+      if(payload &&payload.MdmsRes && payload.MdmsRes.PropertyTax && payload.MdmsRes.PropertyTax.ReasonForTransfer){
    let reasonForTransfer1=[];
     payload.MdmsRes.PropertyTax.ReasonForTransfer.forEach(item=> {
-     if((item.code=="NAMECORRECTIONCLERICAL" && process.env.REACT_APP_NAME !== "Citizen")|| (item.code!="NAMECORRECTIONCLERICAL"))
+     if(item.code!="NAMECORRECTIONCLERICAL")
      {
       reasonForTransfer1.push(item);
      }
@@ -484,6 +486,7 @@ const getMdmsTransferReasonData = async (action, state, dispatch) => {
   );
 
   payload.MdmsRes.PropertyTax.ReasonForTransfer=reasonForTransfer1
+}}
     dispatch(prepareFinalObject("ReasonForTransfer", payload.MdmsRes));
   } catch (e) {
     console.log(e);

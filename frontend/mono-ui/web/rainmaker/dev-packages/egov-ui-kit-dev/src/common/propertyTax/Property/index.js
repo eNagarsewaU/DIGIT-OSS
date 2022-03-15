@@ -252,37 +252,47 @@ class Property extends Component {
     fetchLocalizationLabel(getLocale(), getTenantId(), getTenantId());
     const ptqueryObject = [
       { key: "propertyIds", value: this.props.match.params.propertyId },
-      { key: "tenantId", value: getTenantId() },
+      { key: "tenantId", value: getTenantId()  },
     ];
     try {
-      const payload = await httpRequest("post", "property-services/property/_search", "", ptqueryObject);
-      this.setState({ businessIds: payload && payload.Properties[0].acknowldgementNumber });
-    } catch (e) {
-      console.log("error", e);
+      const payload = await httpRequest("post","property-services/property/_search", "", ptqueryObject);
+      this.setState({businessIds: payload && payload.Properties[0].acknowldgementNumber}); 
     }
+    catch (e)
+    {
+      console.log("error",e );
+    }
+
 
     const queryObject = [
-      {
-        key: "tenantId",
-        value: getTenantId(),
-      },
-      {
-        key: "businessService",
-        value: "PT.MUTATION",
-      },
-      {
-        key: "businessIds",
-        value: this.state.businessIds,
-      },
-    ];
-    try {
-      const payload = await httpRequest("post", "egov-workflow-v2/egov-wf/process/_search", "", queryObject);
+       {  
+        key: "tenantId", 
+        value: getTenantId()      
+       },     
+       {      
+        key: "businessService",   
+        value: "PT.MUTATION" 
+       },
+       { 
+         key: "businessIds", 
+         value: this.state.businessIds
+       },
+     ];         
 
-      this.setState({ workflowStatus: payload && payload });
+   try {
+    const payload = await httpRequest(
+      "post",
+      "egov-workflow-v2/egov-wf/process/_search",
+      "",
+      queryObject
+    );   
+
+     this.setState({workflowStatus: payload && payload}); 
+
     } catch (e) {
-      console.log(" workflow call error", e);
+      console.log(" workflow call error",e);
     }
-
+ 
   };
 
 
@@ -540,15 +550,7 @@ class Property extends Component {
         });   
     return (
       <Screen className={clsName}>
-        <PTHeader
-          header="PT_PROPERTY_INFORMATION"
-          subHeaderTitle="PT_PROPERTY_PTUID"
-          subHeaderValue={propertyId}
-          downloadPrintButton={true}
-          downloadPrintButton={true}
-          download={() => this.download()}
-          print={() => this.print()}
-        />
+        <PTHeader header="PT_PROPERTY_INFORMATION" subHeaderTitle="PT_PROPERTY_PTUID" subHeaderValue={propertyId} downloadPrintButton={true} downloadPrintButton={true} download={() => this.download()} print={() => this.print()} />
         {
           <AssessmentList
             onItemClick={this.onListItemClick}
@@ -567,38 +569,42 @@ class Property extends Component {
           />
         }
         <div id="tax-wizard-buttons" className="wizard-footer col-sm-12" style={{ textAlign: "right" }}>
-          {!isMigratedProperty && (
-            <Button
+        {!isMigratedProperty && 
+
+         <Button
               onClick={() => this.onAssessPayClick()}
               label={<Label buttonLabel={true} label="PT_ASSESS_PROPERTY" fontSize="16px" />}
               primary={true}
-              style={{ lineHeight: "auto", minWidth: "inherit", marginLeft: "10px" }}
-            />
-          )}
+              style={{ lineHeight: "auto", minWidth: "inherit", marginLeft:"10px" }}
+            />  
+        }        
 
-          {isMigratedProperty &&
-            !isCitizen &&
-            (Payments.length <= 0 || (Payments && Payments.length === 1 && Payments[0].instrumentStatus === "CANCELLED") || !payLen) && (
+                      
+        {isMigratedProperty && !isCitizen && (Payments.length<=0 || Payments && Payments.length === 1 && Payments[0].instrumentStatus === "CANCELLED"  
+        || !payLen ) &&
+           <Button
+              label={
+                <Label buttonLabel={true}
+                  label={formWizardConstants[PROPERTY_FORM_PURPOSE.UPDATE].parentButton} 
+                  fontSize="16px"
+                  color="#fe7a51" />
+              }
+              onClick={() => this.onEditPropertyClick()}
+              //labelStyle={{ letterSpacing: 0.7, padding: 0, color: "#fe7a51" }}
+             // buttonStyle={{ border: "1px solid #fe7a51" }}
+             style={{ lineHeight: "auto", minWidth: "inherit" }}
+             />   
+            }
+              {isMigratedProperty && !isCitizen && (Payments.length<=0 || Payments && Payments.length === 1 && Payments[0].instrumentStatus === "CANCELLED"  
+              || !payLen ) &&
+                
               <Button
-                label={
-                  <Label buttonLabel={true} label={formWizardConstants[PROPERTY_FORM_PURPOSE.UPDATE].parentButton} fontSize="16px" color="#fe7a51" />
-                }
-                onClick={() => this.onEditPropertyClick()}
-                //labelStyle={{ letterSpacing: 0.7, padding: 0, color: "#fe7a51" }}
-                // buttonStyle={{ border: "1px solid #fe7a51" }}
-                style={{ lineHeight: "auto", minWidth: "inherit" }}
-              />
-            )}
-          {isMigratedProperty &&
-            !isCitizen &&
-            (Payments.length <= 0 || (Payments && Payments.length === 1 && Payments[0].instrumentStatus === "CANCELLED") || !payLen) && (
-              <Button
-                onClick={() => this.editDemand()}
-                label={<Label buttonLabel={true} label="PT_EDIT_DATAENTRY_DEMAND" fontSize="16px" />}
-                primary={true}
-                style={{ lineHeight: "auto", minWidth: "inherit" }}
-              />
-            )}
+              onClick={() => this.editDemand()}
+              label={<Label buttonLabel={true} label="PT_EDIT_DATAENTRY_DEMAND" fontSize="16px" />}
+              primary={true}
+              style={{ lineHeight: "auto", minWidth: "inherit" }}
+            />
+          }
         </div>
         {dialogueOpen && <YearDialogue open={dialogueOpen} history={history} urlToAppend={urlToAppend} closeDialogue={closeYearRangeDialogue} />}
       </Screen>
@@ -812,86 +818,86 @@ const getOwnerInfo = (latestPropertyDetails, generalMDMSDataById) => {
             items: [
               isInstitution
                 ? {
-                    key: getTranslatedLabel("PT_OWNERSHIP_INFO_NAME_INSTI", localizationLabelsData),
-                    value: (institution && institution.name) || "NA",
-                  }
+                  key: getTranslatedLabel("PT_OWNERSHIP_INFO_NAME_INSTI", localizationLabelsData),
+                  value: (institution && institution.name) || "NA",
+                }
                 : {
-                    key: getTranslatedLabel("PT_OWNERSHIP_INFO_NAME", localizationLabelsData),
-                    value: owner.name || "NA",
-                  },
+                  key: getTranslatedLabel("PT_OWNERSHIP_INFO_NAME", localizationLabelsData),
+                  value: owner.name || "NA",
+                },
               isInstitution
                 ? {
-                    key: getTranslatedLabel("PT_OWNERSHIP_INFO_DESIGNATION", localizationLabelsData),
-                    value: institution.designation || "NA",
-                  }
+                  key: getTranslatedLabel("PT_OWNERSHIP_INFO_DESIGNATION", localizationLabelsData),
+                  value: institution.designation || "NA",
+                }
                 : {
-                    key: getTranslatedLabel("PT_SEARCHPROPERTY_TABEL_GUARDIANNAME", localizationLabelsData),
-                    value: owner.fatherOrHusbandName || "NA",
-                  },
+                  key: getTranslatedLabel("PT_SEARCHPROPERTY_TABEL_GUARDIANNAME", localizationLabelsData),
+                  value: owner.fatherOrHusbandName || "NA",
+                },
               isInstitution
                 ? {
-                    key: getTranslatedLabel("PT_OWNERSHIP_INFO_TYPE_INSTI", localizationLabelsData),
-                    value:
-                      (institution &&
-                        institution.type &&
-                        generalMDMSDataById &&
-                        generalMDMSDataById["SubOwnerShipCategory"] &&
-                        generalMDMSDataById["SubOwnerShipCategory"][institution.type] &&
-                        generalMDMSDataById["SubOwnerShipCategory"][institution.type].name) ||
-                      "NA",
-                  }
+                  key: getTranslatedLabel("PT_OWNERSHIP_INFO_TYPE_INSTI", localizationLabelsData),
+                  value:
+                    (institution &&
+                      institution.type &&
+                      generalMDMSDataById &&
+                      generalMDMSDataById["SubOwnerShipCategory"] &&
+                      generalMDMSDataById["SubOwnerShipCategory"][institution.type] &&
+                      generalMDMSDataById["SubOwnerShipCategory"][institution.type].name) ||
+                    "NA",
+                }
                 : {
-                    key: getTranslatedLabel("PT_OWNERSHIP_INFO_GENDER", localizationLabelsData),
-                    value: owner.gender || "NA",
-                  },
+                  key: getTranslatedLabel("PT_OWNERSHIP_INFO_GENDER", localizationLabelsData),
+                  value: owner.gender || "NA",
+                },
               isInstitution
                 ? {
-                    // key: getTranslatedLabel("PT_OWNERSHIP_INFO_TYPE_INSTI", localizationLabelsData),
-                    // value:
-                    //   (institution &&
-                    //     institution.type &&
-                    //     generalMDMSDataById &&
-                    //     generalMDMSDataById["SubOwnerShipCategory"] &&
-                    //     generalMDMSDataById["SubOwnerShipCategory"][institution.type].name) ||
-                    //   "NA",
-                  }
+                  // key: getTranslatedLabel("PT_OWNERSHIP_INFO_TYPE_INSTI", localizationLabelsData),
+                  // value:
+                  //   (institution &&
+                  //     institution.type &&
+                  //     generalMDMSDataById &&
+                  //     generalMDMSDataById["SubOwnerShipCategory"] &&
+                  //     generalMDMSDataById["SubOwnerShipCategory"][institution.type].name) ||
+                  //   "NA",
+                }
                 : {
-                    key: getTranslatedLabel("PT_OWNERSHIP_INFO_DOB", localizationLabelsData),
-                    value: owner.dob || "NA",
-                  },
+                  key: getTranslatedLabel("PT_OWNERSHIP_INFO_DOB", localizationLabelsData),
+                  value: owner.dob || "NA",
+                },
               isInstitution
                 ? {
-                    key: getTranslatedLabel("PT_OWNERSHIP_INFO_NAME_OF_AUTH", localizationLabelsData),
-                    value: owner.name || "NA",
-                  }
+                  key: getTranslatedLabel("PT_OWNERSHIP_INFO_NAME_OF_AUTH", localizationLabelsData),
+                  value: owner.name || "NA",
+                }
                 : {
-                    key: getTranslatedLabel("PT_OWNERSHIP_INFO_MOBILE_NO", localizationLabelsData),
-                    value: owner.mobileNumber || "NA",
-                  },
+                  key: getTranslatedLabel("PT_OWNERSHIP_INFO_MOBILE_NO", localizationLabelsData),
+                  value: owner.mobileNumber || "NA",
+                },
               isInstitution
                 ? {
-                    key: getTranslatedLabel("PT_OWNERSHIP_INFO_TEL_NO", localizationLabelsData),
-                    value: owner.altContactNumber || "NA",
-                  }
+                  key: getTranslatedLabel("PT_OWNERSHIP_INFO_TEL_NO", localizationLabelsData),
+                  value: owner.altContactNumber || "NA",
+                }
                 : {
-                    key: getTranslatedLabel("PT_OWNERSHIP_INFO_EMAIL_ID", localizationLabelsData),
-                    value: owner.emailId || "NA",
-                  },
+                  key: getTranslatedLabel("PT_OWNERSHIP_INFO_EMAIL_ID", localizationLabelsData),
+                  value: owner.emailId || "NA",
+                },
               isInstitution
                 ? {
-                    key: getTranslatedLabel("PT_OWNERSHIP_INFO_MOBILE_NO", localizationLabelsData),
-                    value: owner.mobileNumber || "NA",
-                  }
+                  key: getTranslatedLabel("PT_OWNERSHIP_INFO_MOBILE_NO", localizationLabelsData),
+                  value: owner.mobileNumber || "NA",
+                }
                 : {
-                    key: getTranslatedLabel("PT_OWNERSHIP_INFO_USER_CATEGORY", localizationLabelsData),
-                    value:
-                      (owner &&
-                        owner.ownerType &&
-                        generalMDMSDataById &&
-                        generalMDMSDataById["OwnerType"] &&
-                        generalMDMSDataById["OwnerType"][owner.ownerType].name) ||
-                      "NA",
-                  },
+                  key: getTranslatedLabel("PT_OWNERSHIP_INFO_USER_CATEGORY", localizationLabelsData),
+                  value:
+                    (owner &&
+                      owner.ownerType &&
+                      generalMDMSDataById &&
+                      generalMDMSDataById["OwnerType"] &&
+                      generalMDMSDataById["OwnerType"][owner.ownerType].name) ||
+                    "NA",
+                },
               {
                 key: getTranslatedLabel("PT_OWNERSHIP_INFO_CORR_ADDR", localizationLabelsData),
                 value: owner.permanentAddress || "NA",

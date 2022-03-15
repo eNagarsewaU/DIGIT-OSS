@@ -7,10 +7,10 @@ import Divider from "@material-ui/core/Divider";
 import Tooltip from "@material-ui/core/Tooltip";
 import Icon from "@material-ui/core/Icon";
 import { LabelContainer } from "egov-ui-framework/ui-containers";
-import EstimateCardContainer from "../../ui-containers-local/EstimateCardContainer";
-import get from "lodash/get";
-import { ifUserRoleExists } from "egov-common/ui-config/screens/specs/utils";
 import { getLocaleLabels } from "egov-ui-framework/ui-utils/commons";
+import { ifUserRoleExists } from "egov-common/ui-config/screens/specs/utils";
+import { isPublicSearch } from "egov-ui-framework/ui-utils/commons";
+
 
 const roleExists = ifUserRoleExists("CITIZEN");
 
@@ -74,6 +74,10 @@ const styles = {
     letterSpacing: "0.75px",
     lineHeight: "22px",
     textAlign: "left"
+  },
+  message:{
+    marginTop: "30px !important",
+    marginBottom: "20px !important",
   }
 };
 
@@ -82,52 +86,16 @@ function totalAmount(arr) {
     .map(item => (item.value ? item.value : 0))
     .reduce((prev, next) => prev + next, 0);
 }
-function getNameFromTax(name)
-{
-
-  if(name=='PT_TAX'){
-    let fy=" ("+getCurrentFinancialYear()+")"
-  return getLocaleLabels(name,name)+fy;}
-  else 
-  return getLocaleLabels(name,name)
-}
-var getCurrentFinancialYear = function getCurrentFinancialYear() {
-  var today = new Date();
-  var curMonth = today.getMonth();
-  var fiscalYr = "";
-  if (curMonth > 3) {
-    var nextYr1 = (today.getFullYear() + 1).toString();
-    fiscalYr = today.getFullYear().toString() + "-" + nextYr1;
-  } else {
-    var nextYr2 = today.getFullYear().toString();
-    fiscalYr = (today.getFullYear() - 1).toString() + "-" + nextYr2;
-  }
-  return fiscalYr;
-};
 
 function FeesEstimateCard(props) {
-  
-  const { classes, estimate } = props;
+  let { classes, estimate, businesService } = props;
+
   const total = estimate.totalAmount;
   const arrears = estimate.arrears;
   const totalHeadClassName = "tl-total-amount-value " + classes.bigheader;
-  let businessService=localStorage.getItem('pay-businessService')
 
-  
-  function compare(a, b) {
-  
-    if (parseFloat(a.value) < parseFloat(b.value)) return 1;
-    if (parseFloat(b.value) < parseFloat(a.value)) return -1;
-  
-    return 0;
-  }
-  
-  estimate.fees.sort(compare);
-
-  
-  
-   
-    if(estimate && estimate.fees.length>0){
+ 
+  if (estimate.fees&&estimate.fees.length>0&&estimate.fees[estimate.fees.length-1].info.labelName!="Arrears") {
     estimate.fees.push({
       info: {
         labelKey: "COMMON_ARREARS",
@@ -137,11 +105,63 @@ function FeesEstimateCard(props) {
         labelKey: "COMMON_ARREARS",
         labelName: "Arrears"
       },
-      value: parseInt(arrears)
+      value: arrears
     });
   }
- 
+  function getNameFromTax(name)
+  {
+    
+    if(name=='PT_TAX'){
+      let fy=" ("+getCurrentFinancialYear()+")"
+    return getLocaleLabels(name,name)+fy;}
+    else 
+    return getLocaleLabels(name,name)
+  }
+  var getCurrentFinancialYear = function getCurrentFinancialYear() {
+    var today = new Date();
+    var curMonth = today.getMonth();
+    var fiscalYr = "";
+    if (curMonth > 3) {
+      var nextYr1 = (today.getFullYear() + 1).toString();
+      fiscalYr = today.getFullYear().toString() + "-" + nextYr1;
+    } else {
+      var nextYr2 = today.getFullYear().toString();
+      fiscalYr = (today.getFullYear() - 1).toString() + "-" + nextYr2;
+    }
+    return fiscalYr;
+  };
 
+  
+  if(estimate.businesService==='PT')
+    {
+    for (let i=0;i<estimate.fees.length;i++)
+      {
+          if(estimate.fees[i].name.labelKey===getLocaleLabels("PT_TAX","PT_TAX"))
+          {
+            estimate.fees[i].name.labelKey='PT_COMMON_PAY_TAX';
+          }
+          if(estimate.fees[i].name.labelKey==='PT_TIME_INTEREST')
+          {
+            estimate.fees[i].name.labelKey='PT_COMMON_PAY_TIME_INTEREST';
+          }
+          if(estimate.fees[i].name.labelKey==='COMMON_ARREARS')
+          {
+            estimate.fees[i].name.labelKey='PT_COMMON_PAY_ARREARS';
+          }
+          if(estimate.fees[i].name.labelKey==='SWATCHATHA_TAX')
+          {
+            estimate.fees[i].name.labelKey='PT_COMMON_PAY_SWATCHATHA_TAX';
+          }
+          if(estimate.fees[i].name.labelKey==='PT_TIME_REBATE')
+          {
+            estimate.fees[i].name.labelKey='PT_COMMON_PAY_TIME_REBATE';
+          }
+          if(estimate.fees[i].name.labelKey==='PT_PROMOTIONAL_REBATE')
+          {
+            estimate.fees[i].name.labelKey='PT_COMMON_PAY_PROMOTIONAL_REBATE';
+          }
+      }
+    } 
 
   return (
     <Grid container>
@@ -168,6 +188,7 @@ function FeesEstimateCard(props) {
               // ) : (
               //     ""
               //   );
+              
               let textLeft = fee.name ? (
                 <Grid container xs={8}>
                   <LabelContainer
@@ -175,8 +196,8 @@ function FeesEstimateCard(props) {
                     labelKey={getNameFromTax(fee.name.labelKey)}
                     style={styles.taxStylesLeft}
                   />
-                  {/*tooltip*/}
-                </Grid>
+                  {/*tooltip*/}                 
+                </Grid> 
               ) : (
                   <Grid xs={8} />
                 );
@@ -200,20 +221,20 @@ function FeesEstimateCard(props) {
               return (
                 <Grid key={key} container>
                   {textLeft}
-                  {textRight}
+                  {textRight}                 
                 </Grid>
               );
             })}
           </Grid>
-          <Divider style={{ marginBottom: 16 }} />
+          <Divider style={{ marginBottom: 16 }} />        
           <Grid container>
-            <Grid item xs={6}>
+            <Grid item xs={6}>           
               <Typography variant="body2">
                 <LabelContainer
                   labelName="Total Amount"
                   labelKey="TL_COMMON_TOTAL_AMT"
                 />
-              </Typography>
+              </Typography>            
             </Grid>
             <Grid
               item
@@ -222,11 +243,15 @@ function FeesEstimateCard(props) {
               style={{ paddingRight: 0 }}
               className="tl-application-table-total-value"
             >
-              <Typography variant="body2">{total}</Typography>
+              <Typography variant="body2">{total}</Typography>            
+
             </Grid>
+
           </Grid>
+  
+              
         </div>
-        { roleExists && estimate.businesService === 'PT'? 
+        { ((roleExists && estimate.businesService === 'PT') || isPublicSearch())? 
                 (  <Grid item xs={12} className={classes.message} >
                 
               <Typography variant="body2">  <LabelContainer
@@ -256,8 +281,9 @@ function FeesEstimateCard(props) {
           />
         </Typography>
         <Typography className={totalHeadClassName} align="right">
-          Rs {total}
+          &#8377; {total}
         </Typography>
+       
         {estimate.extra && estimate.extra.length !== 0 ? (
           <Card className={classes.whiteCard}>
             {estimate.extra.map((item, key) => {
@@ -267,7 +293,7 @@ function FeesEstimateCard(props) {
               if (item.textLeft) {
                 textLeft = (
                   <Grid xs={colLeft}>
-                    <Typography>{item.textLeft}</Typography>
+                    <Typography>{item.textLeft}</Typography>                   
                   </Grid>
                 );
               } else {
@@ -285,7 +311,7 @@ function FeesEstimateCard(props) {
               return (
                 <Grid container>
                   {textLeft}
-                  {textRight}
+                  {textRight}                                  
                 </Grid>
               );
             })}

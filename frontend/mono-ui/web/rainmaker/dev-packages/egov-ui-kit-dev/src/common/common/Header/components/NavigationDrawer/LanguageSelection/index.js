@@ -2,10 +2,9 @@ import React, { Component } from "react";
 import { ButtonGroup, Icon } from "components";
 import { connect } from "react-redux";
 import get from "lodash/get";
-import { getLocale, getTenantId,  getUserInfo, setStoredModulesList } from "egov-ui-kit/utils/localStorageUtils";
+import { getLocale } from "egov-ui-kit/utils/localStorageUtils";
 import Label from "egov-ui-kit/utils/translationNode";
-import { getQueryArg } from "egov-ui-kit/utils/commons";
-import { setLocalizationLabels } from "egov-ui-kit/redux/app/actions";
+
 class LanguageSelection extends Component {
   state = {
     value: getLocale(),
@@ -13,21 +12,7 @@ class LanguageSelection extends Component {
 
   onClick = (value) => {
     this.setState({ value });
-    let tenantId = getTenantId();
-
-    if (process.env.REACT_APP_NAME === "Citizen") {
-      const tenantInfo=getQueryArg(window.location.href, "tenantId")
-      const userInfo = JSON.parse(getUserInfo());
-      tenantId = userInfo && userInfo.permanentCity;
-      tenantId = tenantInfo?tenantInfo:tenantId;
-    }
-    var resetList=[];
-    var newList =JSON.stringify(resetList);
-    setStoredModulesList(newList);
-    let locale= getLocale();
-    let resultArray=[];
-    setLocalizationLabels(locale, resultArray);
-    this.props.fetchLocalizationLabel(value, tenantId, tenantId);
+    this.props.fetchLocalizationLabel(value);
   };
 
   styles = {

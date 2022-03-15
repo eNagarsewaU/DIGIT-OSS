@@ -385,7 +385,7 @@ const getPropertyConfigurationMDMSData = async (action, state, dispatch) => {
     );
     let propertyConfiguation = get(payload, "MdmsRes.PropertyTax.PropertyConfiguration");
     dispatch(prepareFinalObject("PropertyConfiguration", propertyConfiguation));
-    //showHideMutationDetailsCard(action, state, dispatch);
+    showHideMutationDetailsCard(action, state, dispatch);
   } catch (e) {
     console.log(e);
   }
@@ -479,7 +479,6 @@ const screenConfig = {
     loadUlbLogo(tenantId);
     const queryObject = [
       { key: "tenantId", value: tenantId },
-      { key: "businessServices", value: "PT.MUTATION"}
     ];
    setBusinessServiceDataToLocalStorage(queryObject, dispatch);
     // Hide edit buttons
@@ -599,7 +598,7 @@ const screenConfig = {
           transferorInstitutionSummary: transferorInstitutionSummary,
           transfereeSummary: transfereeSummary,
           transfereeInstitutionSummary: transfereeInstitutionSummary,
-          // mutationSummary: mutationSummary,
+          mutationSummary: mutationSummary,
           registrationSummary: registrationSummary,
           documentsSummary: documentsSummary
         })

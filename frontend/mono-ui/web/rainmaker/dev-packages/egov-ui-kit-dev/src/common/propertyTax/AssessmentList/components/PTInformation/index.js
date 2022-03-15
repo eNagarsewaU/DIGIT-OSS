@@ -112,7 +112,7 @@ class PTInformation extends React.Component {
       cities,
       citywiseconfig,
       updateNumberConfig,
-      workflowStatus,
+      workflowStatus
     } = this.props;
     let logoUrl = ""; 
     let corpCity = "";
@@ -151,10 +151,12 @@ class PTInformation extends React.Component {
                     textChildren={
                       <TotalDues
                         history
+                        properties={properties}
                         tenantId={properties.tenantId}
                         consumerCode={properties.propertyId}
                         totalBillAmountDue={totalBillAmountDue}
                         citywiseconfig={citywiseconfig}
+                        updateNumberConfig={updateNumberConfig}
                       />
                     }
                     style={{ backgroundColor: "rgb(242,242,242)", boxShadow: "none" }}
@@ -211,7 +213,7 @@ class PTInformation extends React.Component {
                 {!isLegary && <DocumentsInfo documentsUploaded={documentsUploaded}></DocumentsInfo>}
                 <div id="property-assess-form">
                   <AssessmentHistory></AssessmentHistory>
-                  <PaymentHistory properties={properties} workflowStatus={workflowStatus}></PaymentHistory>
+                  <PaymentHistory   properties={properties}  workflowStatus = {workflowStatus}></PaymentHistory>
                   <ApplicationHistory></ApplicationHistory>
                 </div>
               </div>

@@ -164,8 +164,7 @@ const getListItems = (items, history, generalMDMSDataById) => {
   );
 };
 
-const AssessmentList = ({
-  properties,
+const AssessmentList = ({ properties,
   items,
   history,
   onItemClick,
@@ -183,7 +182,7 @@ const AssessmentList = ({
   documentsUploaded,
   toggleSnackbarAndSetText,
   citywiseconfig,
-  workflowStatus,
+  workflowStatus  
 }) => {
   return items.length == 0 ? (
     <BlankAssessment
@@ -194,34 +193,38 @@ const AssessmentList = ({
       onButtonClick={onNewPropertyButtonClick}
       history={history}
     />
-  ) : properties == null ? (
-    <PTList
-      properties={properties}
-      items={getListItems(items, history, generalMDMSDataById)}
-      history={history}
-      onItemClick={onItemClick}
-      innerDivStyle={innerDivStyle}
-      listItemStyle={listItemStyle}
-      hoverColor={hoverColor}
-    />
   ) : (
-    <PTInformation
-      properties={properties}
-      items={getListItems(items, history, generalMDMSDataById)}
-      history={history}
-      onItemClick={onItemClick}
-      innerDivStyle={innerDivStyle}
-      listItemStyle={listItemStyle}
-      hoverColor={hoverColor}
-      generalMDMSDataById={generalMDMSDataById}
-      totalBillAmountDue={totalBillAmountDue}
-      loadMdmsData={loadMdmsData}
-      documentsUploaded={documentsUploaded}
-      toggleSnackbarAndSetText={toggleSnackbarAndSetText}
-      citywiseconfig={citywiseconfig}
-      workflowStatus={workflowStatus}
-    />
-  );
+
+      properties == null ? (<PTList
+        properties={properties}
+        items={getListItems(items, history, generalMDMSDataById)}
+        history={history}
+        onItemClick={onItemClick}
+        innerDivStyle={innerDivStyle}
+        listItemStyle={listItemStyle}
+        hoverColor={hoverColor}
+      />) : (<PTInformation
+        properties={properties}
+        items={getListItems(items, history, generalMDMSDataById)}
+        history={history}
+        onItemClick={onItemClick}
+        innerDivStyle={innerDivStyle}
+        listItemStyle={listItemStyle}
+        hoverColor={hoverColor}
+        generalMDMSDataById={generalMDMSDataById}
+        totalBillAmountDue={totalBillAmountDue}
+        loadMdmsData={loadMdmsData}
+        documentsUploaded={documentsUploaded}
+        toggleSnackbarAndSetText={toggleSnackbarAndSetText}
+        citywiseconfig={citywiseconfig}
+        workflowStatus = {workflowStatus}
+      />)
+
+
+
+
+
+    );
 };
 
 export default AssessmentList;

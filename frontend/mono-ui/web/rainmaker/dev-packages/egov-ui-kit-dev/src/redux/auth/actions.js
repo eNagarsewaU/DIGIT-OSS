@@ -125,7 +125,7 @@ export const sendOTP = (intent) => {
       const formResponse = await httpRequest(OTP.RESEND.URL, OTP.RESEND.ACTION, [], formData);
     } catch (error) {}
     dispatch(sendOtpCompleted());
-    dispatch(toggleSnackbarAndSetText(true, { labelName: "OTP has been Resent", labelKey: "ERR_OTP_RESENT" },"success"));
+    dispatch(toggleSnackbarAndSetText(true, { labelName: "OTP has been Resent", labelKey: "ERR_OTP_RESENT" },"info"));
   };
 };
 
@@ -134,7 +134,7 @@ export const logout = () => {
     try {
       const authToken = getAccessToken();
       if (authToken) {
-        const response = await httpRequest(AUTH.LOGOUT.URL, AUTH.LOGOUT.ACTION, [], { "access_token" : authToken });
+        const response = await httpRequest(AUTH.LOGOUT.URL, AUTH.LOGOUT.ACTION, [{ key: "access_token", value: authToken }]);
       } else {
         clearUserDetails();
         process.env.REACT_APP_NAME === "Citizen"

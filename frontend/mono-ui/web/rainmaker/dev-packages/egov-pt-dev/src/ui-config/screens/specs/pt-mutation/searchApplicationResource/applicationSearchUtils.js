@@ -144,6 +144,9 @@ export const fetchBill = async (
     consumerCodes.push(item.acknowldgementNumber);
   });
 
+  console.log("prasad response ", response);
+  console.log("prasad consumerCodes ", consumerCodes);
+
   const billData = await generateBill(
     dispatch,
     consumerCodes,

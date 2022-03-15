@@ -27,7 +27,7 @@ const ButtonGroup = ({
             ? item.value === selected ? { ...defaultStyle, ...selectedStyle } : defaultStyle
             : selected.indexOf(item.value) > -1 ? { ...defaultStyle, ...selectedStyle } : defaultStyle
         }
-        hoverColor='#4848481a'
+        hoverColor="none"
         onClick={() => {
           onClick(item.value, multiple);
         }}

@@ -6,9 +6,8 @@ import Toolbar from "material-ui/Toolbar";
 import Badge from "@material-ui/core/Badge";
 import digitLogo from "egov-ui-kit/assets/images/Digit_logo.png";
 import defaultLogo from "egov-ui-kit/assets/images/pblogo.png";
-import msevaLogo from "egov-ui-kit/assets/images/logo.png";
 import IconButton from "material-ui/IconButton";
-import { onNotificationClick } from "egov-ui-kit/utils/commons"; 
+import { onNotificationClick } from "egov-ui-kit/utils/commons";
 import "./index.css";
 
 const styles = {
@@ -88,7 +87,7 @@ const EgovAppBar = ({
           />
         </Toolbar>
         <div className="appbar-right-logo">
-          <img style={{maxWidth:"250px"}} src={msevaLogo} />
+          <img src={digitLogo} />
         </div>
         <div className="icon-button">
           {refreshButton && (

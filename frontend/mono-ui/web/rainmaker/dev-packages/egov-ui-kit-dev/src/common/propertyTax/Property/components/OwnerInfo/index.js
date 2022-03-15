@@ -127,7 +127,7 @@ export const getOwnerInformation = (latestPropertyDetails, generalMDMSDataById) 
               }
             : {
                 key: getTranslatedLabel("PT_OWNERSHIP_INFO_GENDER", localizationLabelsData),
-                value: getTranslatedLabel("PT_GENDER_" + owner.gender.toUpperCase(), localizationLabelsData) || "NA",
+                value: owner.gender || "NA",
               },
           isInstitution
             ? {
@@ -317,11 +317,10 @@ class OwnerInfo extends Component {
           item.owners = item.owners.filter((owner) => owner.status == "INACTIVE");
           ownershipInfo[lastModifiedDate].push(...this.transformData(item));
         });
-         Object.filter = (obj, predicate) =>
-           Object.keys(obj)
-             .filter((key) => predicate(obj[key]))
-             .reduce((res, key) => ((res[key] = obj[key]), res), {});
-         ownershipInfo = Object.filter(ownershipInfo, (e) => e.length !== 0);
+        Object.filter = (obj, predicate) => Object.keys(obj)
+                                 .filter( key => predicate(obj[key]) )
+                                 .reduce( (res, key) => (res[key] = obj[key], res), {} );         
+        ownershipInfo = Object.filter (ownershipInfo,e=> e.length !== 0 )
         this.setState({ [dialogName]: true, ownershipInfo });
         return true;
       }
@@ -406,7 +405,7 @@ class OwnerInfo extends Component {
                 },
             {
               key: getTranslatedLabel("PT_FORM3_RELATIONSHIP", localizationLabelsData),
-              value: getTranslatedLabel("PT_" + owner.relationship.toUpperCase(), localizationLabelsData) || "NA",
+              value: owner.relationship || "NA",
             },
             isInstitution
               ? {
@@ -422,7 +421,7 @@ class OwnerInfo extends Component {
                 }
               : {
                   key: getTranslatedLabel("PT_OWNERSHIP_INFO_GENDER", localizationLabelsData),
-                  value: getTranslatedLabel("PT_GENDER_" + owner.gender.toUpperCase(), localizationLabelsData) || "NA",
+                  value: owner.gender || "NA",
                 },
             isInstitution
               ? {
@@ -593,8 +592,8 @@ class OwnerInfo extends Component {
                             items={ownerItem.items}
                             additionalKey={{
                               key: getTranslatedLabel("PT_OWNERSHIP_INFO_MOBILE_NO", localizationLabelsData),
-                              tenantId: properties && properties.tenantId,
-                              propertyId:  properties && properties.propertyId,
+                              tenantId: properties.tenantId,
+                              propertyId: properties.propertyId,
                               updateNumberConfig: updateNumberConfig,
                             }}
                             ownerInfo={ownerInfo}
@@ -631,8 +630,8 @@ class OwnerInfo extends Component {
           <PendingAmountDialog
             open={this.state.pendingAmountDue}
             amount={totalBillAmountDue}
-            tenantId={properties && properties.tenantId}
-            consumerCode={properties && properties.propertyId}
+            tenantId={properties.tenantId}
+            consumerCode={properties.propertyId}
             closeDialogue={() => this.closeDialogue("pendingAmountDue")}
           ></PendingAmountDialog>
         )}

@@ -178,21 +178,20 @@ const callBackForPay = async (state, dispatch) => {
   set(
     finalReceiptData,
     "Bill[0].payerName",
-//     get(
-//       state.screenConfiguration,
-//       "preparedFinalObject.Demands[0].consumerName",
-//       ""
-//     )
+    get(
+      state.screenConfiguration,
+      "preparedFinalObject.Demands[0].consumerName",
+      ""
+    )
   );
   set(
     finalReceiptData,
     "Bill[0].mobileNumber",
-    // // get(
-    // //   state.screenConfiguration,
-    // //   "preparedFinalObject.Demands[0].mobileNumber",
-    // //   ""
-    // )
-        ""
+    get(
+      state.screenConfiguration,
+      "preparedFinalObject.Demands[0].mobileNumber",
+      ""
+    )
   );
 
   //Add comments
@@ -320,7 +319,7 @@ const goBack = (state, dispatch) => {
   if (demandId) {
     const serviceType = get(demand, "serviceType");
     const serviceCategory = get(demand, "businessService");
-    // const businessService = get(demand[0], "businessService")
+   
   }
   dispatch(setRoute(`/uc/newCollection`));
 };

@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 // import AppBar from "@material-ui/core/AppBar";
 import "./index.css";
 import { getLocale, getTenantId, getUserInfo, setStoredModulesList, setModule } from "egov-ui-kit/utils/localStorageUtils";
-import {  getModuleName } from "egov-ui-kit/utils/commons";
 import digitLogo from "egov-ui-kit/assets/images/Digit_logo.png";
 import Label from "egov-ui-kit/utils/translationNode";
 import { isPublicSearch } from "egov-ui-framework/ui-utils/commons";
@@ -13,7 +12,6 @@ import { DropDown, AppBar } from "components";
 import { getQueryArg } from "egov-ui-kit/utils/commons";
 import Toolbar from "material-ui/Toolbar";
 import msevaLogo from "egov-ui-kit/assets/images/logo.png";
-import commonConfig from "config/common.js";
 
 const getUlbGradeLabel = (ulbGrade) => {
   if (ulbGrade) {
@@ -28,7 +26,7 @@ const getUlbGradeLabel = (ulbGrade) => {
 const withoutAuthorization = (redirectionUrl) => (Component) => {
   class Wrapper extends React.Component {
     state = {
-      languageSelected: getLocale() || "en_IN"
+      languageSelected: getLocale(),
     };
     style = {
       baseStyle: {
@@ -78,34 +76,20 @@ const withoutAuthorization = (redirectionUrl) => (Component) => {
           this.props.history.push(redirectionUrl);
         }
       }
-      if(isPublicSearch()){
-        this.onLanguageChange(getQueryArg(window.location.href, "locale")||'en_IN');
-      }
     }
 
     onLanguageChange = (event, index, value) => {
       //const {setRote} = this.props;
       this.setState({ languageSelected: value });
-      let tenantId = process.env.REACT_APP_NAME === "Citizen" ? commonConfig.tenantId : getTenantId();
-      setModule(getModuleName());
-      let module = getModuleName();
+      let tenantId = getTenantId();
 
-/* if (process.env.REACT_APP_NAME === "Citizen") {
-       /*  const tenantInfo = getQueryArg(window.location.href, "tenantId");
+      if (process.env.REACT_APP_NAME === "Citizen") {
+        const tenantInfo = getQueryArg(window.location.href, "tenantId");
         const userInfo = JSON.parse(getUserInfo());
         tenantId = userInfo && userInfo.permanentCity;
         tenantId = tenantInfo ? tenantInfo : tenantId;
-        tenantId = "uk"
-
-      } */
-      var resetList=[];
-      var newList =JSON.stringify(resetList);
-      setStoredModulesList(newList);
-      let locale= getLocale() || "en_IN";
-      let resultArray=[];
-      setLocalizationLabels(locale, resultArray);
-     // this.props.fetchLocalizationLabel = (locale, module, tenantId, isFromModule) => {
-      this.props.fetchLocalizationLabel(value, module, tenantId);
+      }
+      this.props.fetchLocalizationLabel(value, tenantId, tenantId);
     };
 
     checkForPublicSeach = () => {
@@ -129,7 +113,9 @@ const withoutAuthorization = (redirectionUrl) => (Component) => {
                   title={
                     <div className="citizen-header-logo-label">
                       <div className={logoClassName}>
-                        <img src={ulbLogo ? ulbLogo : pbLogo} onError={(event) => event.target.setAttribute("src", pbLogo)} />
+                        <a href="/">
+                        <img src={ulbLogo ? ulbLogo : pbLogo}  style={{height:"49px"}} onError={(event) => event.target.setAttribute("src", pbLogo)} />
+                         </a>
                       </div>
                       {!isPublicSearch && <div className="rainmaker-displayInline">
                         <Label
@@ -148,6 +134,9 @@ const withoutAuthorization = (redirectionUrl) => (Component) => {
                   titleStyle={style.titleStyle}
                   {...rest}
                 >
+                  <div id="citizenLogin">
+                    <a href="/citizen/user/login" style={{color:"#f47738"}}>Citizen Login </a> 
+                    </div>              
                   <Toolbar className="app-toolbar" style={{ padding: "0px", height: "64px", background: "#ffffff" }}>
                     {hasLocalisation && (
                       <div className="userSettingsContainer">
@@ -175,7 +164,7 @@ const withoutAuthorization = (redirectionUrl) => (Component) => {
           ) : (
             <Component {...this.props} />
           )}
-          
+
         </div>
       );
     }

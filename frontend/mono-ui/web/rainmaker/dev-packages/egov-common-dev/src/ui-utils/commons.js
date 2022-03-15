@@ -52,12 +52,14 @@ export const findItemInArrayOfObject = (arr, conditionCheckerFn) => {
   }
 };
 
-export const getSearchResults = async (queryObject, dispatch) => {
+
+export const getSearchResults = async (queryObject,requestBody,searchURL="/property-services/property/_search") => {
   try {
     store.dispatch(toggleSpinner());
     const response = await httpRequest(
       "post",
-      "/firenoc-services/v1/_search",
+     // "/firenoc-services/v1/_search",
+     searchURL,
       "",
       queryObject
     );
@@ -569,7 +571,7 @@ let getModifiedPayment = (payments) =>{
             break;
         }
       })
-//       tax = tax-Math.abs(rebate);
+      // tax = tax-Math.abs(rebate);
     }else if(!(billdetail.fromPeriod > currentDate && billdetail.toPeriod > currentDate)){
       billdetail.billAccountDetails.forEach(billAccountDetail =>{
         switch (billAccountDetail.taxHeadCode) {
@@ -601,7 +603,6 @@ let getModifiedPayment = (payments) =>{
     }
   }
   })
- 
   let totalAmount =   get(payments, `[0].paymentDetails[0].bill.totalAmount`,null);
   set(payments, `[0].paymentDetails[0].bill.totalAmount`, totalAmount.toFixed(2));
   set(payments, `[0].paymentDetails[0].bill.additionalDetails.tax`, tax.toFixed(2));
@@ -612,7 +613,7 @@ let getModifiedPayment = (payments) =>{
   set(payments, `[0].paymentDetails[0].bill.additionalDetails.interest`, interest.toFixed(2));
   set(payments, `[0].paymentDetails[0].bill.additionalDetails.roundOff`, roundOff);
 }
-  else if(payments[0].paymentDetails[0].businessService === 'PT.MUTATION'){
+  else if(payments[0].paymentDetails[0].businessService === 'PT.MUTATION'){ 
   let ptMutationFee=0;
   let ptMutationLateFee=0;
   let ptMutationApplicationFee=0;
@@ -713,7 +714,6 @@ else if(payments[0].paymentDetails[0].businessService === 'TL'){
   set(payments, `[0].paymentDetails[0].bill.additionalDetails.penalty`, penalty);
   set(payments, `[0].paymentDetails[0].bill.additionalDetails.adhocPenalty`, adhocPenalty);
   set(payments, `[0].paymentDetails[0].bill.additionalDetails.rebate`, rebate);
-  
 }
 
 set(payments, `[0].paymentDetails[0].bill.additionalDetails.financialYear`, getFinancialYearFromEPOCH(payments[0].transactionDate));

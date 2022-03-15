@@ -1,20 +1,24 @@
+import { setRoute } from "egov-ui-framework/ui-redux/app/actions";
+import { validate } from "egov-ui-framework/ui-redux/screen-configuration/utils";
+import { getUserInfo, getTenantId } from "egov-ui-kit/utils/localStorageUtils";
+import get from "lodash/get";
 import {
-  getCommonCaption, getCommonCard,
-
-
+  getQueryArg,
+  getTransformedLocalStorgaeLabels,
+  getLocaleLabels
+} from "egov-ui-framework/ui-utils/commons";
+import { handleScreenConfigurationFieldChange as handleField } from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import { httpRequest } from "../../../../ui-utils/api";
+import isUndefined from "lodash/isUndefined";
+import {
+  getCommonCard,
+  getCommonValue,
+  getCommonCaption,
   getPattern
 } from "egov-ui-framework/ui-config/screens/specs/utils";
-import { setRoute } from "egov-ui-framework/ui-redux/app/actions";
-import { handleScreenConfigurationFieldChange as handleField, prepareFinalObject, toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/actions";
-import { validate } from "egov-ui-framework/ui-redux/screen-configuration/utils";
-import {
-  getLocaleLabels, getQueryArg,
-  getTransformedLocalStorgaeLabels
-} from "egov-ui-framework/ui-utils/commons";
-import { getTenantId, getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
-import get from "lodash/get";
-import isUndefined from "lodash/isUndefined";
-import { httpRequest } from "../../../../ui-utils/api";
+import { sampleGetBill } from "../../../../ui-utils/sampleResponses";
 
 export const getCommonApplyFooter = children => {
   return {
@@ -497,7 +501,7 @@ export const getUserDataFromUuid = async bodyObject => {
   }
 };
 
-export const getBill = async (queryObject, dispatch) => {
+export const getBill = async (queryObject,dispatch) => {
   try {
     const response = await httpRequest(
       "post",
@@ -507,15 +511,14 @@ export const getBill = async (queryObject, dispatch) => {
     );
     return response;
   } catch (error) {
-    if(!window.location.pathname.includes('acknowledgement')){
-      dispatch(
-        toggleSnackbar(
-          true,
-          { labelName: error.message, labelKey: error.message },
-          error.message&& error.message.includes&& error.message.includes("No Demands Found") ? "warning" : "error"
-        )
-      );
-    }
+    dispatch(
+      toggleSnackbar(
+        true,
+        { labelName: error.message, labelKey: error.message },
+        "error"
+      )
+    );
+    console.log(error,'fetxh');
   }
 };
 
@@ -558,7 +561,7 @@ export const searchBill = async (dispatch, applicationNumber, tenantId) => {
 
     if (billData) {
       dispatch(prepareFinalObject("ReceiptTemp[0].Bill", billData));
-      const estimateData = createEstimateData(billData[0], billData[0].totalAmount);
+      const estimateData = createEstimateData(billData[0]);
       estimateData &&
         estimateData.length &&
         dispatch(
@@ -573,36 +576,8 @@ export const searchBill = async (dispatch, applicationNumber, tenantId) => {
   }
 };
 
-export const createEstimateData = (billObject, totalAmount) => {
-  let billDetails = billObject && billObject.billDetails;
-
-  let forward = 0;
-  if (totalAmount < 0) {
-    billDetails.forEach(e => {
-      e.billAccountDetails.forEach(cur => {
-        if (cur.taxHeadCode.indexOf("ADVANCE_CARRYFORWARD") > -1) {
-          forward = forward + cur.amount
-        }
-      });
-    });
-
-    let keyExist = false;
-    billDetails[0].billAccountDetails.forEach(cur => {
-      if (cur.taxHeadCode.indexOf("ADVANCE_CARRYFORWARD") > -1) {
-        cur.amount = forward;
-        keyExist = true;
-      }
-    });
-    if (!keyExist) {
-      billDetails[0].billAccountDetails.push({
-        amount: forward,
-        taxHeadCode: "ADVANCE_CARRYFORWARD",
-        order: 2,
-        value: "Please put some description in mdms for this key"
-      })
-    }
-  }
-
+export const createEstimateData = billObject => {
+  const billDetails = billObject && billObject.billDetails;
   let fees =
     billDetails &&
     billDetails[0].billAccountDetails &&
@@ -615,7 +590,7 @@ export const createEstimateData = (billObject, totalAmount) => {
     });
   return fees;
 };
-export const getBusinessServiceMdmsData = async (dispatch, tenantId) => {
+export const getBusinessServiceMdmsData = async (dispatch,  tenantId) => {
 
   let mdmsBody = {
     MdmsCriteria: {
@@ -624,10 +599,6 @@ export const getBusinessServiceMdmsData = async (dispatch, tenantId) => {
         {
           moduleName: "BillingService",
           masterDetails: [{ name: "BusinessService" }]
-        },
-        {
-          moduleName: "common-masters",
-          masterDetails: [{ name: "uiCommonPay" }]
         }
       ]
     }
@@ -659,17 +630,17 @@ export const generateBill = async (dispatch, consumerCode, tenantId, businessSer
           value: consumerCode
         }
       ];
-      if (businessService) {
+      if(businessService){
         queryObj.push({
           key: "businessService",
           value: businessService
         });
       }
-      const payload = await getBill(queryObj, dispatch);
+      const payload = await getBill(queryObj,dispatch);
       // let payload = sampleGetBill();
       if (payload && payload.Bill[0]) {
         dispatch(prepareFinalObject("ReceiptTemp[0].Bill", payload.Bill));
-        const estimateData = createEstimateData(payload.Bill[0], payload.Bill[0].totalAmount);
+        const estimateData = createEstimateData(payload.Bill[0]);
         estimateData &&
           estimateData.length &&
           dispatch(
@@ -680,7 +651,8 @@ export const generateBill = async (dispatch, consumerCode, tenantId, businessSer
           );
       }
     }
-  } catch (e) {
+  } 
+catch (e) {
     dispatch(
       toggleSnackbar(
         true,

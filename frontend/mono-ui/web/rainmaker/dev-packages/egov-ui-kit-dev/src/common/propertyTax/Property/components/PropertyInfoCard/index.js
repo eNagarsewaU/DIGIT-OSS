@@ -18,6 +18,7 @@ class PropertyInfoCard extends Component {
       showEditNumber = false,
     } = this.props;
 
+
     var arr = []
 
     if (subSection.length) {

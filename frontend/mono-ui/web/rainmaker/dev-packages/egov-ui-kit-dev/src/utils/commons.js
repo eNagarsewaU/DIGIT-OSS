@@ -1,6 +1,5 @@
 import axios from "axios";
 import commonConfig from "config/common.js";
-import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 import { getFileUrlFromAPI } from "egov-ui-framework/ui-utils/commons";
 import { toggleSnackbarAndSetText } from "egov-ui-kit/redux/app/actions";
 import { setFieldProperty } from "egov-ui-kit/redux/form/actions";
@@ -12,9 +11,10 @@ import get from "lodash/get";
 import isEmpty from "lodash/isEmpty";
 import set from "lodash/set";
 import React from "react";
-import {  PAYMENTSEARCH } from "./endPoints";
 import { initLocalizationLabels } from "egov-ui-kit/redux/app/utils";
 import { showSpinner, hideSpinner } from "egov-ui-kit/redux/common/actions";
+import { prepareFinalObject } from "egov-ui-framework/ui-redux/screen-configuration/actions";
+import {  PAYMENTSEARCH } from "./endPoints";
 
 
 export const statusToMessageMapping = {
@@ -64,111 +64,6 @@ export const transformById = (payload, id) => {
 export const hyphenSeperatedDateTime = (d) => {
   return d;
 };
-
-export const getSingleCodeObject = (dataKey, tempObj, MDMSdata, keys) => {
-  keys.forEach(key => {
-    let splittedKey = key.split(".");
-    tempObj[splittedKey[splittedKey.length - 1]] = MDMSdata[dataKey][key];
-    tempObj[splittedKey[splittedKey.length - 1]].code = splittedKey[splittedKey.length - 1];
-  })
-  return tempObj;
-}
-
-export const getCategoryObject = (categoryCode, MDMSdata, dataKey, key, parentKey, parentKeyValue) => {
-  let tempObj = {}
-  tempObj[categoryCode] = MDMSdata[dataKey][key];
-  tempObj[categoryCode].code = categoryCode;
-  tempObj[categoryCode][parentKey] = parentKeyValue;
-  return tempObj;
-}
-
-export const getUsageCategory = (dataKey, tempObj, MDMSdata, keys) => {
-  keys.forEach(key => {
-    let splittedKey = key.split(".");
-    let categoryCode = splittedKey.pop();
-    if (splittedKey.length === 0) {
-      tempObj["UsageCategoryMajor"] = { ...tempObj["UsageCategoryMajor"], ...getCategoryObject(categoryCode, MDMSdata, dataKey, key) };
-    } else if (splittedKey.length === 1) {
-      tempObj["UsageCategoryMinor"] = { ...tempObj["UsageCategoryMinor"], ...getCategoryObject(categoryCode, MDMSdata, dataKey, key, "usageCategoryMajor", splittedKey[splittedKey.length - 1]) };
-    } else if (splittedKey.length === 2) {
-      tempObj["UsageCategorySubMinor"] = { ...tempObj["UsageCategorySubMinor"], ...getCategoryObject(categoryCode, MDMSdata, dataKey, key, "usageCategoryMinor", splittedKey[splittedKey.length - 1]) };
-    } else if (splittedKey.length === 3) {
-      tempObj["UsageCategoryDetail"] = { ...tempObj["UsageCategoryDetail"], ...getCategoryObject(categoryCode, MDMSdata, dataKey, key, "usageCategorySubMinor", splittedKey[splittedKey.length - 1]) };
-    }
-  });
-  return tempObj;
-}
-
-export const getTransformedDropdown = (MDMSdata, dataKeys) => {
-  dataKeys.forEach(dataKey => {
-    if (MDMSdata && MDMSdata.hasOwnProperty(dataKey)) {
-      let keys = MDMSdata[dataKey] && Object.keys(MDMSdata[dataKey]);
-      let tempObj = {};
-      if (keys && keys.length > 0) {
-        if (dataKey !== "UsageCategory") {
-          MDMSdata[dataKey] = getSingleCodeObject(dataKey, tempObj, MDMSdata, keys);
-        } else {
-          MDMSdata = { ...MDMSdata, ...getUsageCategory(dataKey, tempObj, MDMSdata, keys) };
-        }
-      }
-    }
-  });
-  return MDMSdata;
-}
-
-export const generalMDMSDataRequestObj = (tenantId) => {
-  let requestBody = {
-    MdmsCriteria: {
-      tenantId: tenantId,
-      moduleDetails: [
-        {
-          moduleName: "PropertyTax",
-          masterDetails: [
-            {
-              name: "Floor",
-            },
-            {
-              name: "OccupancyType",
-            },
-            {
-              name: "OwnerShipCategory",
-            },
-            {
-              name: "OwnerType",
-            },
-            {
-              name: "PropertySubType",
-            },
-            {
-              name: "PropertyType",
-            },
-            {
-              name: "SubOwnerShipCategory",
-            },
-            {
-              name: "UsageCategory",
-            },
-          ],
-        },
-      ],
-    },
-  };
-  return requestBody;
-}
-
-export const getGeneralMDMSDataDropdownName = () => {
-  let keys = [
-    "Floor",
-    "OccupancyType",
-    "OwnerShipCategory",
-    "OwnerType",
-    "PropertySubType",
-    "PropertyType",
-    "SubOwnerShipCategory",
-    "UsageCategory"
-  ];
-  return keys;
-}
 
 export const getQueryArg = (url, name) => {
   if (!url) url = window.location.href;
@@ -692,6 +587,7 @@ export const fetchDropdownData = async (dispatch, dataFetchConfig, formKey, fiel
         }, []);
       dispatch(setFieldProperty(formKey, fieldKey, "dropDownData", ddData));
       dispatch(hideSpinner())
+
     }
   } catch (error) {
     const { message } = error;
@@ -913,7 +809,8 @@ export const navigateToApplication = (businessService, propsHistory, application
     setRoute(`/pt-mutation/search-preview?applicationNumber=${applicationNo}&propertyId=${propertyId}&tenantId=${tenantId}`);
   } else if (businessService == 'PT.CREATE') {
     setRoute(`/property-tax/application-preview?propertyId=${propertyId}&applicationNumber=${applicationNo}&tenantId=${tenantId}&type=property`);
-  } else {
+  }
+   else {
     process.env.REACT_APP_NAME === "Citizen" ?
       setRoute(`/property-tax/my-properties/property/${propertyId}/${tenantId}`)
       : setRoute(`/property-tax/property/${propertyId}/${tenantId}`)
@@ -934,10 +831,11 @@ export const getApplicationType = async (applicationNumber, tenantId, creationRe
         return 'PT.CREATE';
       }
       else if (creationReason == 'UPDATE' && applicationNumber.includes("UK-MT-")) {
-        return 'PT.MUTATION';}
-      else if (creationReason == 'UPDATE') {
+        return 'PT.MUTATION';
+      } else if (creationReason == 'UPDATE') {
         return 'PT.CREATE';
       }
+    
       else {
         return 'NA';
       }
@@ -978,7 +876,7 @@ export const getModuleName = () => {
   if (pathName.indexOf("inbox") > -1) { return "rainmaker-common"; }
   else if (pathName.indexOf("dss") > -1) { return "rainmaker-dss"; }
   else if (pathName.indexOf("receipts") > -1) { return "rainmaker-receipts"; }
-  else if (pathName.indexOf("property-tax") > -1 || pathName.indexOf("rainmaker-pt") > -1 || pathName.indexOf("pt-mutation") > -1) { return "rainmaker-pt"; }
+  else if (pathName.indexOf("property-tax") > -1 || pathName.indexOf("rainmaker-pt") > -1 || pathName.indexOf("pt-mutation") > -1) { return "rainmaker-pt,rainmaker-pgr"; }
   else if (pathName.indexOf("pt-common-screens") > -1 || pathName.indexOf("pt-mutation/public-search") > -1) { return "rainmaker-pt"; }
   else if (pathName.indexOf("complaint") > -1 || pathName.indexOf("pgr") > -1 || pathName.indexOf("resolve-success") > -1 || pathName.indexOf("employee-directory") > -1 || pathName.indexOf("reopen-acknowledgement") > -1 || pathName.indexOf("feedback") > -1 || pathName.indexOf("request-reassign") > -1 || pathName.indexOf("reassign-success") > -1) { return "rainmaker-pgr"; }
   else if (pathName.indexOf("wns") > -1 || pathName.indexOf("wns/public-search") > -1) { return "rainmaker-ws"; }

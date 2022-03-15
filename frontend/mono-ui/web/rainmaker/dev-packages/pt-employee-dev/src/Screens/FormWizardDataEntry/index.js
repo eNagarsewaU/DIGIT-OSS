@@ -14,7 +14,6 @@ import Label from "egov-ui-kit/utils/translationNode";
 import { getTranslatedLabel } from "egov-ui-kit/utils/commons";
 import { getLocale } from "egov-ui-kit/utils/localStorageUtils";
 import { initLocalizationLabels } from "egov-ui-kit/redux/app/utils";
-import { loadMDMSData } from "egov-ui-kit/redux/common/actions";
 import {
   UsageInformationHOC,
   PropertyAddressHOC,
@@ -22,7 +21,8 @@ import {
   OwnerInfoHOC,
   InstitutionHOC,
   OwnerInformation,
-  InstitutionAuthorityHOC
+  InstitutionAuthorityHOC,
+  OwnershipTypeGenericHOC
 } from "./components/Forms";
 import ReviewForm from "./components/ReviewForm";
 import FloorsDetails from "./components/Forms/FloorsDetails";
@@ -328,32 +328,8 @@ class FormWizardDataEntry extends Component {
       renderCustomTitleForPt,
       showSpinner,
       hideSpinner,
-      fetchGeneralMDMSData, history,loadMDMSData
+      fetchGeneralMDMSData, history
     } = this.props;
-    const requestBody = {
-      MdmsCriteria: {
-        tenantId: commonConfig.tenantId,
-        moduleDetails: [
-           {
-            moduleName: "PropertyTax",
-            masterDetails: [
-              {
-                name: "RoadType"
-              },
-              {
-                name: "ConstructionType"
-              },
-              {
-                name:"Thana"
-              },
-            ]
-          }
-        ],
-      },
-    };
-    showSpinner();
-    loadMDMSData(requestBody);
-    hideSpinner();
     let { search } = location;
     showSpinner();
     const { selected } = this.state;
@@ -568,9 +544,16 @@ class FormWizardDataEntry extends Component {
           "ownershipType",
           ["typeOfOwnership"]
         );
+        const propertyId = getQueryValue(search, "propertyId");
+        // console.log("ayush",propertyId)
         return (
           <div>
-            <OwnershipTypeHOC />
+            {
+              propertyId?
+              <OwnershipTypeHOC/>:
+              <OwnershipTypeGenericHOC/>
+            }
+            
             {getOwnerDetails(ownerType)}
           </div>
         );
@@ -1424,13 +1407,13 @@ class FormWizardDataEntry extends Component {
     const assessmentId = getQueryValue(search, "assessmentId");
     const propertyMethodAction = !!propertyId ? "_update" : "_create";
     let prepareFormData = { ...this.props.prepareFormData };
-
+    
     set(
       prepareFormData,
       "Properties[0].additionalDetails.isMobileNumberUpdate",
       false
     );
-
+    
     if (
       get(
         prepareFormData,
@@ -2178,8 +2161,6 @@ const mapDispatchToProps = dispatch => {
     updatePTForms: forms => dispatch(updateForms(forms)),
     showSpinner: () => dispatch(showSpinner()),
     hideSpinner: () => dispatch(hideSpinner()),
-    loadMDMSData: (requestBody, moduleName, masterName) =>
-    dispatch(loadMDMSData(requestBody, moduleName, masterName)),
     fetchGeneralMDMSData: (
       requestBody,
       moduleName,

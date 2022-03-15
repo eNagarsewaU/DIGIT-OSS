@@ -189,9 +189,8 @@ export default class UpdateMobileDialog extends React.Component {
   updateProperty = () => {
     var myHeaders = new Headers();
     let { property, propertyNumbers, isAlternate } = this.props;
-    let phonePattern = /^[6-9][0-9]{9}$/;
     const { mobileNumber } = this.state.fields;
-
+    let phonePattern = /^[6-9][0-9]{9}$/;
     if (property && property.owners && property.owners.length > 0) {
       property.owners.map((owner) => {
         if (owner.uuid == propertyNumbers.uuid || !owner.mobileNumber.match(phonePattern)) {
@@ -200,11 +199,10 @@ export default class UpdateMobileDialog extends React.Component {
           } else {
             owner.mobileNumber = mobileNumber.value;
           }
-
           property.creationReason = "UPDATE";
-          property.additionalDetails = { isMobileNumberUpdate: true };
+          property.additionalDetails = {isMobileNumberUpdate: true};
           let documents = this.state.documents.filter((document) => document.uploaded) || [];
-          if (property.documents) {
+                 if (property.documents) {
             let docuNames = documents.map((doc) => doc.code);
             property.documents = property.documents.filter((document) => !docuNames.includes(document.documentType));
           } else {
@@ -394,7 +392,7 @@ export default class UpdateMobileDialog extends React.Component {
     }
   };
   setDocFileDetails = (ind, file, fileStoreId) => {
-    ind = this.state.clickedElement === "IDENTITYPROOF" ? 0 : 1;
+    ind = this.state.clickedElement != "IDENTITYPROOF" ? 0 : 1;
     const documents = this.state.documents;
     documents[ind].fileName = file.name;
     documents[ind].fileStoreId = fileStoreId;

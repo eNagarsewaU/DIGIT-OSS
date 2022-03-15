@@ -16,8 +16,8 @@ import {
   } from "egov-ui-framework/ui-redux/screen-configuration/actions";
   import get from "lodash/get";
   import { getTodaysDateInYMD } from "egov-ui-framework/ui-utils/commons";
-  import "../index.css";
-
+  import "./index.css";
+  
   const hasButton = getQueryArg(window.location.href, "hasButton");
   let enableButton = true;
   enableButton = hasButton && hasButton === "false" ? false : true;

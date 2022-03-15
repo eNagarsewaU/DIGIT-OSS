@@ -81,8 +81,6 @@ const transformRawTypeToFormat = (rawType) => {
       return "checkbox";
     case "singleValueList":
       return "singleValueList";
-    case "AutocompleteDropdown":
-      return "AutocompleteDropdown";
     default:
       return "textfield";
   }
@@ -146,7 +144,7 @@ const transform = (rawSpecs, moduleName, tenantId) => {
             disabled: current.isDisabled,
             //To make API call and initialise field, if Reqd.
             dataFetchConfig:
-              (current.type === "singleValueList" || current.type === "AutocompleteDropdown")
+              current.type === "singleValueList"
                 ? {
                     url: MDMS.GET.URL,
                     action: MDMS.GET.ACTION,

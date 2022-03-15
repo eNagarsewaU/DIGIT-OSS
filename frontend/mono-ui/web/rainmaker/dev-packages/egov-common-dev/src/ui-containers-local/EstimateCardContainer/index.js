@@ -75,7 +75,6 @@ const formatTaxHeaders = (billDetail = {},businesService) => {
   return totalInterest -currentYearInterest.length === 0 ? 0 :  currentYearInterest[0] && currentYearInterest[0].amount;
 }; 
 
-
 const addRoundOffToFee = (fees, billDetails) => {
   let totalRoundOff = 0;
   let feeContainsRoundOff = false;
@@ -276,7 +275,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const businesService=get(screenConfiguration, "preparedFinalObject.ReceiptTemp[0].Bill[0].businessService");
   const fees = formatTaxHeaders(sortBillDetails(get(screenConfiguration, "preparedFinalObject.ReceiptTemp[0].Bill[0].billDetails", []))[0],businesService);  // const fees = get(screenConfiguration, "preparedFinalObject.applyScreenMdmsData.estimateCardData", []);
-  const isArrears = get(screenConfiguration, "preparedFinalObject.isArrears");
+
   const billDetails = get(screenConfiguration, "preparedFinalObject.ReceiptTemp[0].Bill[0].billDetails", []);
   let totalAmount = 0;
   let current = 0;
@@ -284,7 +283,6 @@ const mapStateToProps = (state, ownProps) => {
   let Rebate = 0
   let PromotionalRebate = 0  
   let finalarrears = 0
-  console.log("saumya biiii",billDetails)
 
   const finalData=getFinalData();
 
@@ -348,11 +346,12 @@ const mapStateToProps = (state, ownProps) => {
     }
   }  
 
-  addSwatToFee(fees, billDetails);
+  
    addInterestToFee(fees, billDetails);
+   addRoundOffToFee(fees, billDetails);
    addRebateToFee(fees, billDetails);
    addProRebateToFee(fees, billDetails);
-   addRoundOffToFee(fees, billDetails);
+   addSwatToFee(fees, billDetails);
    calcTax(fees, billDetails);
 
   if (fees&&fees.length>0) {

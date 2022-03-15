@@ -42,19 +42,19 @@ class TotalDues extends React.Component {
 
   checkValidProeprty = () => {
     const { properties, updateNumberConfig } = this.props;
-    let owners = properties && properties[0] && properties[0].owners;
+    let { owners = [] } = properties;
     let returnValue = true;
     owners = owners && owners.filter((owner) => owner.status == "ACTIVE");
     owners &&
       owners.map((owner) => {
         if (process.env.REACT_APP_NAME !== "Citizen") {
-          if (owner.mobileNumber == updateNumberConfig && updateNumberConfig.invalidNumber || !owner.mobileNumber.match(updateNumberConfig["invalidPattern"])) {
+          if (owner.mobileNumber == updateNumberConfig.invalidNumber || !owner.mobileNumber.match(updateNumberConfig["invalidPattern"])) {
             this.setState({ showWarning: true, invalidNumber: owner.mobileNumber });
             returnValue = false;
           }
         } else {
           if (
-            owner.mobileNumber == updateNumberConfig && updateNumberConfig.invalidNumber ||
+            owner.mobileNumber == updateNumberConfig.invalidNumber ||
             (!owner.mobileNumber.match(updateNumberConfig["invalidPattern"]) && owner.mobileNumber == JSON.parse(getUserInfo()).mobileNumber)
           ) {
             this.setState({ showWarning: true, invalidNumber: owner.mobileNumber });
@@ -74,7 +74,7 @@ class TotalDues extends React.Component {
         "error"
       );
     } else { */
-      this.checkValidProeprty() && routeToCommonPay(consumerCode, tenantId);
+    this.checkValidProeprty() && routeToCommonPay(consumerCode, tenantId);
     /*  } */
   };
   render() {
@@ -115,8 +115,8 @@ class TotalDues extends React.Component {
               type={"WARNING"}
               showWarning={this.state.showWarning}
               key={getTranslatedLabel("PT_OWNERSHIP_INFO_MOBILE_NO", localizationLabelsData)}
-              tenantId={properties && properties.tenantId}
-              propertyId={properties && properties.propertyId}
+              tenantId={properties.tenantId}
+              propertyId={properties.propertyId}
               updateNumberConfig={updateNumberConfig}
             ></UpdateMobile>
           </div>

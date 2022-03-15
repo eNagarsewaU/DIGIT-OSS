@@ -1,15 +1,15 @@
-import { Dialog, DialogContent } from "@material-ui/core";
-import { handleScreenConfigurationFieldChange as handleField } from "egov-ui-framework/ui-redux/screen-configuration/actions";
-import get from "lodash/get";
 import React from "react";
 import { connect } from "react-redux";
+import get from "lodash/get";
+import { Dialog, DialogContent } from "@material-ui/core";
+import { handleScreenConfigurationFieldChange as handleField } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 
 class DialogContainer extends React.Component {
   handleClose = () => {
     const { screenKey } = this.props;
     this.props.handleField(
       screenKey,
-      `${screenKey}.components.adhocDialog`,
+      `components.adhocDialog`,
       "props.open",
       false
     );
@@ -33,7 +33,6 @@ const mapStateToProps = (state, ownProps) => {
     screenConfig,
     `${screenKey}.components.adhocDialog.props.open`
   );
-
 
   return {
     open,
