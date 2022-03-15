@@ -21,7 +21,7 @@ const getData = async (action, state, dispatch) => {
 
   let requestBody = {
     MdmsCriteria: {
-      tenantId: tenantId,
+      tenantId: commonConfig.tenantId,
       moduleDetails: [
         {
           moduleName: "tenant",
@@ -53,8 +53,10 @@ const getData = async (action, state, dispatch) => {
     if (payload) {
       dispatch(prepareFinalObject("applyScreenMdmsData", payload.MdmsRes));
       const citymodule = get(payload, "MdmsRes.tenant.citymodule");
+      console.log("ayush 3",citymodule, payload.MdmsRes.tenant.citymodule)
       const liveTenants =
         citymodule && citymodule.filter((item) => item.code === "UC");
+        console.log("ayush",liveTenants)
       dispatch(
         prepareFinalObject(
           "applyScreenMdmsData.tenant.citiesByModule",
