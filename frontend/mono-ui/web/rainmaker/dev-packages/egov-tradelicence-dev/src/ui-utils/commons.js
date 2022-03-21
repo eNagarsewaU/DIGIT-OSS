@@ -134,8 +134,8 @@ const generateNextFinancialYear = state => {
     "applyScreenMdmsData.egf-master.FinancialYear",
     []
   );
-  const currrentFYending = financialYears.filter(item => item.code === currentFY)[0]
-    .endingDate;
+  const data = financialYears && financialYears.filter(item => item.code === currentFY);
+  const currrentFYending = data && data[0] && data[0].endingDate;
 
     const nectYearObject = financialYears.filter(item => item.startingDate === currrentFYending+1000)[0];
   return nectYearObject ? nectYearObject.code : getCurrentFinancialYear();
