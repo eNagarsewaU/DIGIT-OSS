@@ -11,6 +11,8 @@ import {
   localStorageSet,
   localStorageGet,
 } from "egov-ui-kit/utils/localStorageUtils";
+import store from "ui-redux/store";
+import { hideSpinner,showSpinner } from "egov-ui-kit/redux/common/actions";
 
 axios.interceptors.response.use(
   (response) => {
@@ -329,3 +331,62 @@ export const commonApiPost = (
       }
     });
 };
+
+const downloadPdf = (blob, fileName) => {
+  const link = document.createElement('a');
+  // create a blobURI pointing to our Blob
+  link.href = URL.createObjectURL(blob);
+  link.download = fileName;
+  // some browser needs the anchor to be in the doc
+  document.body.append(link);
+  link.click();
+  link.remove();
+  // in case the Blob uses a lot of memory
+  setTimeout(() => URL.revokeObjectURL(link.href), 7000);
+};
+
+export const downloadPdfFile = async  ( endPoint,
+  action,
+  queryObject = [],
+  requestBody = {},
+  customRequestInfo = {},
+  ignoreTenantId = false,
+  fileName='download.pdf',
+  onSuccess
+  ) => {
+  const tenantId = getTenantId() || commonConfig.tenantId;
+    const downloadInstance = axios.create({
+      baseURL: window.location.origin,
+      responseType: "arraybuffer",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/pdf"
+      },
+    });
+  
+    if (!some(queryObject, ["key", "tenantId"]) && !ignoreTenantId) {
+      queryObject &&
+        queryObject.push({
+          key: "tenantId",
+          value: tenantId,
+        });
+    }
+    if (queryObject && queryObject.length) {
+      endPoint = addQueryArg(endPoint, queryObject);
+    }
+    try {
+      store.dispatch(showSpinner());
+      const response = await downloadInstance.post(endPoint, wrapRequestBody(requestBody, action, customRequestInfo));
+      const responseStatus = parseInt(response.status, 10);
+   
+      if (responseStatus === 201 || responseStatus === 200) {
+       
+        fileName=='print'?printPdf(new Blob([response.data], { type: "application/pdf" })):downloadPdf(new Blob([response.data], { type: "application/pdf" }), fileName);
+        onSuccess?onSuccess():{};
+        store.dispatch(hideSpinner());
+      }
+    } catch (error) {
+      store.dispatch(hideSpinner());
+      throw new Error(error);
+    }
+  };

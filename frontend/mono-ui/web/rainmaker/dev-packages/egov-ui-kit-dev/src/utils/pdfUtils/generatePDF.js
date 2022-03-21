@@ -7,6 +7,7 @@ import { set } from "lodash";
 import get from "lodash/get";
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "./vfs_fonts";
+import { downloadPdfFile } from "../api";
 
 
 
@@ -666,3 +667,10 @@ export const downloadPDFFileUsingBase64 = (receiptPDF, filename) => {
     }
   }
 
+  export const searchAndDownloadPdf=(url,queryObj,fileName,onSuccess)=>{
+    downloadPdfFile(url,'post',queryObj,{},{},false,fileName,onSuccess);
+}
+
+export const searchAndPrintPdf=(url,queryObj)=>{
+    downloadPdfFile(url,'post',queryObj,{},{},false,'print');
+}
