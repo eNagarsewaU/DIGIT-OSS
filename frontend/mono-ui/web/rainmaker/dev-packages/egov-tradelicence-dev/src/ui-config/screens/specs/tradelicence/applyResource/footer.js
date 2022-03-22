@@ -1073,7 +1073,8 @@ export const footerReviewTop = (
     link: () => {
       const receiptQueryString = [
         { key: "consumerCode", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "applicationNumber") },
-        { key: "tenantId", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "tenantId") }
+        { key: "tenantId", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "tenantId") },
+        { key: "businessService", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "businessService") }
       ]
       downloadBill(receiptQueryString);
       // generateReceipt(state, dispatch, "receipt_download");
@@ -1085,7 +1086,8 @@ export const footerReviewTop = (
     link: () => {
       const receiptQueryString =  [
         { key: "consumerCode", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "applicationNumber") },
-        { key: "tenantId", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "tenantId") }
+        { key: "tenantId", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "tenantId") },
+        { key: "businessService", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "businessService") }
       ]
       downloadBill(receiptQueryString,"print");
      // generateReceipt(state, dispatch, "receipt_print");
@@ -1267,7 +1269,8 @@ export const downloadPrintContainer = (
     link: () => {
       const receiptQueryString = [
         { key: "consumerCode", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "applicationNumber") },
-        { key: "tenantId", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "tenantId") }
+        { key: "tenantId", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "tenantId") },
+        { key: "businessService", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "businessService") }
       ]
       downloadBill(receiptQueryString);
       // generateReceipt(state, dispatch, "receipt_download");
@@ -1279,7 +1282,8 @@ export const downloadPrintContainer = (
     link: () => {
       const receiptQueryString =  [
         { key: "consumerCode", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "applicationNumber") },
-        { key: "tenantId", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "tenantId") }
+        { key: "tenantId", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "tenantId") },
+        { key: "businessService", value: get(state.screenConfiguration.preparedFinalObject.Licenses[0], "businessService") }
       ]
       download(receiptQueryString,"print");
      // generateReceipt(state, dispatch, "receipt_print");
