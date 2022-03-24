@@ -134,7 +134,12 @@ const getIndexofActive = (item) => {
     for(let i=0;i<item.owners.length;i++)
     {
       if(item.owners[i].status=='INACTIVE')
+      {
       return i;
+      }
+      else{
+        return i;
+      }
     }
   }
   else if(item && item.status=="ACTIVE")
