@@ -39,7 +39,7 @@ class MultiItem extends React.Component {
       if (!items.length && !editItems.length) {
         this.addItem();
       } else {
-        if (items.length < editItems.length) {
+        if (items.length < editItems.length || checkActiveItems(editItems) !== items.length) {
           for (var i = 0; i < editItems.length; i++) {
             if (checkActiveItem(editItems[i])) {
               if (i) {

@@ -475,6 +475,27 @@ const callBackForNext = async (state, dispatch) => {
  }else{
  dispatch(handleField('apply', "components.div.children.footer.children.payButton.children.submitButtonLabel",'props.labelKey',"PT_COMMON_BUTTON_SUBMIT"))
  }
+
+ let newOwners = get(
+   state,
+   "screenConfiguration.preparedFinalObject.Property.ownersTemp"
+ );
+ let ownerTemp = [];
+ newOwners = newOwners.map((item) => {
+   if (
+     item.hasOwnProperty("isDeleted") &&
+     (item.isDeleted !== undefined || item.isDeleted === false)
+   ) {
+   } else {
+     ownerTemp.push(item);
+   }
+ });
+ dispatch(
+  prepareFinalObject(
+  "Property.ownersTemp",
+  ownerTemp
+  )
+  )
  }
 
  if (activeStep === 1) {
