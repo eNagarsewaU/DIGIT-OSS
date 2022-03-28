@@ -267,6 +267,7 @@ public class EstimationService {
             enrichmentService.enrichDemandPeriod(criteria,assessmentYear,masterMap);
 
         List<BillingSlab> filteredBillingSlabs = getSlabsFiltered(property, requestInfo);
+		System.out.println("~~~~~~~~~~~filteredBillingSlabs~~~~~~~~~~"+filteredBillingSlabs);
 		Map<String, Map<String, List<Object>>> propertyBasedExemptionMasterMap = new HashMap<>();
 		Map<String, JSONArray> timeBasedExemptionMasterMap = new HashMap<>();
 		mDataService.setPropertyMasterValues(requestInfo, criteria.getTenantId(), propertyBasedExemptionMasterMap,
@@ -279,7 +280,9 @@ public class EstimationService {
 
 		Map<String,Object> extimationDetails = getPropertyTaxhead(criteria, filteredBillingSlabs, timeBasedExemptionMasterMap,
 				exemption);
+		System.out.println("~~~~~~~~~~~extimationDetails~~~~~~~~~~"+extimationDetails);
 		TaxHeadEstimate ptTaxHead = (TaxHeadEstimate) extimationDetails.get("ESTIMATION");
+		System.out.println("~~~~~~~~~~~ptTaxHead~~~~~~~~~~"+ptTaxHead);
         BigDecimal landAv = (BigDecimal) extimationDetails.get("LANDAV");
         BigDecimal carpetArea = (BigDecimal) extimationDetails.get("LANDAREA");
 		List<TaxHeadEstimate> estimates = new ArrayList<>();
@@ -292,6 +295,7 @@ public class EstimationService {
 		
 		if (swachhataTaxHead != null)
 		estimates.add(swachhataTaxHead);
+		System.out.println("~~~~~~~~~~~estimates~~~~~~~~~~"+estimates);
 		log.info("estimates", estimates);
 		Map<String, List> estimatesAndBillingSlabs = new HashMap<>();
 		estimatesAndBillingSlabs.put("estimates", estimates);
