@@ -267,8 +267,11 @@ public class EstimationService {
 		String tenantId = property.getTenantId();
 		System.out.println("~~~~tenantId~~~~~~~"+tenantId);
 
-		if(criteria.getFromDate()==null || criteria.getToDate()==null)
-            enrichmentService.enrichDemandPeriod(criteria,assessmentYear,masterMap);
+		if(criteria.getFromDate()==null || criteria.getToDate()==null){
+			 System.out.println("Inside if condition");
+			 enrichmentService.enrichDemandPeriod(criteria,assessmentYear,masterMap);
+		}
+           
 
         List<BillingSlab> filteredBillingSlabs = getSlabsFiltered(property, requestInfo);
 		System.out.println("~~~~~~~~~~~filteredBillingSlabs~~~~~~~~~~"+filteredBillingSlabs);
