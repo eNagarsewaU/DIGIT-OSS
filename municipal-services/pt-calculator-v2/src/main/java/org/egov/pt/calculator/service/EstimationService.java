@@ -261,16 +261,11 @@ public class EstimationService {
 
 		BigDecimal exemption = BigDecimal.ZERO;
 		Property property = criteria.getProperty();
-		System.out.println("~~~~property~~~~~~~"+property);
 		PropertyDetail detail = property.getPropertyDetails().get(0);
-		System.out.println("~~~~detail~~~~~~~"+detail);
 		String assessmentYear = detail.getFinancialYear();
-		System.out.println("~~~~assessmentYear~~~~~~~"+assessmentYear);
 		String tenantId = property.getTenantId();
-		System.out.println("~~~~tenantId~~~~~~~"+tenantId);
 
 		if(criteria.getFromDate()==null || criteria.getToDate()==null){
-			 System.out.println("Inside if condition");
 			 enrichmentService.enrichDemandPeriod(criteria,assessmentYear,masterMap);
 		}
            

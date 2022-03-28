@@ -334,7 +334,6 @@ public class MasterDataService {
 		List<TaxPeriod> taxPeriods = getTaxPeriodList(requestInfo,tenantId);
 		List<TaxHeadMaster> taxHeadMasters = getTaxHeadMasterMap(requestInfo,tenantId);
 		Map<String,Map<String, Object>> financialYearMaster = getFinancialYear(tenantId,requestInfo,assessmentYears);
-		System.out.println("~~~~~~~~financialYearMaster~~~~~~~~~"+financialYearMaster);
 		masterMap.put(TAXPERIOD_MASTER_KEY,taxPeriods);
 		masterMap.put(TAXHEADMASTER_MASTER_KEY,taxHeadMasters);
 		masterMap.put(FINANCIALYEAR_MASTER_KEY,financialYearMaster);

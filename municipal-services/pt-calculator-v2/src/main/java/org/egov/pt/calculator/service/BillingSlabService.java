@@ -78,7 +78,7 @@ public class BillingSlabService {
 		try {
 			billingSlabs = dbRepository.searchBillingSlab(billingSlabSearcCriteria);
 		} catch (Exception e) {
-			log.error("Exception while fetching billing slabs from db: " + e);
+			System.out.println("Exception while fetching billing slabs from db: " + e);
 			billingSlabs = new ArrayList<>();
 		}
 		return BillingSlabRes.builder().responseInfo(factory.createResponseInfoFromRequestInfo(requestInfo, true))
