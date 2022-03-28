@@ -140,7 +140,9 @@ public class EstimationService {
 
 	@Autowired
 	private ObjectMapper mapper;
-    private EnrichmentService enrichmentService;
+	
+	@Autowired
+    	private EnrichmentService enrichmentService;
 
 	@Autowired
 	private AssessmentService assessmentService;
