@@ -23,7 +23,8 @@ public class EnrichmentService {
      * @return
      */
     public void enrichDemandPeriod(CalculationCriteria calculationCriteria,String assessmentYear, Map<String, Object> masterMap) {
-
+        
+        System.out.println("~~~~~~~~~~Inside enrichDemandPeriod~~~~~~~~~");
         Map<String, Map<String, Object>> financialYearMaster = (Map<String, Map<String, Object>>) masterMap.get(FINANCIALYEAR_MASTER_KEY);
          System.out.println("~~~~~~~~~~financialYearMasters~~~~~~~~~"+financialYearMaster);
         Map<String, Object> finYearMap = financialYearMaster.get(assessmentYear);
