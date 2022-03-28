@@ -253,6 +253,9 @@ public class EstimationService {
 	 * @return Map<String, Double>
 	 */
 	private Map<String,List> getEstimationMap(CalculationCriteria criteria, RequestInfo requestInfo, Map<String, Object> masterMap) {
+		
+		System.out.println("~~~~~~~~~~~~getEstimationMap~~~~~~~~~~~~~");
+		System.out.println("~~~~~~criteria~~~~~~"+criteria+"~~~~~~requestInfo~~~~"+requestInfo+"~~~~masterMap~~~~~"+masterMap);
 
 		BigDecimal exemption = BigDecimal.ZERO;
 		Property property = criteria.getProperty();
