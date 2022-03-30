@@ -36,6 +36,7 @@ import {
 import { getTenantId, getLocale } from "egov-ui-kit/utils/localStorageUtils";
 import { fetchLocalizationLabel } from "egov-ui-kit/redux/app/actions";
 import commonConfig from "config/common.js";
+import { toggleSpinner } from "egov-ui-framework/ui-redux/screen-configuration/actions";
 
 export const stepsData = [
   { labelName: "Trade Details", labelKey: "TL_COMMON_TR_DETAILS" },
@@ -183,6 +184,7 @@ export const getMdmsData = async (action, state, dispatch) => {
 };
 
 export const getData = async (action, state, dispatch) => {
+  dispatch(toggleSpinner());
   const queryValue = getQueryArg(window.location.href, "applicationNumber");
   const applicationNo = queryValue
     ? queryValue
@@ -307,6 +309,7 @@ export const getData = async (action, state, dispatch) => {
       );
     }
   }
+  dispatch(toggleSpinner());
 };
 
 export const formwizardFirstStep = {
@@ -422,7 +425,6 @@ const screenConfig = {
         )	
       );
     });
-
     return action;
   },
 
