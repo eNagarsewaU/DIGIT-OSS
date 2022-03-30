@@ -98,9 +98,11 @@ class MyProperties extends Component {
 
   onListItemClick = item => {
     const { route: propertyId, tenantId } = item;
-    window.location.href = `/citizen/property-tax/my-properties/property/${encodeURIComponent(
+    let link = `/property-tax/my-properties/property/${encodeURIComponent(
       propertyId
     )}/${tenantId}`;
+    let moduleName = process.env.REACT_APP_NAME === "Citizen" ? '/citizen' : '/employee';
+    window.location.href = process.env.NODE_ENV === "production" ? moduleName + link : link;
   };
 
   render() {
