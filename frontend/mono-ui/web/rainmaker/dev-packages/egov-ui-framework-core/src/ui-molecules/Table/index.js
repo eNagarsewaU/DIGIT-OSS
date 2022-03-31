@@ -64,8 +64,6 @@ class Table extends React.Component {
         {
           root:{
             fontSize: "x-large",
-            marginLeft: "57px",
-            
           },        
         },
         ...this.getExtraTableStyle()
