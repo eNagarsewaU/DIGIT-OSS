@@ -207,7 +207,6 @@ const getPayButtonData = async (action, dispatch) => {
       let isOpenLink = window.location.pathname.includes("openlink") || window.location.pathname.includes("withoutAuth");
       let envs=(process.env.REACT_APP_NAME !== "Citizen" ) ? "employee":"citizen"
       let disablePayButton= payload.MdmsRes.tenant.paybuttonconfig[0][isOpenLink?"open":envs]
-      console.log("ayush", disablePayButton)
       dispatch(
         prepareFinalObject(
           "paybuttonconfig",
@@ -216,7 +215,7 @@ const getPayButtonData = async (action, dispatch) => {
       );
     }
   } catch (e) {
-    console.log("ayush",e);
+    console.log(e);
   }
 };
 

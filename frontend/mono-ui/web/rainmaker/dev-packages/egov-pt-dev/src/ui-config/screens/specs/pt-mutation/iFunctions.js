@@ -310,7 +310,6 @@ let tenantUniqueId = filterTenant && filterTenant[0] && filterTenant[0].city && 
       
 
       // const response = searchSampleResponse();
-      console.log("ayush 02", disablepaybutton)
       let propertyData = finalResponse.Properties.map(item => ({
         ["PT_COMMON_TABLE_COL_PT_ID"]:
           item.propertyId || "-",

@@ -27,10 +27,10 @@ export const searchPropertyTable = {
         labelKey: "PT_COMMON_TABLE_COL_ACTION_LABEL",
         options: {
           filter: false,
-          customBodyRender: (value, tableMeta) =>
-            (value.totalAmount > 0 && value.status === "ACTIVE") ? getPayButton(tableMeta) : (
+          customBodyRender: (value, tableMeta) =>{
+            return (value.totalAmount > 0 && value.status === "ACTIVE")  && (!value.disablepaybutton)? getPayButton(tableMeta) : (
               value.totalAmount === 0 && value.status === "ACTIVE" && value.isAdvancePaymentAllowed ? getPayButton(tableMeta) : ""
-            ),
+            )}
         },
       },
       {
