@@ -7,7 +7,7 @@ import { getLocalization } from "egov-ui-kit/utils/localStorageUtils";
 
 // import store from "ui-redux/store";
 import { getEpochForDate, getTextToLocalMapping, sortByEpoch } from "../../utils";
-
+import get from "lodash/get";
 const getLocalTextFromCode = localCode => {
   return JSON.parse(getLocalization("localization_en_IN")).find(
     item => item.code === localCode
@@ -137,9 +137,13 @@ export const searchPropertyTable = {
         labelKey: "PT_COMMON_TABLE_COL_ACTION_LABEL",
         options: {
           filter: false,
-          customBodyRender: (value, tableMeta) =>
-          (value.totalAmount > 0) ? getPayButton(tableMeta) : (process.env.REACT_APP_NAME == "Citizen")? " ":getMutationButton(tableMeta),
-
+          customBodyRender: (value, tableMeta) =>{
+            return (value.totalAmount > 0) && (!value.disablepaybutton)
+              ? getPayButton(tableMeta)
+              : process.env.REACT_APP_NAME == "Citizen"
+              ? " "
+              : getMutationButton(tableMeta);
+          }
         },
       }, 
       {
