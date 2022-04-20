@@ -550,7 +550,7 @@ class Property extends Component {
         });   
     return (
       <Screen className={clsName}>
-        <PTHeader header="PT_PROPERTY_INFORMATION" subHeaderTitle="PT_PROPERTY_PTUID" subHeaderValue={propertyId} downloadPrintButton={true} downloadPrintButton={true} download={() => this.download()} print={() => this.print()} />
+        <PTHeader header="PT_PROPERTY_INFORMATION" subHeaderTitle="PT_PROPERTY_PTUID" subHeaderValue={propertyId} downloadPrintButton={true} download={() => this.download()} print={() => this.print()} />
         {
           <AssessmentList
             onItemClick={this.onListItemClick}
@@ -580,8 +580,7 @@ class Property extends Component {
         }        
 
                       
-        {isMigratedProperty && !isCitizen && (Payments.length<=0 || Payments && Payments.length === 1 && Payments[0].instrumentStatus === "CANCELLED"  
-        || !payLen ) &&
+        {isMigratedProperty && !isCitizen && 
            <Button
               label={
                 <Label buttonLabel={true}

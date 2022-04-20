@@ -485,7 +485,12 @@ if (propertyMethodAction === "_update" && propertyPayload.institution && (owners
         const tenantId = get(propertyResponse, "Properties[0].tenantId", '');
         const acknowldgementNumber = get(propertyResponse, "Properties[0].acknowldgementNumber", '');
         // Navigate to success page
-        if (action == '_create') {
+        if(Properties["redirectUrl"]){
+          store.dispatch(
+            setRoute(
+              Properties["redirectUrl"])
+            )
+        }else if (action == '_create') {
           routeToAcknowledgement(PROPERTY_FORM_PURPOSE.CREATE, 'success', propertyId, tenantId, acknowldgementNumber);
           store.dispatch(hideSpinner());
         } else {
@@ -531,10 +536,13 @@ export const routeToCommonPay = (propertyId, tenantId,businessService='PT') => {
   );
 }
 
-export const propertySubmitAction = (Properties, action, props) => {
+export const propertySubmitAction = (Properties, action, props, redirectUrl = '') => {
 
   const purpose = getPurpose()
-
+  if(redirectUrl){
+    Properties["redirectUrl"]= redirectUrl
+  }
+  console.log("ayush", Properties, action, props, redirectUrl)
   switch (purpose) {
     case PROPERTY_FORM_PURPOSE.REASSESS:
       assessProperty("_update", props);

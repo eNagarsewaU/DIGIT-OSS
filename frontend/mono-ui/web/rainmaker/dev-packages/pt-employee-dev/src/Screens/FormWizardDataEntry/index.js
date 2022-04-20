@@ -633,7 +633,7 @@ class FormWizardDataEntry extends Component {
 
     let buttonLabel = "PT_COMMONS_NEXT";
     if (index == 3) {
-      propertyId ? buttonLabel = 'PT_UPDATE_PROPERTY' :  buttonLabel = "PT_ADD_ASSESS_PROPERTY" ;
+      propertyId ? buttonLabel = 'PT_SAVE_PT_WITHOUT_EDITING_DCB' :  buttonLabel = "PT_ADD_ASSESS_PROPERTY" ;
     } else if (index == 5) {
       buttonLabel = 'PT_PROCEED_PAYMENT'
     } else if (index == 6) {
@@ -1395,7 +1395,7 @@ class FormWizardDataEntry extends Component {
 
   };
 
-  createAndUpdate = async (index, action) => {
+  createAndUpdate = async (index, action, redirectUrl = '') => {
     const {
       selected,
       formValidIndexArray
@@ -1554,8 +1554,8 @@ class FormWizardDataEntry extends Component {
     //this.createProperty(properties, propertySubmitAction);
     showSpinner();
 
-    propertySubmitAction(properties, action, this.props);
-
+    propertySubmitAction(properties, action, this.props, redirectUrl);
+    
   };
 
   getAssessmentDetails = async () => {
@@ -2082,11 +2082,30 @@ class FormWizardDataEntry extends Component {
     generateAcknowledgementForm("pt-reciept-citizen", receiptDetails, generalMDMSDataById, imageUrl);
   }
 
+  gotoDCB=()=>{
+    const {
+      createAndUpdate
+    } = this;
+    const {
+      location
+    } = this.props;
+    const { search } = location;
+    const propertyId1 = getQueryValue(search, "propertyId");
+    const redirectUrl=`/property-tax/demand-and-collection?propertyId=${propertyId1}&edit=true`
+    if (propertyId1) {
+        createAndUpdate(3, 'update', redirectUrl);
+      }
+       else {
+        createAndUpdate(3, 'create', redirectUrl);
+      }
+  }
+
   render() {
     const {
       renderStepperContent,
       onPayButtonClick,
-      closeDeclarationDialogue
+      closeDeclarationDialogue,
+      gotoDCB
     } = this;
     const {
       selected,
@@ -2127,6 +2146,8 @@ class FormWizardDataEntry extends Component {
           history={history}
           onPayButtonClick={onPayButtonClick}
           nextButtonEnabled={nextButtonEnabled}
+          gotoDCB={gotoDCB}
+          search={search}
         />
       </div>
     );
