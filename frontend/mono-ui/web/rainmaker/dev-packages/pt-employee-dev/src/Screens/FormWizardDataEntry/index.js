@@ -2091,7 +2091,7 @@ class FormWizardDataEntry extends Component {
     } = this.props;
     const { search } = location;
     const propertyId1 = getQueryValue(search, "propertyId");
-    const redirectUrl=`/property-tax/demand-and-collection?propertyId=${propertyId1}&edit=true`
+    const redirectUrl=`/property-tax/demand-and-collection?propertyId=${propertyId1}&edit=true&assessment=true`
     if (propertyId1) {
         createAndUpdate(3, 'update', redirectUrl);
       }

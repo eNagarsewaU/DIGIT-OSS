@@ -16,9 +16,12 @@ import set from "lodash/set";
 import Label from "egov-ui-kit/utils/translationNode";
 class DemandCollection extends React.Component {
   render() {
-    const { prepareFinalObject, preparedFinalObject,Properties = [] } = this.props;
-    const finalData=getFinalData();
-     
+    const { prepareFinalObject, preparedFinalObject,Properties = [], isAssesment=false } = this.props;
+    let finalData=getFinalData();
+    if(isAssesment){
+      let filter_data=finalData[0]
+      finalData=[filter_data]
+    }
     let demands_data = get(preparedFinalObject, `DemandProperties[0].propertyDetails[0].demand`);
     
     let dummyarray = [];
