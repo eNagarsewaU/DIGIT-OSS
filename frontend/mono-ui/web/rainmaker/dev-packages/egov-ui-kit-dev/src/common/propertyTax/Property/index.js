@@ -33,6 +33,7 @@ import { setRoute } from "egov-ui-kit/redux/app/actions";
 import { httpRequest } from "egov-ui-framework/ui-utils/api";
 import { loadUlbLogo } from "egov-ui-kit/utils/pdfUtils/generatePDF";
 import { generatePTAcknowledgment } from "egov-ui-kit/utils/pdfUtils/generatePTAcknowledgment";
+import { ifUserRoleExists } from "../../../utils/commons";
 
 const innerDivStyle = {
   padding: "0",
@@ -335,8 +336,11 @@ class Property extends Component {
     const {  propertyId, tenantId } = this.props;
 
     if(process.env.REACT_APP_NAME !='citizen'){  
-
-  this.props.history.push(`/property-tax/demand-and-collection?propertyId=${propertyId}&edit=true`);
+      let redirectTo = `/property-tax/demand-and-collection?propertyId=${propertyId}&edit=true`;
+      if (ifUserRoleExists("PTCEMP")) {
+        redirectTo = redirectTo + "&assessment=true";
+      }
+      this.props.history.push(redirectTo);
     }
     // this.setState({
     //   dialogueOpen: true,
@@ -354,11 +358,13 @@ class Property extends Component {
       );
     } else if(selPropertyDetails.source === "LEGACY_RECORD"){
 
-      this.props.history.push(`/property-tax/assessment-form-dataentry?assessmentId=0&purpose=update&propertyId=${propertyId}&tenantId=${tenantId}`);
+      let redirectTo = `/property-tax/assessment-form-dataentry?assessmentId=0&purpose=update&propertyId=${propertyId}&tenantId=${tenantId}`;
+      if (ifUserRoleExists("PTCEMP")) {
+        redirectTo = redirectTo + "&assessment=true";
       }
-      
-    else
-    {
+      this.props.history.push(redirectTo);
+      }
+    else {
       this.props.history.push(getPropertyLink(propertyId, tenantId, PROPERTY_FORM_PURPOSE.UPDATE, -1, assessmentNo));
       // this.setState({
       //   dialogueOpen: true,
@@ -580,7 +586,7 @@ class Property extends Component {
         }        
 
                       
-        {isMigratedProperty && !isCitizen && 
+        {((isMigratedProperty && !isCitizen) ||  ifUserRoleExists("PTCEMP") ) &&
            <Button
               label={
                 <Label buttonLabel={true}
@@ -595,7 +601,7 @@ class Property extends Component {
              />   
             }
               {isMigratedProperty && !isCitizen && (Payments.length<=0 || Payments && Payments.length === 1 && Payments[0].instrumentStatus === "CANCELLED"  
-              || !payLen ) &&
+              || !payLen || ifUserRoleExists("PTCEMP")) &&
                 
               <Button
               onClick={() => this.editDemand()}

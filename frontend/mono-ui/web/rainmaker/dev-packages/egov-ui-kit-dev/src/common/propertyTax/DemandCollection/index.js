@@ -105,6 +105,15 @@ class DemandCollection extends React.Component {
                                     alert( "Integer numbers are only allowed.");  
                                         
                                   } */
+                                  if(isAssesment){
+                                    if (
+                                      (taxData.code === "PT_TAX") &&
+                                      get(preparedFinalObject, `DemandPropertiesResponse.Demands[${index}].demandDetails[0].taxAmount`) >
+                                        e.target.value
+                                    ) {
+                                      alert("Tax value cannot be decrease");
+                                    }
+                                  }
                                   if (e.target.value.includes(".")) 
                                   {  
                                    alert( "Integer numbers are only allowed.");
@@ -134,7 +143,8 @@ class DemandCollection extends React.Component {
                                    }
 
                                   }
-                                onWheel={event => { event.preventDefault(); }}
+                                  disabled={(isAssesment && (taxData.code ==="PT_PROMOTIONAL_REBATE" || taxData.code === 'PT_TIME_REBATE' || taxData.code === 'PT_LATE_ASSESSMENT_PENALTY' || taxData.code === 'PT_ADHOC_PENALTY'))}
+                                  onWheel={event => { event.preventDefault(); }}
                               />
                             </div>
                           );
@@ -166,7 +176,7 @@ class DemandCollection extends React.Component {
                                   prepareFinalObject(`DemandProperties[0].propertyDetails[0].demand[${index}].demand[${data.financialYear}][${index1}].PT_COLLECTED`, e.target.value);
                                 }}
                                 onWheel={event => { event.preventDefault(); }}
-                                disabled={taxData.isDebit}
+                                disabled={taxData.isDebit  || isAssesment}
                               />
                             </div>
                           );
