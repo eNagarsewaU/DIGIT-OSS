@@ -46,9 +46,6 @@ const WizardComponent = ({
   nextLabel,
   history,
   nextButtonEnabled,
-  propertyId,
-  gotoDCB,
-  search
 }) => {
   ((selected == 3 || selected == 5)
     ? ((selected == 3) ? (backLabel = 'PT_APPLICATION_BUTTON_DOWN_CONF') : (backLabel = 'PT_ASSESS_PAY_FOR_NEW_YEAR'))
@@ -107,15 +104,6 @@ const WizardComponent = ({
             style={{ marginRight: 45, width: "30%" }}
           />}
        
-       {selected == 3 && getQueryValue(search, "propertyId")  && <Button
-            label={<Label buttonLabel={true} label={"PT_SAVE_PT_WITH_EDITING_DCB"} color="#fe7a51" />}
-            onClick={() => {
-              gotoDCB();
-            }}
-            labelStyle={{ letterSpacing: 0.7, padding: 0, color: "#fe7a51" }}
-            buttonStyle={{ border: "1px solid #fe7a51" }}
-            style={{ marginRight: 45, width: "30%" }}
-          />}
 
           <Button
             label={<Label buttonLabel={true} label={nextLabel} color="#fff" />}

@@ -1407,9 +1407,15 @@ class FormWizardDataEntry extends Component {
             let data = item.demand[Object.keys(item.demand)]
             data.map((ele,i)=>{
               if(ele.PT_TAXHEAD === "PT_TAX" || ele.PT_TAXHEAD ==="SWATCHATHA_TAX" || ele.PT_TAXHEAD === "PT_TIME_INTEREST"){
-                if(ele.PT_DEMAND < demandResponse[index].demandDetails[i].taxAmount){
+                
+                try{
+                  if(i < demandResponse[index].demandDetails.length &&  ele.PT_DEMAND < demandResponse[index].demandDetails[i].taxAmount){
+                    errorCode = "ERR09_DEMAND_ENTER_THE_DATA";
+                  }
+                }catch(e){
                   errorCode = "ERR09_DEMAND_ENTER_THE_DATA";
                 }
+                
               }
             })
           })
