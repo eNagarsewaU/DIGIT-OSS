@@ -75,7 +75,7 @@ public class PersistRepository {
         List<Object[]> rows = new ArrayList<>();
 
         for (int i = 0; i < dataSource.size(); i++) {
-        	log.info("Testing Persister",dataSource);
+        	log.info("Testing Persister"+dataSource);
             LinkedHashMap<String, Object> rawDataRecord = dataSource.get(i);
 
             if (rawDataRecord == null)
