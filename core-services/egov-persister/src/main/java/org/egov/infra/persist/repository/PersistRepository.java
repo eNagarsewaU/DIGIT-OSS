@@ -66,11 +66,11 @@ public class PersistRepository {
 
     public List<Object[]> getRows(List<JsonMap> jsonMaps, Object jsonObj, String baseJsonPath) {
         
-        log.info("Testing Persistor baseJsonPath",baseJsonPath);
-    	log.info("Testing Persistor jsonObj",jsonObj);
+        log.info("Testing Persistor baseJsonPath"+baseJsonPath);
+    	log.info("Testing Persistor jsonObj"+jsonObj);
 
         List<LinkedHashMap<String, Object>> dataSource = extractData(baseJsonPath, jsonObj);
-        log.info("Testing Persister dataSource",dataSource);
+        log.info("Testing Persister dataSource"+dataSource);
        
         List<Object[]> rows = new ArrayList<>();
 
