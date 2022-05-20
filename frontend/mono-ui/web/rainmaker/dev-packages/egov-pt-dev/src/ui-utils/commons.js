@@ -56,8 +56,9 @@ export const getSearchResults = async (queryObject, requestBody) => {
       queryObject,
       requestBody
     );
+    let newProperties=[]
     response && response.Properties && response.Properties.map(property => {
-      if (property.status == "INWORKFLOW") {
+      if (property && property.status == "INWORKFLOW") {
         let newOwnerList = [];
         let oldOwnerList = [];
         property.owners.map(owner => {
@@ -69,8 +70,10 @@ export const getSearchResults = async (queryObject, requestBody) => {
         })
         oldOwnerList.push(...newOwnerList);
         property.owners = oldOwnerList;
+        newProperties.push(property);
       }
     })
+    response["Properties"]=newProperties;
     store.dispatch(toggleSpinner());
     return response;
   } catch (error) {
