@@ -337,7 +337,7 @@ class Property extends Component {
 
     if(process.env.REACT_APP_NAME !='citizen'){  
       let redirectTo = `/property-tax/demand-and-collection?propertyId=${propertyId}&edit=true`;
-      if (ifUserRoleExists("PTCEMP")) {
+      if (ifUserRoleExists("PTADMIN")) {
         redirectTo = redirectTo + "&assessment=true";
       }
       this.props.history.push(redirectTo);
@@ -359,7 +359,7 @@ class Property extends Component {
     } else if(selPropertyDetails.source === "LEGACY_RECORD"){
 
       let redirectTo = `/property-tax/assessment-form-dataentry?assessmentId=0&purpose=update&propertyId=${propertyId}&tenantId=${tenantId}`;
-      if (ifUserRoleExists("PTCEMP")) {
+      if (ifUserRoleExists("PTADMIN")) {
         redirectTo = redirectTo + "&assessment=true";
       }
       this.props.history.push(redirectTo);
@@ -586,7 +586,7 @@ class Property extends Component {
         }        
 
                       
-        {((isMigratedProperty && !isCitizen) ||  ifUserRoleExists("PTCEMP") ) &&
+        {((isMigratedProperty && !isCitizen) ||  ifUserRoleExists("PTADMIN") ) &&
            <Button
               label={
                 <Label buttonLabel={true}
@@ -601,7 +601,7 @@ class Property extends Component {
              />   
             }
               {isMigratedProperty && !isCitizen && (Payments.length<=0 || Payments && Payments.length === 1 && Payments[0].instrumentStatus === "CANCELLED"  
-              || !payLen || ifUserRoleExists("PTCEMP")) &&
+              || !payLen || ifUserRoleExists("PTADMIN")) &&
                 
               <Button
               onClick={() => this.editDemand()}
