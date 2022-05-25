@@ -30,7 +30,7 @@ import {
   setFieldProperty
 } from "egov-ui-kit/redux/form/actions";
 import store from "redux/store";
-
+import {getPattern} from "egov-ui-framework/ui-config/screens/specs/utils";
 let floorDropDownData = [];
 let innerDimensionsData = [{
   value: "true",
@@ -1089,7 +1089,7 @@ export const colony = {
       zIndex: 5
     },
     maxLength: 64,
-    pattern: "^([a-zA-Z0-9#() ])+$",
+    pattern:getPattern("DoorHouseNo"),
   },
 };
 
