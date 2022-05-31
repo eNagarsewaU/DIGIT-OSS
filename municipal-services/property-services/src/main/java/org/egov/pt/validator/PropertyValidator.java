@@ -162,6 +162,14 @@ public class PropertyValidator {
 		if (configs.getIsWorkflowEnabled() && request.getProperty().getWorkflow() == null && !"LEGACY_RECORD".equals(request.getProperty().getSource().toString()))
 			throw new CustomException("EG_PT_UPDATE_WF_ERROR", "Workflow information is mandatory for update process");
 
+		if(property.getPropertyType().equalsIgnoreCase("VACANT"))
+		{
+			if (!CollectionUtils.isEmpty(property.getUnits()))
+				property.getUnits().forEach(unit -> {
+					unit.setActive(false);
+				});
+	
+		}
 		// third variable is needed only for mutation
 		List<String> fieldsUpdated = diffService.getUpdatedFields(property, propertyFromSearch, "");
 		
