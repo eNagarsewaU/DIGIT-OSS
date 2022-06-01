@@ -137,7 +137,8 @@ public class PaymentWorkflowService {
 
         List<Payment> payments = paymentRepository.fetchPayments(paymentSearchCriteria);
         payments.sort(reverseOrder(Comparator.comparingLong(Payment::getTransactionDate)));
-
+        System.out.println("----------payments--------"+payments);
+        
         List<Payment> validatedPayments = paymentWorkflowValidator.validateForCancel(new ArrayList<>
                 (workflowRequestByPaymentId.values()), payments);
 
