@@ -907,12 +907,28 @@ export const tradeDetails = getCommonCard({
                 true
               )
             );
+            dispatch(
+              handleField(
+                "apply",
+                "components.div.children.formwizardFirstStep.children.tradeDetails.children.cardContent.children.tradeDetailsConatiner.children.oldLicenseNo",
+                "required",
+                true
+              )
+            );
           } else {
             dispatch(
               handleField(
                 "apply",
                 "components.div.children.formwizardFirstStep.children.tradeDetails.children.cardContent.children.tradeDetailsConatiner.children.oldLicenseNo",
                 "props.required",
+                false
+              )
+            );
+            dispatch(
+              handleField(
+                "apply",
+                "components.div.children.formwizardFirstStep.children.tradeDetails.children.cardContent.children.tradeDetailsConatiner.children.oldLicenseNo",
+                "required",
                 false
               )
             );
