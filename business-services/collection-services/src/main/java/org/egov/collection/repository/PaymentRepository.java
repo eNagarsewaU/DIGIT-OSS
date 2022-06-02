@@ -105,12 +105,15 @@ public class PaymentRepository {
                 billIds.addAll(payment.getPaymentDetails().stream().map(detail -> detail.getBillId()).collect(Collectors.toSet()));
             }
             Map<String, Bill> billMap = getBills(billIds);
+	    List<Payment> newPayment = new LinkedList<>();
             log.info("billMap:: " + billMap);
             for (Payment payment : payments) {
                 payment.getPaymentDetails().forEach(detail -> {
                     detail.setBill(billMap.get(detail.getBillId()));
                 });
+		newPayment.add(payment);
             }
+	    return newPayment;
             log.info("payments after adding bill:: " + payments);
             payments.sort(reverseOrder(Comparator.comparingLong(Payment::getTransactionDate)));
         }
