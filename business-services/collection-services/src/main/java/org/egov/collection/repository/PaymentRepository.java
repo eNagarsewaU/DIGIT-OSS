@@ -114,7 +114,7 @@ public class PaymentRepository {
             log.info("payments after adding bill:: " + payments);
             payments.sort(reverseOrder(Comparator.comparingLong(Payment::getTransactionDate)));
         }
-
+	Log.info("paymnets at return:: "+payments);
         return payments;
     }
     
