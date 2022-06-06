@@ -7,7 +7,8 @@ import org.springframework.util.StringUtils;
 import java.lang.reflect.Method;
 
 public class TenantKeyGenerator implements KeyGenerator {
-    @Value("${cache.tenant.statelevel:true}")
+
+	@Value("${cache.tenant.statelevel:true}")
     private Boolean stateLevel;
 
     public Object generate(Object target, Method method, Object... params) {

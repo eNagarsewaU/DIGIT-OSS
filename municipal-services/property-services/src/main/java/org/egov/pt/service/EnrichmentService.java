@@ -133,8 +133,16 @@ public class EnrichmentService {
 					doc.setStatus(Status.ACTIVE);
 				}
 			});
+		
 				
-	    	if (!CollectionUtils.isEmpty(property.getUnits()))
+		if (property.getPropertyType().equalsIgnoreCase("VACANT")) {
+
+			if (!CollectionUtils.isEmpty(propertyFromDb.getUnits()))
+				propertyFromDb.getUnits().forEach(unit -> {
+					unit.setActive(false);
+				});
+			property.setUnits(propertyFromDb.getUnits());
+		} else if (!CollectionUtils.isEmpty(property.getUnits()))
 			property.getUnits().forEach(unit -> {
 
 				if (unit.getId() == null) {
@@ -142,7 +150,7 @@ public class EnrichmentService {
 					unit.setActive(true);
 				}
 			});
-				
+	    	
 		Institution institute = property.getInstitution();
 		if (!ObjectUtils.isEmpty(institute) && null == institute.getId())
 			property.getInstitution().setId(UUID.randomUUID().toString());
