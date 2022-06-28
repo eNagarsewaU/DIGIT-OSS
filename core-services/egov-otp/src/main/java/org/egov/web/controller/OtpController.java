@@ -13,9 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.validation.Valid;
 
 @RestController
+@Slf4j
 public class OtpController {
 
     private TokenService tokenService;
@@ -34,6 +37,7 @@ public class OtpController {
 
     @PostMapping("v1/_validate")
     public OtpResponse validateOtp(@RequestBody @Valid OtpValidateRequest request) {
+    	log.info("**************Validate OTP tokens************");
         final Token token = tokenService.validate(request.toDomainValidateRequest());
         token.setNumber(request.toDomainValidateRequest().getOtp());
         return new OtpResponse(token);

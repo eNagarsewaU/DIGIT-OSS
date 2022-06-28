@@ -55,10 +55,11 @@ public class TokenService {
     }
 
     public Token validate(ValidateRequest validateRequest) {
+    	log.info("validateRequest:::"+validateRequest.toString());
         validateRequest.validate();
-
+        log.info("Before fetching tokens:::");
         Tokens tokens = tokenRepository.findByIdentityAndTenantId(validateRequest);
-        
+        log.info("tokens:::"+tokens.toString());
         if (tokens == null || tokens.getTokens().isEmpty())
             throw new TokenValidationFailureException();
         log.info("tokens:::"+tokens.toString());
