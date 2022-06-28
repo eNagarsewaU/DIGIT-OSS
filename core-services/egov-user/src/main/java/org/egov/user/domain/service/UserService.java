@@ -320,11 +320,14 @@ public class UserService {
      * @return
      */
     public Boolean validateOtp(User user) {
+    	log.info("user info when validate OTP:::"+user.toString());
         Otp otp = Otp.builder().otp(user.getOtpReference()).identity(user.getMobileNumber()).tenantId(user.getTenantId())
                 .userType(user.getType()).build();
+        log.info("OTP request:::::"+otp.toString());
         RequestInfo requestInfo = RequestInfo.builder().action("validate").ts(new Date()).build();
         OtpValidateRequest otpValidationRequest = OtpValidateRequest.builder().requestInfo(requestInfo).otp(otp)
                 .build();
+        log.info("otpValidationRequest request:::::"+otpValidationRequest.toString());
         return otpRepository.validateOtp(otpValidationRequest);
 
     }
