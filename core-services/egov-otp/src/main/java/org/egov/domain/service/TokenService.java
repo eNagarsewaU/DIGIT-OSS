@@ -58,12 +58,12 @@ public class TokenService {
         validateRequest.validate();
 
         Tokens tokens = tokenRepository.findByIdentityAndTenantId(validateRequest);
-
+        
         if (tokens == null || tokens.getTokens().isEmpty())
             throw new TokenValidationFailureException();
-
+        log.info("tokens:::"+tokens.toString());
         for (Token t: tokens.getTokens()) {
-
+        	log.info("#############isEncryptOTP"+otpConfiguration.isEncryptOTP()+"OTP from request:::"+validateRequest.getOtp()+"##t.getNumber():::"+t.getNumber()+"::Is Password matching::"+passwordEncoder.matches(validateRequest.getOtp(), t.getNumber()));
             if (!otpConfiguration.isEncryptOTP() && validateRequest.getOtp().equalsIgnoreCase(t.getNumber())
              || (otpConfiguration.isEncryptOTP()  && passwordEncoder.matches(validateRequest.getOtp(), t.getNumber()))) {
                 tokenRepository.markAsValidated(t);
