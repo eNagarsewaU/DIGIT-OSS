@@ -56,6 +56,7 @@ public class ReceiptService {
 
 		BillRequest billRequest = BillRequest.builder().requestInfo(receiptRequest.getRequestInfo()).bills(bills)
 				.build();
+		log.info("***********billRequest"+billRequest.toString());
 		updateDemandFromBill(billRequest,demandIds, isReceiptCancellation);
 	}
 
@@ -68,7 +69,7 @@ public class ReceiptService {
 	 * @return
 	 */
 	public void updateDemandFromBill(BillRequest billRequest,Set<String> demandIds, Boolean isReceiptCancellation) {
-
+		log.info("#####demand ids*****"+demandIds.stream().collect(Collectors.joining(",")));
 		List<Bill> bills = billRequest.getBills();
 		String tenantId = bills.get(0).getTenantId();
 		RequestInfo requestInfo = billRequest.getRequestInfo();
@@ -77,7 +78,7 @@ public class ReceiptService {
 		List<Demand> demandsToBeUpdated = demandService.getDemands(demandCriteria, requestInfo);
 		Map<String, Demand> demandIdMap = demandsToBeUpdated.stream()
 				.collect(Collectors.toMap(Demand::getId, Function.identity()));
-		
+		log.info("*********demandIdMap######"+demandIdMap.toString());
 		for(Bill bill : bills) {
 			
 			for (BillDetail billDetail : bill.getBillDetails())

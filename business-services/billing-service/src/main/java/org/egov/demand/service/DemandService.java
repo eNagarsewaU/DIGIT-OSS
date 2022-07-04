@@ -222,12 +222,12 @@ public class DemandService {
 	 */
 	public DemandResponse updateAsync(DemandRequest demandRequest, PaymentBackUpdateAudit paymentBackUpdateAudit) {
 
-		log.debug("the demand service : " + demandRequest);
+		log.info("the demand service : " + demandRequest.toString());
 		DocumentContext mdmsData = util.getMDMSData(demandRequest.getRequestInfo(),
 				demandRequest.getDemands().get(0).getTenantId());
 
 		demandValidatorV1.validateForUpdate(demandRequest, mdmsData);
-
+		log.info("**************After validation demand request details : " + demandRequest.toString());
 		RequestInfo requestInfo = demandRequest.getRequestInfo();
 		List<Demand> demands = demandRequest.getDemands();
 		AuditDetails auditDetail = util.getAuditDetail(requestInfo);
@@ -261,10 +261,10 @@ public class DemandService {
 				}
 			}
 			util.updateDemandPaymentStatus(demand, null != paymentBackUpdateAudit);
+			log.info("**********Before Update demand************"+demand.toString());
 		}
 
 		generateAndSetIdsForNewDemands(newDemands, auditDetail);
-
 		update(demandRequest, paymentBackUpdateAudit);
 		String businessService = demands.get(0).getBusinessService();
 		String tenantId = demands.get(0).getTenantId();

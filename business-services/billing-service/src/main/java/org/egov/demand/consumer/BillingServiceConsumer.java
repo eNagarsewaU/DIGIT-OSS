@@ -73,7 +73,7 @@ public class BillingServiceConsumer {
 			"${kafka.topics.receipt.cancel.name.v2}" })
 	public void processMessage(Map<String, Object> consumerRecord, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
 
-		log.debug("key:" + topic + ":" + "value:" + consumerRecord);
+		log.info("key:" + topic + ":" + "value:" + consumerRecord);
 
 		/*
 		 * save demand topic
@@ -105,7 +105,7 @@ public class BillingServiceConsumer {
 
 			ReceiptRequest receiptRequest = ReceiptRequest.builder().receipt(receipts).requestInfo(requestInfo)
 					.tenantId(collectionReceiptRequest.getTenantId()).build();
-			log.debug("the receipt request is -------------------" + receiptRequest);
+			log.info("the receipt request is -------------------" + receiptRequest);
 
 			receiptService.updateDemandFromReceipt(receiptRequest, StatusEnum.CREATED, false);
 		}
