@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.Builder.Default;
 /**
  * BillRequest
@@ -20,6 +21,7 @@ import lombok.Builder.Default;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class BillRequestV2   {
 	
   @JsonProperty("RequestInfo")

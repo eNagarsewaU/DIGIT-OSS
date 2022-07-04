@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.egov.common.contract.request.RequestInfo;
 import org.egov.demand.config.ApplicationProperties;
@@ -142,9 +143,12 @@ public class BillingServiceConsumer {
 		
 		BillRequestV2 billReq = BillRequestV2.builder().build();
 		
+		log.info("#######billReq*************"+billReq.toString());
+		
 		try {
 
 			setBillRequestFromPayment(consumerRecord, billReq, isReceiptCancellation);
+			log.info("#######billReq after setBillRequestFromPayment*************"+billReq.toString());
 			receiptServiceV2.updateDemandFromReceipt(billReq, isReceiptCancellation);
 			
 		} catch (JsonProcessingException | IllegalArgumentException e) {
@@ -177,20 +181,23 @@ public class BillingServiceConsumer {
 		context = JsonPath.parse(objectMapper.writeValueAsString(consumerRecord));
 
 		String paymentId = objectMapper.convertValue(context.read("$.Payment.id"), String.class);
+		log.info("paymentId******"+paymentId);
 		List<BigDecimal> amtPaidList = Arrays.asList(objectMapper.convertValue(context.read("$.Payment.paymentDetails.*.totalAmountPaid"), BigDecimal[].class));
+		for(BigDecimal amount : amtPaidList)
+			log.info("amount****"+amount);
 		List<BillV2> bills = Arrays.asList(objectMapper.convertValue(context.read("$.Payment.paymentDetails.*.bill"), BillV2[].class));
 		
 		RequestInfo requestInfo = objectMapper.convertValue(context.read("$.RequestInfo"), RequestInfo.class);
 		billReq.setBills(bills);
 		billReq.setRequestInfo(requestInfo);
-		
+		log.info("#######billReq***********"+billReq.toString());
 		/* payment value is set in zeroth index of bills
 		 * 
 		 * additionaldetail info from bill is not needed, so setting new value
 		 */
 		bills.get(0).setAdditionalDetails(util.setValuesAndGetAdditionalDetails(null, Constants.PAYMENT_ID_KEY, paymentId));
 		validatePaymentForDuplicateUpdates(isReceiptCancelled, paymentId);
-
+		log.info("Bills size#####"+bills.size());
 		for (int i = 0; i < bills.size(); i++) {
 			
 			BillV2 bill = bills.get(i);
@@ -222,10 +229,10 @@ public class BillingServiceConsumer {
 				.paymentId(paymentId)
 				.isBackUpdateSucces(true)
 				.build();
-
+		log.info("backUpdateAuditCriteria*******"+backUpdateAuditCriteria.toString());
 		String paymentIdFromDb = demandRepository
 				.searchPaymentBackUpdateAudit(backUpdateAuditCriteria);
-		
+		log.info("####Bill demandid---->>>>"+paymentId+"#####paymentIdFromDb*******"+paymentIdFromDb);
 		if (null != paymentIdFromDb && paymentIdFromDb.equalsIgnoreCase(paymentId))
 			throw new CustomException("EGBS_PAYMENT_BACKUPDATE_ERROR",
 					"Duplicate Payment object received for back update with payment-id : " + paymentId
