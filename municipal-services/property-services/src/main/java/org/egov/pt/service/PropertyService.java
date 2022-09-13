@@ -92,7 +92,7 @@ public class PropertyService {
 	 * @return List of properties successfully created
 	 */
 	public Property createProperty(PropertyRequest request) {
-
+		restrictTenantFromSubmittingRequest(request.getProperty().getTenantId());
 		propertyValidator.validateCreateRequest(request);
 		enrichmentService.enrichCreateRequest(request);
 		userService.createUser(request);
@@ -124,7 +124,7 @@ public class PropertyService {
 	 * @return List of updated properties
 	 */
 	public Property updateProperty(PropertyRequest request) {
-
+		restrictTenantFromSubmittingRequest(request.getProperty().getTenantId());
 		Property propertyFromSearch = propertyValidator.validateCommonUpdateInformation(request);
 
 		boolean isRequestForOwnerMutation = CreationReason.MUTATION.equals(request.getProperty().getCreationReason());
@@ -219,7 +219,7 @@ public class PropertyService {
 	 * @param propertyFromSearch
 	 */
 	private void processPropertyUpdate(PropertyRequest request, Property propertyFromSearch) {
-
+		restrictTenantFromSubmittingRequest(request.getProperty().getTenantId());
 		propertyValidator.validateRequestForUpdate(request, propertyFromSearch);
 		if (CreationReason.CREATE.equals(request.getProperty().getCreationReason())) {
 			userService.createUser(request);
@@ -413,7 +413,7 @@ public class PropertyService {
 	 * @return list of properties satisfying the containing fields in criteria
 	 */
 	public List<Property> searchProperty(PropertyCriteria criteria, RequestInfo requestInfo) {
-
+		restrictTenantFromSubmittingRequest(criteria.getTenantId());
 		List<Property> properties;
 
 		/*
@@ -452,6 +452,7 @@ public class PropertyService {
 	}
 
 	public List<Property> searchPropertyPlainSearch(PropertyCriteria criteria, RequestInfo requestInfo) {
+		restrictTenantFromSubmittingRequest(criteria.getTenantId());
 		List<Property> properties = getPropertiesPlainSearch(criteria, requestInfo);
 		for(Property property:properties)
 			enrichmentService.enrichBoundary(property,requestInfo);
@@ -522,5 +523,9 @@ public class PropertyService {
 		}
 	}
     
+	public void restrictTenantFromSubmittingRequest(String tenantId) {
+		if(tenantId.equalsIgnoreCase("uk.dehradun"))
+			throw new CustomException("NO_ACCESS","This API is restricted for the "+tenantId);
+	}
     
 }
