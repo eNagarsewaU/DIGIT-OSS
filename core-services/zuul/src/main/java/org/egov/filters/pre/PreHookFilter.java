@@ -42,7 +42,7 @@ public class PreHookFilter extends ZuulFilter {
         PreHookFilterRequest req = PreHookFilterRequest.builder().Request(reqDc.jsonString()).build();
         String response = null;
         try {
-            log.debug("Executing pre-hook filter. Sending request to - " + UrlProvider.getUrlPreHooksMap().get(uri));
+            log.info("Executing pre-hook filter. Sending request to - " + UrlProvider.getUrlPreHooksMap().get(uri));
             response = restTemplate.postForObject(UrlProvider.getUrlPreHooksMap().get(uri), req,
                 String.class);
 
@@ -62,6 +62,7 @@ public class PreHookFilter extends ZuulFilter {
 
     @Override
     public boolean shouldFilter() {
+    	log.info("loadPreHookFilters::{}", loadPreHookFilters);
         if (!loadPreHookFilters)
             return false;
 

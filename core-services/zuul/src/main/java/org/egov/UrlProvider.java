@@ -63,6 +63,7 @@ public class UrlProvider {
             for (int i = 0; i < urlArray.length; i++) {
 
                 String[] index = urlArray[i].split(":", 2);
+                log.info("PRE/POST-HOOK:::: {}:{}", index[0],index[1]);
                 map.put(index[0], index[1]);
             }
             urlPostHooksMap = Collections.unmodifiableMap(map);
