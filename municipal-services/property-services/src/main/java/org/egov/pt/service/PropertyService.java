@@ -524,8 +524,10 @@ public class PropertyService {
 	}
     
 	public void restrictTenantFromSubmittingRequest(String tenantId, RequestInfo requestInfo) {
-		String userType = requestInfo.getUserInfo() == null ? "" : requestInfo.getUserInfo().getType();
-		if(tenantId.equalsIgnoreCase("uk.dehradun") && !userType.equalsIgnoreCase("EMPLOYEE"))
+		String userType = "";
+		if(requestInfo != null && requestInfo.getUserInfo() != null)
+			userType = requestInfo.getUserInfo().getType();
+		if(tenantId.equalsIgnoreCase("uk.dehradun") && !userType.equalsIgnoreCase("EMPLOYEE") && !userType.equalsIgnoreCase("SYSTEM"))
 			throw new CustomException("NO_ACCESS","The API is restricted for Dehradun and Citizen can Pay/Search their Properties in https://nndonline.in/");
 	}
     
