@@ -22,7 +22,7 @@ public class TokenRepository {
     private static final int UPDATED_ROWS_COUNT = 1;
     private static final String NO = "N";
     private static final String INSERT_TOKEN = "insert into eg_token(id,tenantid,tokennumber,tokenidentity,validated,ttlsecs,createddate,createdby,version,createddatenew) values (:id,:tenantId,:tokenNumber,:tokenIdentity,:validated,:ttlSecs,:createdDate,:createdBy,:version,:createddatenew);";
-    private static final String GETTOKENS_BY_NUMBER_IDENTITY_TENANT = "select * from eg_token where tokenidentity=:tokenIdentity and tenantid=:tenantId and (:currenttime - createddatenew)/1000)::int <= ttlsecs and validated = 'N'";
+    private static final String GETTOKENS_BY_NUMBER_IDENTITY_TENANT = "select * from eg_token where tokenidentity=:tokenIdentity and tenantid=:tenantId and ((:currenttime - createddatenew)/1000)::int <= ttlsecs and validated = 'N'";
     private static final String UPDATE_TOKEN = "update eg_token set validated = 'Y' where id = :id";
     private static final String GETTOKEN_BYID = "select * from eg_token where id=:id";
     private static final String UPDATETOKEN_TLL_BYID = "update eg_token set ttlsecs = (:currenttime - createddatenew / 1000)::int + :ttl where id = :id";
