@@ -138,6 +138,7 @@ public class WorkflowIntegrator {
 			JSONObject workFlowRequest = new JSONObject();
 			workFlowRequest.put(REQUESTINFOKEY, tradeLicenseRequest.getRequestInfo());
 			workFlowRequest.put(WORKFLOWREQUESTARRAYKEY, array);
+			log.info("******Workflow Payload*****"+workFlowRequest.toString());
 			String response = null;
 			try {
 				response = rest.postForObject(config.getWfHost().concat(config.getWfTransitionPath()), workFlowRequest, String.class);
