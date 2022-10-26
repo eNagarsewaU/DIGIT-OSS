@@ -498,6 +498,7 @@ public class PropertyService {
     	log.info("~~~~~~~~~~ Current state = "+currentState);
     	Property property = propertyRequest.getProperty();
 		BigDecimal balanceAmount = util.getBalanceAmount(propertyRequest);
+		log.info("~~~~~~~~~~ balanceAmount = "+balanceAmount);
 		if ((balanceAmount.compareTo(BigDecimal.ZERO) <= 0)) {
 			log.info("~~~~~~~~~~ Enabling skip payment for balance = "+balanceAmount);
 			String action = EMPTY;
