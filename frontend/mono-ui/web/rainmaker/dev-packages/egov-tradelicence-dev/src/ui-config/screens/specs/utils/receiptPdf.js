@@ -1194,7 +1194,21 @@ const getCertificateData = (transformedData, ulbLogo) => {
               }
             ],
             alignment: "left"
-          } : {},
+          } : {
+            text: [
+                  {
+                    text:
+                      getLocaleLabels(
+                        "Initiated By:",
+                        "TL_LOCALIZATION_INITIATED_BY"
+                      ) + ":",
+                  },
+                  {
+                    text: `${transformedData.auditorName}`,
+                  },
+                ],
+                alignment: "left",
+          },
           {
             text: [
               {
