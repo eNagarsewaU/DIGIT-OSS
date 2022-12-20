@@ -40,8 +40,10 @@ public class PersistService {
 		log.info("{} applicable configs found!", applicableMappings.size());
 
 		for (Mapping mapping : applicableMappings) {
+			log.info("Mapping:::::"+ mapping.toString());
 			List<QueryMap> queryMaps = mapping.getQueryMaps();
 			for (QueryMap queryMap : queryMaps) {
+				log.info("QueryMap:::::"+ queryMap.toString());
 				String query = queryMap.getQuery();
 				List<JsonMap> jsonMaps = queryMap.getJsonMaps();
 				String basePath = queryMap.getBasePath();

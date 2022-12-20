@@ -73,10 +73,10 @@ public class PersistRepository {
         log.info("Testing Persister dataSource"+dataSource);
        
         List<Object[]> rows = new ArrayList<>();
-
+        log.info("Testing Persister dataSource size:::"+dataSource.size());
         for (int i = 0; i < dataSource.size(); i++) {
         	log.info("Testing Persister"+dataSource);
-        	log.info("dataSource.get(i):::"+dataSource.get(i));
+        	log.info("dataSource.get(i)::: "+i+" -->>>"+dataSource.get(i));
             LinkedHashMap<String, Object> rawDataRecord = dataSource.get(i);
 
             if (rawDataRecord == null)
@@ -102,6 +102,7 @@ public class PersistRepository {
                 }
 
                 if (jsonPath.contains("{")) {
+                	log.info("jsonPath:::"+ jsonPath);
                     String attribute = jsonPath.substring(jsonPath.indexOf("{") + 1, jsonPath.indexOf("}"));
                     jsonPath = jsonPath.replace("{".concat(attribute).concat("}"), "\"" + rawDataRecord.get(attribute).toString() + "\"");
                     JSONArray jsonArray = JsonPath.read(jsonObj, jsonPath);
@@ -206,19 +207,21 @@ public class PersistRepository {
      */
     private List<LinkedHashMap<String, Object>> extractData(String baseJsonPath, Object document) {
         List<LinkedHashMap<String, Object>> list = null;
-        log.info("Testing Persister",baseJsonPath + document);
+        log.info("BaseJsonPath:::Document",baseJsonPath + document);
         if(baseJsonPath.contains("*")) {
         	
             String arrayBasePath = baseJsonPath.substring(0, baseJsonPath.lastIndexOf(".*") + 2);
             log.info("arrayBasePath",arrayBasePath);
             list = JsonPath.read(document, arrayBasePath);
             log.info("List from arrayBasePath",list);
-            log.info("Testing Persister",baseJsonPath + document, list);
+            log.info("baseJsonPath->> "+baseJsonPath + " document:::" + document + "List::::"+ list);
         }
         else {
             LinkedHashMap<String, Object> map = JsonPath.read(document, baseJsonPath);
             list = Collections.singletonList(map);
-            log.info("Testing Persister",baseJsonPath + document, list);
+            log.info("baseJsonPath:::",baseJsonPath);
+            log.info("List from arrayBasePath-->>>>>>"+list);
+            log.info("baseJsonPath->> "+baseJsonPath + " document:::" + document + "List::::"+ list);
         }
         return list;
     }
