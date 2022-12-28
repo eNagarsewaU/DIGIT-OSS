@@ -705,6 +705,17 @@ public class PropertyValidator {
 //		Boolean isstateUpdatable = workflowService
 //				.getCurrentState(request.getRequestInfo(), property.getTenantId(), property.getAcknowldgementNumber())
 //				.getIsStateUpdatable();
+		System.out.println("***********request property**************");
+		String jsonString1 = new JSONObject(property).toString();
+                System.out.println(jsonString1);
+		
+		System.out.println("***********property From Search**************");
+		String jsonString2 = new JSONObject(propertyFromSearch).toString();
+        	System.out.println(jsonString2);
+        
+        	System.out.println("***********fieldsUpdated**************");
+		String jsonString3 = new JSONObject(fieldsUpdated).toString();
+        	System.out.println(jsonString3);
 
 		if (!CollectionUtils.isEmpty(fieldsUpdated))
 			throw new CustomException("EG_PT_MUTATION_ERROR",
