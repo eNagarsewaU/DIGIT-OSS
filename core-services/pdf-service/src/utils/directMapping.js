@@ -115,7 +115,7 @@ export const directMapping = async (
       } catch (error) {
         logger.error(error.stack || error);
         throw {
-          message: `error while loading image from: ${directArr[i].url}`,
+          message: `error while loading image`,
         };
       }
     }
