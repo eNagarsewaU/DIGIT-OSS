@@ -94,7 +94,7 @@ export const directMapping = async (
     } else if (directArr[i].type == "image") {
       try {
         var response = await axios.get(directArr[i].url, {
-          responseType: "arraybuffer"
+          responseType: "arraybuffer",
         });
         variableTovalueMap[directArr[i].jPath] =
           "data:" +
@@ -105,7 +105,16 @@ export const directMapping = async (
       } catch (error) {
         logger.error(error.stack || error);
         throw {
-          message: `error while loading image from: ${directArr[i].url}`
+          message: `error while loading image from: ${directArr[i].url}`,
+        };
+      }
+    } else if (directArr[i].type == "base64") {
+      try {
+        variableTovalueMap[directArr[i].jPath] = directArr[i].format;
+      } catch (error) {
+        logger.error(error.stack || error);
+        throw {
+          message: `error while loading image`,
         };
       }
     } else if (directArr[i].type == "array") {
@@ -127,7 +136,10 @@ export const directMapping = async (
             if (isNaN(myDate) || fieldValue === 0) {
               ownerObject[scema[k].variable] = "";
             } else {
-              let replaceValue = getDateInRequiredFormat(fieldValue,scema[k].format);
+              let replaceValue = getDateInRequiredFormat(
+                fieldValue,
+                scema[k].format
+              );
               // set(formatconfig,externalAPIArray[i].jPath[j].variable,replaceValue);
               ownerObject[scema[k].variable] = replaceValue;
             }
@@ -146,10 +158,10 @@ export const directMapping = async (
                 loc.isSubTypeRequired,
                 loc.delimiter
               );
-              if(!localisationCodes.includes(fieldValue))
+              if (!localisationCodes.includes(fieldValue))
                 localisationCodes.push(fieldValue);
 
-              if(!localisationModules.includes(loc.module))
+              if (!localisationModules.includes(loc.module))
                 localisationModules.push(loc.module);
 
               variableToModuleMap[scema[k].variable] = loc.module;
@@ -158,7 +170,7 @@ export const directMapping = async (
             if (typeof currentValue == "object" && currentValue.length > 0)
               currentValue = currentValue[0];
 
-            currentValue= escapeRegex(currentValue);
+            currentValue = escapeRegex(currentValue);
             ownerObject[scema[k].variable] = currentValue;
           }
           // set(ownerObject[x], "text", get(val[j], scema[k].key, ""));
@@ -190,19 +202,24 @@ export const directMapping = async (
             if (isNaN(myDate) || fieldValue === 0) {
               arrayOfItems.push("");
             } else {
-              let replaceValue = getDateInRequiredFormat(fieldValue,scema[k].format);
+              let replaceValue = getDateInRequiredFormat(
+                fieldValue,
+                scema[k].format
+              );
               // set(formatconfig,externalAPIArray[i].jPath[j].variable,replaceValue);
               arrayOfItems.push(replaceValue);
             }
-          } 
+          } else if (
           /**
-           * This condition is for displaying the ordered list data 
+           * This condition is for displaying the ordered list data
            * when data is coming as array of strings instead of key value pair.
            * Provided new scema type (array-orderedlist) which we should mention at data-config
            * to display the array of string in order list.
            */
-          else if (scema[k].type == "array-orderedlist" && Array.isArray(fieldValue)) {
-            if(fieldValue !== "") {
+            scema[k].type == "array-orderedlist" &&
+            Array.isArray(fieldValue)
+          ) {
+            if (fieldValue !== "") {
               for (var p = 0; p < fieldValue.length; p++) {
                 let orderedList = [];
                 orderedList.push(fieldValue[p]);
@@ -225,17 +242,17 @@ export const directMapping = async (
                 loc.isSubTypeRequired,
                 loc.delimiter
               );
-              if(!localisationCodes.includes(fieldValue))
+              if (!localisationCodes.includes(fieldValue))
                 localisationCodes.push(fieldValue);
 
-              if(!localisationModules.includes(loc.module))
+              if (!localisationModules.includes(loc.module))
                 localisationModules.push(loc.module);
             }
             arrayOfItems.push(fieldValue);
           }
         }
         if(isOrderedList === false)
-          arrayOfBuiltUpDetails.push(arrayOfItems);
+        arrayOfBuiltUpDetails.push(arrayOfItems);
       }
 
       // remove enclosing [ &  ]
@@ -262,7 +279,7 @@ export const directMapping = async (
         directArr[i].localisation.delimiter
       );
       if(!localisationCodes.includes(code))
-        localisationCodes.push(code);
+      localisationCodes.push(code);
 
       if(!localisationModules.includes(directArr[i].localisation.module))
         localisationModules.push(directArr[i].localisation.module);
@@ -270,8 +287,8 @@ export const directMapping = async (
       variableTovalueMap[directArr[i].jPath] = code;
       variableToModuleMap[directArr[i].jPath] = directArr[i].localisation.module;
 
-    } 
-    
+    }
+
     else if (directArr[i].type == "date") {
       let myDate = new Date(directArr[i].val[0]);
       if (isNaN(myDate) || directArr[i].val[0] === 0) {
@@ -280,7 +297,7 @@ export const directMapping = async (
         let replaceValue = getDateInRequiredFormat(directArr[i].val[0],directArr[i].format);
         variableTovalueMap[directArr[i].jPath] = replaceValue;
       }
-    } 
+    }
 
     else {
       directArr[i].val = getValue(
@@ -288,11 +305,11 @@ export const directMapping = async (
         "NA",
         directArr[i].valJsonPath
       );
-      if (
-        directArr[i].val == "NA" &&
-        directArr[i].valJsonPath.includes("billAccountDetails")
-      )
-        directArr[i].val = 0;
+      // if (
+      //   directArr[i].val == "NA" &&
+      //   directArr[i].valJsonPath.includes("billAccountDetails")
+      // )
+      //   directArr[i].val = 0;
       if (
         directArr[i].val !== "" &&
         directArr[i].localisation &&
@@ -309,10 +326,10 @@ export const directMapping = async (
         );
 
         if (typeof code == "object" && code.length > 0)
-          code = code[0];
+        code = code[0];
 
         if(!localisationCodes.includes(code))
-          localisationCodes.push(code);
+        localisationCodes.push(code);
 
         if(!localisationModules.includes(directArr[i].localisation.module))
           localisationModules.push(directArr[i].localisation.module);
@@ -322,16 +339,16 @@ export const directMapping = async (
         variableToModuleMap[directArr[i].jPath] = directArr[i].localisation.module;
 
       }
-        
+
       else{
         let currentValue = directArr[i].val;
-          if (typeof currentValue == "object" && currentValue.length > 0)
-            currentValue = currentValue[0];
-          
-         // currentValue=currentValue.replace(/\\/g,"\\\\").replace(/"/g,'\\"');
+        if (typeof currentValue == "object" && currentValue.length > 0)
+          currentValue = currentValue[0];
+
+        // currentValue=currentValue.replace(/\\/g,"\\\\").replace(/"/g,'\\"');
         currentValue= escapeRegex(currentValue);
         variableTovalueMap[directArr[i].jPath] = currentValue;
-      } 
+      }
       if (directArr[i].uCaseNeeded) {
         let currentValue = variableTovalueMap[directArr[i].jPath];
         if (typeof currentValue == "object" && currentValue.length > 0)
