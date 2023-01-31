@@ -51,7 +51,6 @@ import org.joda.time.Days;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
-import org.json.JSONObject;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -499,11 +498,9 @@ public class PaymentValidator {
 
 			String response = serviceRequestRepository
 					.fetchGetResult(applicationProperties.getRazorPayUrl() + paymentRequest.getPayment().getIfscCode());
-			log.info("************paymentRequest*********");
-			String jsonString = new JSONObject(paymentRequest).toString();
-        		System.out.println(jsonString);
-// 			if(paymentRequest.getPayment().getAdditionalDetails() != null)
-			ObjectNode objectNode = (ObjectNode) paymentRequest.getPayment().getAdditionalDetails();
+			ObjectNode objectNode = null;
+			if(isNull(paymentRequest.getPayment().getAdditionalDetails()))
+				objectNode = paymentRequest.getPayment().getAdditionalDetails();
 			if (objectNode == null) {
 				ObjectMapper mapper = new ObjectMapper();
 				objectNode = mapper.createObjectNode();
