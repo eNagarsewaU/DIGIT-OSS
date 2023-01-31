@@ -498,8 +498,10 @@ public class PaymentValidator {
 
 			String response = serviceRequestRepository
 					.fetchGetResult(applicationProperties.getRazorPayUrl() + paymentRequest.getPayment().getIfscCode());
-			log.info("paymentRequest",paymentRequest);
-			ObjectNode objectNode = (ObjectNode) paymentRequest.getPayment().getAdditionalDetails().deepCopy();
+			log.info("************paymentRequest*********");
+			log.info(paymentRequest);
+			if(paymentRequest.getPayment().getAdditionalDetails() != null)
+				ObjectNode objectNode = (ObjectNode) paymentRequest.getPayment().getAdditionalDetails().deepCopy();
 			if (objectNode == null) {
 				ObjectMapper mapper = new ObjectMapper();
 				objectNode = mapper.createObjectNode();
