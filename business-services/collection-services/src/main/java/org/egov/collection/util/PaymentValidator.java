@@ -500,7 +500,7 @@ public class PaymentValidator {
 					.fetchGetResult(applicationProperties.getRazorPayUrl() + paymentRequest.getPayment().getIfscCode());
 			ObjectNode objectNode = null;
 			if(isNull(paymentRequest.getPayment().getAdditionalDetails()))
-				objectNode = paymentRequest.getPayment().getAdditionalDetails();
+				objectNode = (ObjectNode) paymentRequest.getPayment().getAdditionalDetails();
 			if (objectNode == null) {
 				ObjectMapper mapper = new ObjectMapper();
 				objectNode = mapper.createObjectNode();
