@@ -81,7 +81,7 @@ public class BoundaryService {
 
 			Object boundaryObject = context.read(propertyIdToJsonPath.get(property.getPropertyId()));
 			if (!(boundaryObject instanceof ArrayList) || CollectionUtils.isEmpty((ArrayList) boundaryObject)){
-				log.info("property with no Boundary data:: ",property.getPropertyId())
+				log.info("property with no Boundary data:: ",property.getPropertyId());
 				throw new CustomException("BOUNDARY MDMS DATA ERROR", "The boundary data was not found");	
 			}
 
