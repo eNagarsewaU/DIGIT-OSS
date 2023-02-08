@@ -80,8 +80,10 @@ public class BoundaryService {
 			DocumentContext context = JsonPath.parse(jsonString);
 
 			Object boundaryObject = context.read(propertyIdToJsonPath.get(property.getPropertyId()));
-			if (!(boundaryObject instanceof ArrayList) || CollectionUtils.isEmpty((ArrayList) boundaryObject))
-				throw new CustomException("BOUNDARY MDMS DATA ERROR", "The boundary data was not found");
+			if (!(boundaryObject instanceof ArrayList) || CollectionUtils.isEmpty((ArrayList) boundaryObject)){
+				log.info("property with no Boundary data:: ",property.getPropertyId())
+				throw new CustomException("BOUNDARY MDMS DATA ERROR", "The boundary data was not found");	
+			}
 
 			ArrayList boundaryResponse = context.read(propertyIdToJsonPath.get(property.getPropertyId()));
 			Locality boundary = mapper.convertValue(boundaryResponse.get(0), Locality.class);
