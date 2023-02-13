@@ -20,14 +20,12 @@ public class RbacPreCheckFilter extends ZuulFilter {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private HashSet<String> openEndpointsWhitelist;
     private HashSet<String> anonymousEndpointsWhitelist;
-    private HashSet<String> SSO_ENDPOINT;
 
     @Autowired
     public RbacPreCheckFilter(HashSet<String> openEndpointsWhitelist,
-                              HashSet<String> anonymousEndpointsWhitelist, HashSet<String> SSO_ENDPOINT) {
+                              HashSet<String> anonymousEndpointsWhitelist) {
         this.openEndpointsWhitelist = openEndpointsWhitelist;
         this.anonymousEndpointsWhitelist = anonymousEndpointsWhitelist;
-        this.SSO_ENDPOINT = SSO_ENDPOINT;
     }
 
     @Override
@@ -48,8 +46,7 @@ public class RbacPreCheckFilter extends ZuulFilter {
     @Override
     public Object run() {
         if ((openEndpointsWhitelist.contains(getRequestURI())
-            || anonymousEndpointsWhitelist.contains(getRequestURI())
-           || SSO_ENDPOINT.contains(getRequestURI()))) {
+            || anonymousEndpointsWhitelist.contains(getRequestURI()))) {
             setShouldDoRbac(false);
             logger.info(SKIP_RBAC, getRequestURI());
             return null;

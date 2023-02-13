@@ -3,17 +3,10 @@ package org.egov.tl.web.controllers;
 
 import org.egov.tl.service.PaymentUpdateService;
 import org.egov.tl.service.TradeLicenseService;
-import org.egov.tl.service.UserService;
 import org.egov.tl.service.notification.PaymentNotificationService;
 import org.egov.tl.util.ResponseInfoFactory;
 import org.egov.tl.web.models.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.jaegertracing.thriftjava.Log;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -21,9 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-
-
 
 import java.io.IOException;
 import java.util.*;
@@ -31,13 +21,10 @@ import java.util.*;
 import javax.validation.constraints.*;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
-//import org.egov.user.persistence.repository;
-
 
 @RestController
     @RequestMapping("/v1")
     public class TradeLicenseController {
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
         private final ObjectMapper objectMapper;
 
@@ -46,10 +33,6 @@ import javax.servlet.http.HttpServletRequest;
         private final TradeLicenseService tradeLicenseService;
 
         private final ResponseInfoFactory responseInfoFactory;
-        
-        private final User user;
-        
-        
 
     @Autowired
     public TradeLicenseController(ObjectMapper objectMapper, HttpServletRequest request,
@@ -58,7 +41,6 @@ import javax.servlet.http.HttpServletRequest;
         this.request = request;
         this.tradeLicenseService = tradeLicenseService;
         this.responseInfoFactory = responseInfoFactory;
-        this.user = null;
     }
 
 
@@ -117,14 +99,7 @@ import javax.servlet.http.HttpServletRequest;
                 .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-    
-    @RequestMapping(value = "/external/_create", method = RequestMethod.POST)
-    public String signleSignOnForTradeLicense(@RequestBody Object obj) {
-    	String postJson = obj.toString();
-    	logger.info("Inside TradeLicenceController, Body Data:", postJson);
-    	return "1";
-    }
-    
-    
+
+
 
 }

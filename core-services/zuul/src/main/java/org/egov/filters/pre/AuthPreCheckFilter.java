@@ -1,34 +1,25 @@
 package org.egov.filters.pre;
 
-import static org.egov.constants.RequestContextConstants.AUTH_BOOLEAN_FLAG_NAME;
-import static org.egov.constants.RequestContextConstants.AUTH_TOKEN_KEY;
-import static org.egov.constants.RequestContextConstants.CURRENT_REQUEST_SANITIZED_BODY;
-import static org.egov.constants.RequestContextConstants.CURRENT_REQUEST_SANITIZED_BODY_STR;
-import static org.egov.constants.RequestContextConstants.USER_INFO_FIELD_NAME;
-import static org.egov.constants.RequestContextConstants.USER_INFO_KEY;
-
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.egov.Utils.ExceptionUtils;
-import org.egov.Utils.UserUtils;
-import org.egov.Utils.Utils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.netflix.zuul.ZuulFilter;
+import com.netflix.zuul.context.RequestContext;
+import org.egov.Utils.*;
 import org.egov.contract.User;
 import org.egov.model.RequestBodyInspector;
 import org.egov.wrapper.CustomRequestWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.ObjectUtils;
+import org.springframework.util.*;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.netflix.zuul.ZuulFilter;
-import com.netflix.zuul.context.RequestContext;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.HashSet;
+
+import static org.egov.constants.RequestContextConstants.*;
 
 /**
  *  2nd pre filter to get executed.
@@ -39,7 +30,6 @@ import com.netflix.zuul.context.RequestContext;
 public class AuthPreCheckFilter extends ZuulFilter {
     private static final String AUTH_TOKEN_RETRIEVE_FAILURE_MESSAGE = "Retrieving of auth token failed";
     private static final String OPEN_ENDPOINT_MESSAGE = "Routing to an open endpoint: {}";
-    private static final String SSO_ENDPOINT_MESSAGE = "Routing to an endpoint for Single SignOn: {}";
     private static final String AUTH_TOKEN_HEADER_MESSAGE = "Fetching auth-token from header for URI: {}";
     private static final String AUTH_TOKEN_BODY_MESSAGE = "Fetching auth-token from request body for URI: {}";
     private static final String AUTH_TOKEN_HEADER_NAME = "auth-token";
@@ -54,7 +44,6 @@ public class AuthPreCheckFilter extends ZuulFilter {
     private static final String FAILED_TO_SERIALIZE_REQUEST_BODY_MESSAGE = "Failed to serialize requestBody";
     private HashSet<String> openEndpointsWhitelist;
     private HashSet<String> mixedModeEndpointsWhitelist;
-    private HashSet<String> SSO_ENDPOINT;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final ObjectMapper objectMapper;
     private UserUtils userUtils;
@@ -62,11 +51,9 @@ public class AuthPreCheckFilter extends ZuulFilter {
 
     public AuthPreCheckFilter(HashSet<String> openEndpointsWhitelist,
                               HashSet<String> mixedModeEndpointsWhitelist,
-                               HashSet<String> SSO_ENPOINT,
                               UserUtils userUtils) {
         this.openEndpointsWhitelist = openEndpointsWhitelist;
         this.mixedModeEndpointsWhitelist = mixedModeEndpointsWhitelist;
-        this.SSO_ENDPOINT = SSO_ENPOINT;
         this.userUtils = userUtils;
         objectMapper = new ObjectMapper();
     }
@@ -89,11 +76,6 @@ public class AuthPreCheckFilter extends ZuulFilter {
     @Override
     public Object run() {
         String authToken;
-        if (SSO_ENDPOINT.contains(getRequestURI())) {
-        	setShouldDoAuth(false);
-        	logger.info(SSO_ENDPOINT_MESSAGE, getRequestURI());
-        	return null;
-        }
         if (openEndpointsWhitelist.contains(getRequestURI())) {
             setShouldDoAuth(false);
             logger.info(OPEN_ENDPOINT_MESSAGE, getRequestURI());
