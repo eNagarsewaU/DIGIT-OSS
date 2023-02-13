@@ -133,7 +133,8 @@ const createPdfBinary = async (
   totalobjectcount,
   userid,
   documentType,
-  moduleName
+  moduleName,
+  isconsolidated
 ) => {
   try {
     let noOfDefinitions = listDocDefinition.length;
@@ -151,43 +152,24 @@ const createPdfBinary = async (
       //
       process.nextTick(function () {
         uploadFiles(
-            dbInsertSingleRecords,
-            dbInsertBulkRecords,
-            formatconfig,
-            listDocDefinition,
-            key,
-            false,
-            jobid,
-            noOfDefinitions,
-            entityIds,
-            starttime,
-            successCallback,
-            errorCallback,
-            tenantId,
-            totalobjectcount,
-            userid,
-            documentType,
-            moduleName
-          ),
-          uploadFiles(
-            dbInsertSingleRecords,
-            dbInsertBulkRecords,
-            formatconfig,
-            listDocDefinition,
-            key,
-            true,
-            jobid,
-            noOfDefinitions,
-            entityIds,
-            starttime,
-            successCallback,
-            errorCallback,
-            tenantId,
-            totalobjectcount,
-            userid,
-            documentType,
-            moduleName
-          )
+          dbInsertSingleRecords,
+          dbInsertBulkRecords,
+          formatconfig,
+          listDocDefinition,
+          key,
+          isconsolidated,
+          jobid,
+          noOfDefinitions,
+          entityIds,
+          starttime,
+          successCallback,
+          errorCallback,
+          tenantId,
+          totalobjectcount,
+          userid,
+          documentType,
+          moduleName
+        )
       });
     }
   } catch (err) {
@@ -206,7 +188,7 @@ const uploadFiles = async (
   formatconfig,
   listDocDefinition,
   key,
-  isconsolidated,
+  isConsolidated,
   jobid,
   noOfDefinitions,
   entityIds,
@@ -222,7 +204,7 @@ const uploadFiles = async (
   let convertedListDocDefinition = [];
   let listOfFilestoreIds = [];
 
-  if (!isconsolidated) {
+  if (!isConsolidated) {
     listDocDefinition.forEach((docDefinition) => {
       docDefinition["content"].forEach((defn) => {
         var formatobject = JSON.parse(JSON.stringify(formatconfig));
@@ -262,14 +244,14 @@ const uploadFiles = async (
       fileStoreAPICall(filename, tenantId, data)
         .then((result) => {
           listOfFilestoreIds.push(result);
-          if (!isconsolidated) {
+          if (!isConsolidated) {
             dbInsertSingleRecords.push({
               jobid,
               id: uuidv4(),
               createdby: userid,
               modifiedby: userid,
               entityid: entityIds[i],
-              isconsolidated: false,
+              isConsolidated: false,
               filestoreids: [result],
               tenantId,
               createdtime: starttime,
@@ -282,7 +264,7 @@ const uploadFiles = async (
 
             // insertStoreIds(jobid,entityIds[i],[result],tenantId,starttime,successCallback,errorCallback,1,false);
           } else if (
-            isconsolidated &&
+            isConsolidated &&
             listOfFilestoreIds.length == noOfDefinitions
           ) {
             // insertStoreIds("",);
@@ -293,7 +275,7 @@ const uploadFiles = async (
               createdby: userid,
               modifiedby: userid,
               entityid: null,
-              isconsolidated: true,
+              isConsolidated: true,
               filestoreids: listOfFilestoreIds,
               tenantId,
               createdtime: starttime,
@@ -305,7 +287,7 @@ const uploadFiles = async (
             });
           }
           if (
-            dbInsertSingleRecords.length == totalobjectcount &&
+            dbInsertSingleRecords.length == totalobjectcount ||
             dbInsertBulkRecords.length == 1
           ) {
             insertStoreIds(
@@ -396,6 +378,10 @@ app.post(
       logger.info("received createnosave request on key: " + key);
       requestInfo = get(req.body, "RequestInfo");
       //
+      let isConsolidated = get(req.query, "isconsolidated");
+      // Set isConsolidated true as default if it's not available because it's a test api
+      isConsolidated =
+        isConsolidated == null ? true : getIsConsolidatedFromReq(req.query);
 
       var valid = validateRequest(req, res, key, tenantId, requestInfo);
 
@@ -421,18 +407,16 @@ app.post(
       }
 
       if (valid) {
-        let [
-          formatConfigByFile,
-          totalobjectcount,
-          entityIds,
-        ] = await prepareBegin(
-          key,
-          req,
-          requestInfo,
-          true,
-          formatconfig,
-          dataconfig
-        );
+        let [formatConfigByFile, totalobjectcount, entityIds] =
+          await prepareBegin(
+            key,
+            req,
+            requestInfo,
+            true,
+            formatconfig,
+            dataconfig,
+            isConsolidated
+          );
         // restoring footer function
         formatConfigByFile[0].footer = convertFooterStringtoFunctionIfExist(formatconfig.footer);
         const doc = printer.createPdfKitDocument(formatConfigByFile[0]);
@@ -475,7 +459,7 @@ app.post(
     try {
       let tenantid = req.query.tenantid;
       let jobid = req.query.jobid;
-      let isconsolidated = req.query.isconsolidated;
+      let isConsolidated = req.query.isConsolidated;
       let entityid = req.query.entityid;
       requestInfo = get(req.body, "RequestInfo");
       if (
@@ -499,7 +483,7 @@ app.post(
         getFileStoreIds(
           jobid,
           tenantid,
-          isconsolidated,
+          isConsolidated,
           entityid,
           (responseBody) => {
             // doc successfully created
@@ -698,6 +682,7 @@ export const createAndSave = async (
   var requestInfo = get(req.body || req, "RequestInfo");
   var documentType = get(dataconfig, "documentType", "");
   var moduleName = get(dataconfig, "DataConfigs.moduleName", "");
+  let isConsolidated = getIsConsolidatedFromReq(req.query || req);
 
   var valid = validateRequest(req, res, key, tenantId, requestInfo);
   if (valid) {
@@ -707,7 +692,8 @@ export const createAndSave = async (
       requestInfo,
       false,
       formatconfig,
-      dataconfig
+      dataconfig,
+      isConsolidated
     );
 
     // logger.info(`Applied templating engine on ${moduleObjectsArray.length} objects output will be in ${formatConfigByFile.length} files`);
@@ -729,17 +715,33 @@ export const createAndSave = async (
       totalobjectcount,
       userid,
       documentType,
-      moduleName
+      moduleName,
+      isConsolidated
     ).catch((err) => {
       logger.error(err.stack || err);
       errorCallback({
-        message: "error occurred in createPdfBinary call: " + (typeof err === "string") ?
-          err :
-          err.message,
+        message:
+          "error occurred in createPdfBinary call: " + (typeof err === "string")
+            ? err
+            : err.message,
       });
     });
   }
 };
+/**
+ * Check isConsolidated from given object
+ * @param {*} obj 
+ * @returns boolean
+ */
+const getIsConsolidatedFromReq = (obj) => {
+  let isConsolidated;
+  if (obj && obj.isConsolidated) {
+    isConsolidated = obj.isConsolidated;
+  } else if (obj && obj.isConsolidated) {
+    isConsolidated = obj.isConsolidated;
+  }
+  return isConsolidated == undefined ? false : (isConsolidated == true || isConsolidated.toLowerCase() == 'true') ? true : false;
+}
 const updateBorderlayout = (formatconfig) => {
   formatconfig.content = formatconfig.content.map((item) => {
     if (
@@ -860,7 +862,8 @@ const prepareBegin = async (
   requestInfo,
   returnFileInResponse,
   formatconfig,
-  dataconfig
+  dataconfig,
+  isConsolidated
 ) => {
   var baseKeyPath = get(dataconfig, "DataConfigs.baseKeyPath");
   var entityIdPath = get(dataconfig, "DataConfigs.entityIdPath");
@@ -878,7 +881,8 @@ const prepareBegin = async (
     baseKeyPath,
     requestInfo,
     returnFileInResponse,
-    entityIdPath
+    entityIdPath,
+    isConsolidated
   );
 };
 
@@ -930,7 +934,8 @@ const prepareBulk = async (
   baseKeyPath,
   requestInfo,
   returnFileInResponse,
-  entityIdPath
+  entityIdPath,
+  isconsolidated
 ) => {
   let isCommonTableBorderRequired = get(
     dataconfig,
@@ -962,7 +967,8 @@ const prepareBulk = async (
       // Multipage pdf, each pdf from new page
       if (
         formatObjectArrayObject.length != 0 &&
-        formatObject["content"][0] !== undefined
+        formatObject["content"][0] !== undefined &&
+        isconsolidated
       ) {
         formatObject["content"][0]["pageBreak"] = "before";
       }
