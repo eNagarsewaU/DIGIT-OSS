@@ -11,6 +11,7 @@ import org.egov.filters.pre.AuthFilter;
 import org.egov.filters.pre.AuthPreCheckFilter;
 import org.egov.filters.pre.RbacFilter;
 import org.egov.filters.pre.RbacPreCheckFilter;
+import org.egov.filters.pre.SsoAuthFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -44,6 +45,9 @@ public class ZuulGatewayApplication {
 
     @Value("#{'${egov.mixed-mode-endpoints-whitelist}'.split(',')}")
     private String[] mixedModeEndpointsWhitelist;
+    
+    @Value("#{'${SSO_ENDPOINT}'.split(',')}")
+    private String[] SSO_ENDPOINT;
 
     @Value("${egov.auth-service-host}")
     private String authServiceHost;
@@ -69,7 +73,7 @@ public class ZuulGatewayApplication {
     @Bean
     public AuthPreCheckFilter authCheckFilter() {
         return new AuthPreCheckFilter(new HashSet<>(Arrays.asList(openEndpointsWhitelist)),
-            new HashSet<>(Arrays.asList(mixedModeEndpointsWhitelist)),userUtils);
+            new HashSet<>(Arrays.asList(mixedModeEndpointsWhitelist)),new HashSet<>(Arrays.asList(SSO_ENDPOINT)),userUtils);
     }
 
     @Bean
@@ -86,8 +90,13 @@ public class ZuulGatewayApplication {
     @Bean
     public RbacPreCheckFilter rbacCheckFilter() {
         return new RbacPreCheckFilter(new HashSet<>(Arrays.asList(openEndpointsWhitelist)),
-            new HashSet<>(Arrays.asList(mixedModeEndpointsWhitelist))
+            new HashSet<>(Arrays.asList(mixedModeEndpointsWhitelist)),new HashSet<>(Arrays.asList(SSO_ENDPOINT))
         );
+    }
+    
+    @Bean
+    public SsoAuthFilter ssoAuthFilter() {
+        return new SsoAuthFilter(new HashSet<>(Arrays.asList(SSO_ENDPOINT)),userUtils);
     }
 
     @Configuration
