@@ -27,6 +27,7 @@ public class AuthPreCheckFilterTest {
 
     private HashSet<String> openEndpointsWhitelist = new HashSet<>();
     private HashSet<String> anonymousEndpointsWhitelist = new HashSet<>();
+    private HashSet<String> SSO_ENPOINT = new HashSet<>();
 
     @Rule
     public ExpectedException expectedEx = ExpectedException.none();
@@ -37,9 +38,10 @@ public class AuthPreCheckFilterTest {
         openEndpointsWhitelist.add("open-endpoint2");
         anonymousEndpointsWhitelist.add("anonymous-endpoint1");
         anonymousEndpointsWhitelist.add("anonymous-endpoint2");
+        SSO_ENPOINT.add("open-endpoint1");
         UserUtils userUtils = Mockito.mock(UserUtils.class);
         Mockito.when(userUtils.fetchSystemUser()).thenReturn(new User());
-        authPreCheckFilter = new AuthPreCheckFilter(openEndpointsWhitelist, anonymousEndpointsWhitelist, userUtils);
+        authPreCheckFilter = new AuthPreCheckFilter(openEndpointsWhitelist, anonymousEndpointsWhitelist,SSO_ENPOINT, userUtils);
         RequestContext ctx = RequestContext.getCurrentContext();
         ctx.clear();
         ctx.setRequest(request);
