@@ -15,7 +15,8 @@ public class RbacPreCheckFilterTest {
 
     private HashSet<String> openEndpointsWhitelist = new HashSet<>();
     private HashSet<String> anonymousEndpointsWhitelist = new HashSet<>();
-
+    private HashSet<String> SSO_ENDPOINT = new HashSet<>();
+    
     private RbacPreCheckFilter rbacPreCheckFilter;
 
     @Before
@@ -24,7 +25,8 @@ public class RbacPreCheckFilterTest {
         openEndpointsWhitelist.add("open-endpoint2");
         anonymousEndpointsWhitelist.add("/pgr/complaintTypeCategories");
         anonymousEndpointsWhitelist.add("anonymous-endpoint2");
-        rbacPreCheckFilter = new RbacPreCheckFilter(openEndpointsWhitelist, anonymousEndpointsWhitelist);
+        SSO_ENDPOINT.add("/tl-services/v1/external/_create");
+        rbacPreCheckFilter = new RbacPreCheckFilter(openEndpointsWhitelist, anonymousEndpointsWhitelist,SSO_ENDPOINT);
         RequestContext ctx = RequestContext.getCurrentContext();
         ctx.clear();
         ctx.setRequest(request);
