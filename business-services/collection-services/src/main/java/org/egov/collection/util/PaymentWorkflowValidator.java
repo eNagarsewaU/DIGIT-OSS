@@ -66,11 +66,11 @@ public class PaymentWorkflowValidator {
                     paymentsByConsumerCode.get(paymentDetail.getBill().getConsumerCode()).removeFirst();
                 }
                 else {
-                    log.error("Payment not the latest payment for the consumer code {} , perform operation for {} first ",
+                    log.error("RECEIPT_WORKFLOW_ACTION_NOT_APPLICABLE", "Can only cancel / dishonour latest receipt " +
+                            "for a consumer code. Dishonour of receipt possible only after deposited! ");
+                	errorMap.put("Payment not the latest payment for the consumer code {} , perform operation for {} first ",
                             paymentDetail.getBill().getConsumerCode(),  paymentsByConsumerCode.get(paymentDetail.getBill().getConsumerCode()).getFirst()
                                     .getId());
-                    errorMap.put("RECEIPT_WORKFLOW_ACTION_NOT_APPLICABLE", "Can only cancel / dishonour latest receipt " +
-                            "for a consumer code. Dishonour of receipt possible only after deposited! ");
                 }
 
         }
