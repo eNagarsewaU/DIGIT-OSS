@@ -68,9 +68,9 @@ public class PaymentWorkflowValidator {
                 else {
                     log.error("RECEIPT_WORKFLOW_ACTION_NOT_APPLICABLE", "Can only cancel / dishonour latest receipt " +
                             "for a consumer code. Dishonour of receipt possible only after deposited! ");
-                	errorMap.put("Payment not the latest payment for the consumer code {} , perform operation for {} first ",
-                            paymentDetail.getBill().getConsumerCode(),  paymentsByConsumerCode.get(paymentDetail.getBill().getConsumerCode()).getFirst()
-                                    .getId());
+                	String error = "Payment not the latest payment for the consumer code {"+paymentDetail.getBill().getConsumerCode()+"} , perform operation for {"+paymentsByConsumerCode.get(paymentDetail.getBill().getConsumerCode()).getFirst()
+                            .getId()+"} first ";
+                    errorMap.put(error, error);
                 }
 
         }
