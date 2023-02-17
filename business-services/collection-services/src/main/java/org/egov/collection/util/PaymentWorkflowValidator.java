@@ -70,7 +70,7 @@ public class PaymentWorkflowValidator {
                             "for a consumer code. Dishonour of receipt possible only after deposited! ");
                 	String error = "Payment not the latest payment for the consumer code {"+paymentDetail.getBill().getConsumerCode()+"} , perform operation for {"+paymentsByConsumerCode.get(paymentDetail.getBill().getConsumerCode()).getFirst()
                             .getId()+"} first ";
-                    errorMap.put(error, error);
+                    errorMap.put("NOT_LATEST_PAYMENT", error);
                 }
 
         }
