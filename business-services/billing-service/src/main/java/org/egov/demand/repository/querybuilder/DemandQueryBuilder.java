@@ -221,6 +221,7 @@ public class DemandQueryBuilder {
 		addPagingClause(demandQuery, preparedStatementValues);
 
 		log.info("the query String for demand : " + demandQuery.toString());
+		log.info("the criteria for demand query: " + demandCriteria.toString());
 		return demandQuery.toString();
 	}
 	
