@@ -1,42 +1,53 @@
 package org.egov.tl.web.controllers;
 
 
-import org.egov.tl.service.PaymentUpdateService;
+import java.io.IOException;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+//import org.egov.user.persistence.repository;
+import javax.validation.Valid;
+
 import org.egov.tl.service.TradeLicenseService;
 import org.egov.tl.service.UserService;
-import org.egov.tl.service.notification.PaymentNotificationService;
 import org.egov.tl.util.ResponseInfoFactory;
-import org.egov.tl.web.models.*;
+import org.egov.tl.web.models.RequestInfoWrapper;
+import org.egov.tl.web.models.TradeLicense;
+import org.egov.tl.web.models.TradeLicenseRequest;
+import org.egov.tl.web.models.TradeLicenseResponse;
+import org.egov.tl.web.models.TradeLicenseSearchCriteria;
+import org.egov.tl.web.models.User;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import io.jaegertracing.thriftjava.Log;
-import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.ModelAndView;
 
-
-
-import java.io.IOException;
-import java.util.*;
-
-import javax.validation.constraints.*;
-import javax.validation.Valid;
-import javax.servlet.http.HttpServletRequest;
-//import org.egov.user.persistence.repository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @RestController
+
+
     @RequestMapping("/v1")
     public class TradeLicenseController {
+	
+	@Autowired
+    
+	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
         private final ObjectMapper objectMapper;
@@ -50,10 +61,13 @@ import javax.servlet.http.HttpServletRequest;
         private final User user;
         
         
+       
+        
+        
 
     @Autowired
     public TradeLicenseController(ObjectMapper objectMapper, HttpServletRequest request,
-                                  TradeLicenseService tradeLicenseService, ResponseInfoFactory responseInfoFactory) {
+                                  TradeLicenseService tradeLicenseService ,ResponseInfoFactory responseInfoFactory) {
         this.objectMapper = objectMapper;
         this.request = request;
         this.tradeLicenseService = tradeLicenseService;
@@ -119,10 +133,16 @@ import javax.servlet.http.HttpServletRequest;
     }
     
     @RequestMapping(value = "/external/_create", method = RequestMethod.POST)
-    public String signleSignOnForTradeLicense(@RequestBody Object obj) {
-    	String postJson = obj.toString();
-    	logger.info("Inside TradeLicenceController, Body Data:", postJson);
-    	return "1";
+    public ModelAndView signleSignOnForTradeLicense(@RequestHeader HttpHeaders header, @RequestBody Object object){
+    	logger.info("Inside TradeLicenceController");
+    	logger.info("Data Inside Request Header-> TradeLicenceController, Body Data:"+ header);
+    	System.out.println(header);
+    	logger.info("Data Inside Request Body-> TradeLicenceController, Body Data:"+ object);
+    	System.out.println(object);
+    	//userService.userExists(OwnerInfo owner,RequestInfo requestInfo);
+		return new ModelAndView("https://nagarsewa-uat.uk.gov.in/citizen/tradelicense-citizen/home");
+    	
+    	
     }
     
     
