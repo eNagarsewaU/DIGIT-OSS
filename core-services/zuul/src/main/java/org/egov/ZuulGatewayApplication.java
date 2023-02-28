@@ -48,6 +48,14 @@ public class ZuulGatewayApplication {
     
     @Value("#{'${SSO_ENDPOINT}'.split(',')}")
     private String[] SSO_ENDPOINT;
+    
+    
+    @Value("${ukswcs_auth_url_api}")
+    private String ukswcs_auth_url_api;
+    
+    @Value("${ukswcs_return_url}")
+    private String ukswcs_return_url;
+    
 
     @Value("${egov.auth-service-host}")
     private String authServiceHost;
@@ -96,7 +104,7 @@ public class ZuulGatewayApplication {
     
     @Bean
     public SsoAuthFilter ssoAuthFilter() {
-        return new SsoAuthFilter(new HashSet<>(Arrays.asList(SSO_ENDPOINT)),userUtils);
+        return new SsoAuthFilter(new HashSet<>(Arrays.asList(SSO_ENDPOINT)),ukswcs_auth_url_api,ukswcs_return_url,userUtils);
     }
 
     @Configuration
