@@ -276,8 +276,8 @@ public class SsoAuthFilter extends ZuulFilter {
 			createRequestInfo.put("msgId", "20170310130900|en_IN");
 			createRequestInfo.put("authToken", "");
 
-			userInfo.put("userName", "swcs-" + user_id + "-" + iuid);
-			userInfo.put("password", "Swcs@12345");
+			userInfo.put("userName", mobile);
+			userInfo.put("password", "Swcs@" + user_id + "@" + iuid);
 			userInfo.put("name", name);
 			userInfo.put("mobileNumber", mobile);
 			userInfo.put("type", "CITIZEN");
