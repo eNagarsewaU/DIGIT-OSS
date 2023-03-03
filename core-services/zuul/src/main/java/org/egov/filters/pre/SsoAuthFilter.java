@@ -106,7 +106,7 @@ public class SsoAuthFilter extends ZuulFilter {
 		}
 
 		if (!token.equals("")) {
-			logger.info("Recieved Token: ", token.toString());
+			logger.info("Recieved Token: ", token);
 			// token available in request
 			String url = ukswcs_auth_url_api + token;
 			RestTemplate restTemplate = new RestTemplate();
@@ -147,7 +147,7 @@ public class SsoAuthFilter extends ZuulFilter {
 					
 					// search user form db
 					try {
-						userSearchResponse = searchUser(user_id, iuid, mobile);
+						userSearchResponse = searchUser(mobile);
 						logger.info("User Search Api Data Recieved: ", userSearchResponse.toString());
 					} catch (HttpClientErrorException ex) {
 						logger.error(RETRIEVING_USER_FAILED_MESSAGE, ex);
@@ -159,8 +159,8 @@ public class SsoAuthFilter extends ZuulFilter {
 						logger.info("Create Api Data status: ", userCreated);
 						if (userCreated) {
 							try {
-								userSearchResponseAfterUserCreation = searchUser(user_id, iuid, mobile);
-								logger.info("Search Api Data: ", userSearchResponseAfterUserCreation.toString());
+								userSearchResponseAfterUserCreation = searchUser(mobile);
+								logger.info("Search Api Data: ", userSearchResponseAfterUserCreation);
 							} catch (HttpClientErrorException ex) {
 								logger.error(RETRIEVING_USER_FAILED_MESSAGE, ex);
 								ExceptionUtils.RaiseException(ex);
@@ -170,7 +170,7 @@ public class SsoAuthFilter extends ZuulFilter {
 							if (!userSearchResponseAfterUserCreation.get("user").isEmpty()) {
 								userObject = userSearchResponseAfterUserCreation.get("user");
 								// put it into header
-								logger.info("User Data Exist in DB, Block: ", userObject.toString());
+								logger.info("User Data Exist in DB, Block: ", userObject);
 								ctx.setResponseStatusCode(200);
 								ctx.set("status", "pass");
 								ctx.set(USER_INFO_KEY, userObject);
@@ -180,7 +180,7 @@ public class SsoAuthFilter extends ZuulFilter {
 						}
 					} else {
 						// user already exist: get userObject and put into the header
-						logger.info("User Data Already Exist in DB, Block: ", userObject.toString());
+						logger.info("User Data Already Exist in DB, Block: ", userObject);
 						userObject = userSearchResponse.get("user");
 						ctx.setResponseStatusCode(200);
 						ctx.set("status", "pass");
@@ -205,7 +205,7 @@ public class SsoAuthFilter extends ZuulFilter {
 		return null;
 	}
 
-	private Map<String, String> searchUser(String user_id, String iuid, String mobile) {
+	private Map<String, String> searchUser(String mobile) {
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		JSONObject searchRequest = new JSONObject();
@@ -225,7 +225,7 @@ public class SsoAuthFilter extends ZuulFilter {
 
 			searchRequest.put("RequestInfo", searchRequestInfo);
 			// username is combination of deptartment.(swcs)+ userid+iuid.
-			searchRequest.put("userName", "swcs-" + user_id + "-" + iuid);
+			searchRequest.put("userName", mobile);
 			searchRequest.put("mobileNumber", mobile);
 			searchRequest.put("type", "CITIZEN");
 			searchRequest.put("tenantId", "uk");
