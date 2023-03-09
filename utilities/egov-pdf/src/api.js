@@ -266,6 +266,124 @@ async function search_amendment(tenantId, amendmentId, serviceId, requestinfo) {
   });
 }
 
+/**
+ * It generates bill of property tax and merge into single PDF file
+ * @param {*} kafkaData - Data pushed in kafka topic
+ */
+async function create_bulk_pdf_pt(kafkaData){
+  var propertyBills;
+  var consolidatedResult = {Bill:[]};
+
+  let { 
+    tenantId, 
+    locality, 
+    bussinessService, 
+    isConsolidated, 
+    consumerCode, 
+    requestinfo, 
+    jobid
+  } = kafkaData;
+
+  try {
+
+    try{
+      var searchCriteria = {locality, tenantId, bussinessService};
+      propertyBills = await search_bill(
+        null, 
+        null,
+        {
+          RequestInfo:requestinfo.RequestInfo,
+          searchCriteria
+        }
+      );
+
+      propertyBills = propertyBills.data.Bills;
+
+      if(propertyBills.length>0){
+        for(let propertyBill of propertyBills){
+          if(propertyBill.status ==='EXPIRED'){
+            var billresponse = await fetch_bill(
+              tenantId, propertyBill.consumerCode, propertyBill.businessService, {RequestInfo:requestinfo.RequestInfo}
+            );
+            if (billresponse?.data?.Bill?.[0]) consolidatedResult.Bill.push(billresponse.data.Bill[0]);
+          }
+          else{
+            if(propertyBill.status ==='ACTIVE')
+              consolidatedResult.Bill.push(propertyBill);
+          }
+        }
+      }
+    }
+    catch (ex) {
+      if (ex.response && ex.response.data) logger.error(ex.response.data);
+      throw new Error("Failed to query details of property ");
+    }
+
+    if (consolidatedResult?.Bill?.length > 0) {
+      var pdfResponse;
+      var pdfkey = config.pdf.ptbill_pdf_template;
+      try {
+        var batchSize = config.PDF_BATCH_SIZE;
+        var size = consolidatedResult.Bill.length;
+        var numberOfFiles = (size%batchSize) == 0 ? (size/batchSize) : (~~(size/batchSize) +1);
+        for(var i = 0;i<size;i+=batchSize){
+          var payloads = [];
+          var billData = consolidatedResult.Bill.slice(i,i+batchSize);
+          var billArray = { 
+              Bill: billData,
+              isBulkPdf: true,
+              pdfJobId: jobid,
+              pdfKey: pdfkey,
+              totalPdfRecords:size,
+              currentPdfRecords: billData.length,
+              tenantId: tenantId,
+              numberOfFiles:numberOfFiles,
+              locality: locality,
+              service: bussinessService,
+              isConsolidated: isConsolidated,
+              consumerCode: consumerCode
+          };
+          var pdfData = Object.assign({RequestInfo:requestinfo.RequestInfo}, billArray)
+          payloads.push({
+            topic: config.KAFKA_RECEIVE_CREATE_JOB_TOPIC,
+            messages: JSON.stringify(pdfData)
+          });
+          producer.send(payloads, function(err, data) {
+            if (err) {
+              logger.error(err.stack || err);
+              errorCallback({
+                message: `error while publishing to kafka: ${err.message}`
+              });
+            } else {
+              logger.info("jobid: " + jobid + ": published to kafka successfully");
+            }
+          });
+
+        }
+
+        try {
+          const result = await pool.query('select * from egov_bulk_pdf_info where jobid = $1', [jobid]);
+          if(result.rowCount>=1){
+            const updateQuery = 'UPDATE egov_bulk_pdf_info SET totalrecords = $1 WHERE jobid = $2';
+            await pool.query(updateQuery,[size, jobid]);
+          }
+        } catch (err) {
+          logger.error(err.stack || err);
+        }
+      } catch (ex) {
+        let errorMessage= "Failed to generate PDF"; 
+        if (ex.response && ex.response.data) logger.error(ex.response.data);
+        throw new Error(errorMessage);
+      }
+    } else {
+      throw new Error("There is no billfound for the criteria");
+    }
+
+  } catch (ex) {
+    throw new Error("Failed to query bill for property application");
+  }
+
+}
 
 async function create_pdf(tenantId, key, data, requestinfo) {
   return await axios({
@@ -308,5 +426,6 @@ module.exports = {
   search_sewerageOpenSearch,
   search_bill_genie_water_bills,
   search_bill_genie_sewerage_bills,
-  fetch_bill
+  fetch_bill,
+  create_bulk_pdf_pt
 };
