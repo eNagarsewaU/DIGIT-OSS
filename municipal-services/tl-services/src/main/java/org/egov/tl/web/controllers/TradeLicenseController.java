@@ -1,16 +1,13 @@
 package org.egov.tl.web.controllers;
 
 
-import java.io.IOException;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 //import org.egov.user.persistence.repository;
 import javax.validation.Valid;
 
 import org.egov.tl.service.TradeLicenseService;
-import org.egov.tl.service.UserService;
 import org.egov.tl.util.ResponseInfoFactory;
 import org.egov.tl.web.models.RequestInfoWrapper;
 import org.egov.tl.web.models.TradeLicense;
@@ -18,9 +15,6 @@ import org.egov.tl.web.models.TradeLicenseRequest;
 import org.egov.tl.web.models.TradeLicenseResponse;
 import org.egov.tl.web.models.TradeLicenseSearchCriteria;
 import org.egov.tl.web.models.User;
-import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,7 +27,6 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -45,10 +38,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
     @RequestMapping("/v1")
     public class TradeLicenseController {
 	
-	@Autowired
-    
-	
-	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
         private final ObjectMapper objectMapper;
 
@@ -134,12 +123,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
     
     @RequestMapping(value = "/external/_create", method = RequestMethod.POST)
     public ModelAndView signleSignOnForTradeLicense(@RequestHeader HttpHeaders header, @RequestBody Object object){
-    	logger.info("Inside TradeLicenceController");
-    	logger.info("Data Inside Request Header-> TradeLicenceController, Body Data:"+ header);
+    	System.out.println("Inside TradeLicenceController");
+    	System.out.println("Data Inside Request Header-> TradeLicenceController, Body Data:"+ header);
     	System.out.println(header);
-    	logger.info("Data Inside Request Body-> TradeLicenceController, Body Data:"+ object);
+    	System.out.println("Data Inside Request Body-> TradeLicenceController, Body Data:"+ object);
     	System.out.println(object);
-    	//userService.userExists(OwnerInfo owner,RequestInfo requestInfo);
 		return new ModelAndView("https://nagarsewa-uat.uk.gov.in/citizen/tradelicense-citizen/home");
     	
     	
