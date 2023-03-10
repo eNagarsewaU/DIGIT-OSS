@@ -30,7 +30,7 @@ public class EmailService {
 	public String formatEmail(Email email) {
 		Template t = service.getVelocityTemplate();
 		VelocityContext context = new VelocityContext();
-		buildEmailBody(email.getBody(), context);
+		buildEmailBody(email.getData(), context);
 		StringWriter writer = new StringWriter(10000);
 		t.merge(context, writer);
 
@@ -51,7 +51,7 @@ public class EmailService {
 			enrichWSData(body.getWaterAndSewerage(), context);
 		if (null != body.getMiscCollections())
 			enrichMCData(body.getMiscCollections(), context);
-		if(null !=body.getFirenoc())
+		if (null != body.getFirenoc())
 			enrichFirenocData(body.getFirenoc(), context);
 	}
 
@@ -64,6 +64,7 @@ public class EmailService {
 		fillData(stateWide.getRevenueCollected(), context);
 		fillData(stateWide.getServicesApplied(), context);
 		fillData(stateWide.getUlbCovered(), context);
+		fillData(stateWide.getOnlineCollection(), context);
 	}
 
 	private void enrichPGRData(PGR pgr, VelocityContext context) {
@@ -79,18 +80,27 @@ public class EmailService {
 		fillData(pt.getNoOfProperties(), context);
 		fillData(pt.getRevenueCollected(), context);
 		fillData(pt.getUlbCovered(), context);
+		fillData(pt.getReceiptsGenerated(), context);
+		fillData(pt.getOnlineCollection(), context);
+		fillData(pt.getUpdatedCollection(), context);
+		fillData(pt.getBbpsCollection(), context);
 	}
-	
+
 	private void enrichFirenocData(Firenoc firenoc, VelocityContext context) {
 		fillData(firenoc.getCertificatesIssued(), context);
 		fillData(firenoc.getRevenueCollected(), context);
 		fillData(firenoc.getUlbCovered(), context);
-	}	
+	}
 
 	private void enrichTLData(TL tl, VelocityContext context) {
-		fillData(tl.getLicenseIssued(), context);
+		fillData(tl.getNewLicenseIssued(), context);
+		fillData(tl.getNewLicense(), context);
+		fillData(tl.getRenewalLicense(), context);
+		fillData(tl.getRenewalLicenseIssued(), context);
 		fillData(tl.getUlbCovered(), context);
 		fillData(tl.getRevenueCollected(), context);
+		fillData(tl.getReceiptCreated(),context);
+		fillData(tl.getOnlineCollection(), context);
 	}
 
 	private void enrichWSData(WaterAndSewerage ws, VelocityContext context) {
@@ -98,10 +108,11 @@ public class EmailService {
 		fillData(ws.getRevenueCollected(), context);
 		fillData(ws.getUlbCovered(), context);
 	}
-	
+
 	private void enrichMCData(MiscCollections mc, VelocityContext context) {
 		fillData(mc.getReceiptsGenerated(), context);
 		fillData(mc.getRevenueCollected(), context);
+		fillData(mc.getUlbCovered(), context);
 	}
 
 	private void fillData(List<Map<String, Object>> dataFromQuery, VelocityContext context) {

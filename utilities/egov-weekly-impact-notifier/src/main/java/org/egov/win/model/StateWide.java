@@ -27,5 +27,7 @@ public class StateWide {
 	private List<Map<String, Object>> servicesApplied;
 
 	private List<Map<String, Object>> noOfCitizensResgistered;
+	
+	private List<Map<String, Object>> onlineCollection;
 
 }

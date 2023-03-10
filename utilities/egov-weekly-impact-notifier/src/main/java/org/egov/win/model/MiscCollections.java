@@ -18,6 +18,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class MiscCollections {
 	
+	private List<Map<String, Object>> ulbCovered;
+	
 	private List<Map<String, Object>> receiptsGenerated;
 	
 	private List<Map<String, Object>> revenueCollected;

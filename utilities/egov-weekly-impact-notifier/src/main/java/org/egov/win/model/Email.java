@@ -1,29 +1,25 @@
 package org.egov.win.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Data
-@ToString
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 @EqualsAndHashCode
+@Builder
+@ToString
 public class Email {
-	
-	private String from;
-	
-	private String to;
-	
-	private String bcc;
-	
+	private String emailTo;
 	private String subject;
-	
-	private Body body;
-
+	private String body;
+	@JsonProperty("isHTML")
+	private boolean isHTML;
+	private Body data;
 }
