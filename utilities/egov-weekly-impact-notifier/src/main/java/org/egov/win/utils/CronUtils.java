@@ -65,17 +65,19 @@ public class CronUtils {
 		uri.append(endPoint);
 		HashMap<String, Object> param = new HashMap<>();
 		if(defName.equals(CronConstants.SEARCHER_MC) || defName.equals(CronConstants.SEARCHER_SW)) {
-			List<String> adhocTaxHeads = service.fetchAdhocTaxheads(new RequestInfo(), "pb");
+			List<String> adhocTaxHeads = service.fetchAdhocTaxheads(new RequestInfo(), "uk");
 			if(!CollectionUtils.isEmpty(adhocTaxHeads)) {
 				param.put("taxHeads", adhocTaxHeads);
 			}else {
 				String[] ignoreTaxheads = {"PT", "TL", "FIRENOC", "WS"}; //fallback if mdms fails.
 				param.put("ignoreTaxHeads", Arrays.asList(ignoreTaxheads));
 			}
-			param.put("ignoreTenant", "pb.testing");
+			param.put("ignoreTenant", "uk.testing");
 			param.put("ignoreStatus", "Cancelled");
 		}
 		param.put("intervalinsecs", propertyManager.getTimeInterval());
+		param.put("offset", 0);
+		param.put("limit", 10);
 		SearcherRequest searcherRequest = SearcherRequest.builder().requestInfo(new RequestInfo()).searchCriteria(param)
 				.build();
 		return searcherRequest;
