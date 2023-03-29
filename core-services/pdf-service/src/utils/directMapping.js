@@ -33,7 +33,8 @@ export const directMapping = async (
   dataconfig,
   variableTovalueMap,
   requestInfo,
-  unregisteredLocalisationCodes
+  unregisteredLocalisationCodes,
+  pdfKey
 ) => {
   var directArr = [];
   var localisationCodes = [];
@@ -54,7 +55,7 @@ export const directMapping = async (
       jPath: item.variable,
       val:
         item.value &&
-        getValue(jp.query(req, item.value.path), "", item.value.path),
+        getValue(jp.query(req, item.value.path), "NA", item.value.path),
       valJsonPath: item.value && item.value.path,
       type: item.type,
       url: item.url,
@@ -67,7 +68,7 @@ export const directMapping = async (
   for (var i = 0; i < directArr.length; i++) {
     //for array type direct mapping
     if (directArr[i].type == "citizen-employee-title") {
-      if (get(requestInfo, "userInfo.type", "").toUpperCase() == "EMPLOYEE") {
+      if (get(requestInfo, "userInfo.type", "NA").toUpperCase() == "EMPLOYEE") {
         variableTovalueMap[directArr[i].jPath] = "Employee Copy";
       } else {
         variableTovalueMap[directArr[i].jPath] = "Citizen Copy";
@@ -76,7 +77,7 @@ export const directMapping = async (
     if (directArr[i].type == "selectFromRequestInfo") {
       directArr[i].val = getValue(
         jp.query(requestInfo, directArr[i].valJsonPath),
-        "",
+        "NA",
         directArr[i].valJsonPath
       );
 
@@ -108,18 +109,7 @@ export const directMapping = async (
           message: `error while loading image from: ${directArr[i].url}`
         };
       }
-    }
-    else if (directArr[i].type == "base64") {
-      try {
-        variableTovalueMap[directArr[i].jPath] = directArr[i].format;
-      } catch (error) {
-        logger.error(error.stack || error);
-        throw {
-          message: `error while loading image`,
-        };
-      }
-    }
-    else if (directArr[i].type == "array") {
+    } else if (directArr[i].type == "array") {
       let arrayOfOwnerObject = [];
       // let ownerObject = JSON.parse(JSON.stringify(get(formatconfig, directArr[i].jPath + "[0]", [])));
 
@@ -131,12 +121,12 @@ export const directMapping = async (
         // var x = 1;
         let ownerObject = {};
         for (let k = 0; k < scema.length; k++) {
-          let fieldValue = get(val[j], scema[k].value, "");
-          fieldValue = fieldValue == null ? "" : fieldValue;
+          let fieldValue = get(val[j], scema[k].value, "NA");
+          fieldValue = fieldValue == null ? "NA" : fieldValue;
           if (scema[k].type == "date") {
             let myDate = new Date(fieldValue);
             if (isNaN(myDate) || fieldValue === 0) {
-              ownerObject[scema[k].variable] = "";
+              ownerObject[scema[k].variable] = "NA";
             } else {
               let replaceValue = getDateInRequiredFormat(fieldValue,scema[k].format);
               // set(formatconfig,externalAPIArray[i].jPath[j].variable,replaceValue);
@@ -144,7 +134,7 @@ export const directMapping = async (
             }
           } else {
             if (
-              fieldValue !== "" &&
+              fieldValue !== "NA" &&
               scema[k].localisation &&
               scema[k].localisation.required
             ) {
@@ -194,12 +184,12 @@ export const directMapping = async (
       for (let j = 0; j < val.length; j++) {
         let arrayOfItems = [];
         for (let k = 0; k < scema.length; k++) {
-          let fieldValue = get(val[j], scema[k].value, "");
-          fieldValue = fieldValue == null ? "" : fieldValue;
+          let fieldValue = get(val[j], scema[k].value, "NA");
+          fieldValue = fieldValue == null ? "NA" : fieldValue;
           if (scema[k].type == "date") {
             let myDate = new Date(fieldValue);
             if (isNaN(myDate) || fieldValue === 0) {
-              arrayOfItems.push("");
+              arrayOfItems.push("NA");
             } else {
               let replaceValue = getDateInRequiredFormat(fieldValue,scema[k].format);
               // set(formatconfig,externalAPIArray[i].jPath[j].variable,replaceValue);
@@ -213,7 +203,7 @@ export const directMapping = async (
            * to display the array of string in order list.
            */
           else if (scema[k].type == "array-orderedlist" && Array.isArray(fieldValue)) {
-            if(fieldValue !== "") {
+            if(fieldValue !== "NA") {
               for (var p = 0; p < fieldValue.length; p++) {
                 let orderedList = [];
                 orderedList.push(fieldValue[p]);
@@ -223,7 +213,7 @@ export const directMapping = async (
             }
           } else {
             if (
-              fieldValue !== "" &&
+              fieldValue !== "NA" &&
               scema[k].localisation &&
               scema[k].localisation.required
             ) {
@@ -286,7 +276,7 @@ export const directMapping = async (
     else if (directArr[i].type == "date") {
       let myDate = new Date(directArr[i].val[0]);
       if (isNaN(myDate) || directArr[i].val[0] === 0) {
-        variableTovalueMap[directArr[i].jPath] = "";
+        variableTovalueMap[directArr[i].jPath] = "NA";
       } else {
         let replaceValue = getDateInRequiredFormat(directArr[i].val[0],directArr[i].format);
         variableTovalueMap[directArr[i].jPath] = replaceValue;
@@ -300,7 +290,7 @@ export const directMapping = async (
         directArr[i].valJsonPath
       );
       if (
-        directArr[i].val !== "" &&
+        directArr[i].val !== "NA" &&
         directArr[i].localisation &&
         directArr[i].localisation.required
       ){
@@ -352,7 +342,8 @@ export const directMapping = async (
     let resposnseMap = await findLocalisation(
       requestInfo,
       localisationModules,
-      localisationCodes
+      localisationCodes,
+      pdfKey+'-directMapping'
     );
   
     resposnseMap.messages.map((item) => {
