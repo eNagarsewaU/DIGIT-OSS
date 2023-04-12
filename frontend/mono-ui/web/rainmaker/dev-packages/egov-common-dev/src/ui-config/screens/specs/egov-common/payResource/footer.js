@@ -295,242 +295,249 @@ const updatePayAction = async (
 };
 
 const callBackForPay = async (state, dispatch) => {
-  let isFormValid = true;
-  const isAdvancePaymentAllowed =get(state, "screenConfiguration.preparedFinalObject.businessServiceInfo.isAdvanceAllowed");
-  const roleExists = ifUserRoleExists("CITIZEN");
-  if (roleExists) {
-    alert("You are not Authorized!");
-    return;
-  }
- 
-  // --- Validation related -----//
+  let consumerCode = getQueryArg(window.location.href, "consumerCode")
+  if(consumerCode.includes("PT-")){
+    //PROPERTY TAX PAYMENT DISABLED
+  }else{
+    let isFormValid = true;
+    const isAdvancePaymentAllowed = get(state, "screenConfiguration.preparedFinalObject.businessServiceInfo.isAdvanceAllowed");
+    const roleExists = ifUserRoleExists("CITIZEN");
+    if (roleExists) {
+      alert("You are not Authorized!");
+      return;
+    }
 
-  const selectedPaymentType = get(
-    state.screenConfiguration.preparedFinalObject,
-    "ReceiptTemp[0].instrument.instrumentType.name"
-  );
-   const {
-    selectedTabIndex,
-    selectedPaymentMode,
-    fieldsToValidate
-  } = getSelectedTabIndex(selectedPaymentType);
+    // --- Validation related -----//
 
-  isFormValid =
-    fieldsToValidate
-      .map(curr => {
-        return validateFields(
-          `components.div.children.formwizardFirstStep.children.paymentDetails.children.cardContent.children.capturePaymentDetails.children.cardContent.children.tabSection.props.tabs[${selectedTabIndex}].tabContent.${selectedPaymentMode}.children.${curr}.children`,
+    const selectedPaymentType = get(
+      state.screenConfiguration.preparedFinalObject,
+      "ReceiptTemp[0].instrument.instrumentType.name"
+    );
+    const {
+      selectedTabIndex,
+      selectedPaymentMode,
+      fieldsToValidate
+    } = getSelectedTabIndex(selectedPaymentType);
+
+    isFormValid =
+      fieldsToValidate
+        .map(curr => {
+          return validateFields(
+            `components.div.children.formwizardFirstStep.children.paymentDetails.children.cardContent.children.capturePaymentDetails.children.cardContent.children.tabSection.props.tabs[${selectedTabIndex}].tabContent.${selectedPaymentMode}.children.${curr}.children`,
+            state,
+            dispatch,
+            "pay"
+          );
+        })
+        .indexOf(false) === -1;
+    if (
+      get(
+        state.screenConfiguration.preparedFinalObject,
+        "Bill[0].billDetails[0].manualReceiptDate"
+      )
+    ) {
+      isFormValid = validateFields(
+        `components.div.children.formwizardFirstStep.children.paymentDetails.children.cardContent.children.g8Details.children.cardContent.children.receiptDetailsCardContainer.children`,
+        state,
+        dispatch,
+        "pay"
+      );
+    }
+
+    //------------ Validation End -------------//
+
+    //------------- Form related ----------------//
+
+    const ReceiptDataTemp = get(
+      state.screenConfiguration.preparedFinalObject,
+      "ReceiptTemp[0]"
+    );
+    let finalReceiptData = cloneDeep(ReceiptDataTemp);
+
+    allDateToEpoch(finalReceiptData, [
+      "Bill[0].billDetails[0].manualReceiptDate",
+      "instrument.transactionDateInput"
+    ]);
+
+    set(
+      finalReceiptData,
+      "Bill[0].billDetails[0].additionalDetails.comment",
+      get(
+        state.screenConfiguration,
+        "preparedFinalObject.Challan.description",
+        ""
+      )
+    );
+
+    // if (get(finalReceiptData, "Bill[0].billDetails[0].manualReceiptDate")) {
+    //   convertDateFieldToEpoch(
+    //     finalReceiptData,
+    //     "Bill[0].billDetails[0].manualReceiptDate"
+    //   );
+    // }
+
+    // if (get(finalReceiptData, "instrument.transactionDateInput")) {
+    //   convertDateFieldToEpoch(
+    //     finalReceiptData,
+    //     "Bill[0].billDetails[0].manualReceiptDate"
+    //   );
+    // }
+    if (get(finalReceiptData, "instrument.transactionDateInput")) {
+      set(
+        finalReceiptData,
+        "instrument.instrumentDate",
+        get(finalReceiptData, "instrument.transactionDateInput")
+      );
+    }
+
+    if (get(finalReceiptData, "instrument.transactionNumber")) {
+      set(
+        finalReceiptData,
+        "instrument.instrumentNumber",
+        get(finalReceiptData, "instrument.transactionNumber")
+      );
+    }
+
+    if (selectedPaymentType === "Card") {
+      //Extra check - remove once clearing forms onTabChange is fixed
+      if (
+        get(finalReceiptData, "instrument.transactionNumber") !==
+        get(finalReceiptData, "instrument.transactionNumberConfirm")
+      ) {
+        dispatch(
+          toggleSnackbar(
+            true,
+            {
+              labelName: "Transaction numbers don't match !",
+              labelKey: "ERR_TRANSACTION_NO_DONT_MATCH"
+            },
+            "error"
+          )
+        );
+        return;
+      }
+    }
+
+    //------------- Form End ----------------//
+
+    let ReceiptBody = {
+      Receipt: []
+    };
+    let ReceiptBodyNew = {
+      Payment: { paymentDetails: [] }
+    };
+    console.log("hereeeeeee", ReceiptBodyNew)
+    ReceiptBody.Receipt.push(finalReceiptData);
+    const totalAmount = Number(finalReceiptData.Bill[0].totalAmount);
+
+    ReceiptBodyNew.Payment["tenantId"] = finalReceiptData.tenantId;
+    ReceiptBodyNew.Payment["totalDue"] = totalAmount;
+    ReceiptBodyNew.Payment["additionalDetails"] =
+      finalReceiptData.Bill[0].billDetails[0].additionalDetails.comment;
+    ReceiptBodyNew.Payment["paymentMode"] =
+      finalReceiptData.instrument.instrumentType.name;
+    ReceiptBodyNew.Payment["paidBy"] = finalReceiptData.Bill[0].payer;
+    ReceiptBodyNew.Payment["mobileNumber"] =
+      finalReceiptData.Bill[0].payerMobileNumber;
+    ReceiptBodyNew.Payment["payerName"] = finalReceiptData.Bill[0].paidBy;
+    if (ReceiptBodyNew.Payment.paymentMode !== "Cash") {
+      ReceiptBodyNew.Payment["transactionNumber"] =
+        finalReceiptData.instrument.transactionNumber;
+      ReceiptBodyNew.Payment["instrumentNumber"] =
+        finalReceiptData.instrument.instrumentNumber;
+      if (ReceiptBodyNew.Payment.paymentMode === "Cheque" || ReceiptBodyNew.Payment.paymentMode === "DD" || ReceiptBodyNew.Payment.paymentMode === "OFFLINE_RTGS" || ReceiptBodyNew.Payment.paymentMode === "POS") {
+        ReceiptBodyNew.Payment["instrumentDate"] =
+          finalReceiptData.instrument.instrumentDate;
+      }
+      if (finalReceiptData.instrument.ifscCode) {
+        ReceiptBodyNew.Payment["ifscCode"] =
+          finalReceiptData.instrument.ifscCode;
+      }
+    }
+
+    let amtPaid =
+      state.screenConfiguration.preparedFinalObject.AmountType ===
+        "partial_amount"
+        ? state.screenConfiguration.preparedFinalObject.AmountPaid
+        : finalReceiptData.Bill[0].totalAmount;
+    amtPaid = amtPaid ? Number(amtPaid) : totalAmount;
+
+
+    if (amtPaid > totalAmount && !isAdvancePaymentAllowed) {
+      alert("Advance Payment is not allowed");
+      return;
+    }
+
+    ReceiptBodyNew.Payment.paymentDetails.push({
+      manualReceiptDate:
+        finalReceiptData.Bill[0].billDetails[0].manualReceiptDate,
+      manualReceiptNumber:
+        finalReceiptData.Bill[0].billDetails[0].manualReceiptNumber,
+      businessService: finalReceiptData.Bill[0].businessService,
+      billId: finalReceiptData.Bill[0].id,
+      totalDue: totalAmount,
+      totalAmountPaid: amtPaid
+    });
+    ReceiptBodyNew.Payment["totalAmountPaid"] = amtPaid;
+
+    //---------------- Create Receipt ------------------//
+    if (isFormValid) {
+      try {
+        let response = await httpRequest(
+          "post",
+          "collection-services/payments/_create",
+          "_create",
+          [],
+          ReceiptBodyNew,
+          [],
+          {}
+        );
+        let receiptNumber = get(
+          response,
+          "Payments[0].paymentDetails[0].receiptNumber",
+          null
+        );
+
+        let businessService = get(
+          response,
+          "Payments[0].paymentDetails[0].bill.businessService"
+        );
+        // Search NOC application and update action to PAY
+        const consumerCode = getQueryArg(window.location, "consumerCode");
+        const tenantId = getQueryArg(window.location, "tenantId");
+        await updatePayAction(
           state,
           dispatch,
-          "pay"
+          consumerCode,
+          tenantId,
+          receiptNumber,
+          businessService
         );
-      })
-      .indexOf(false) === -1;
-  if (
-    get(
-      state.screenConfiguration.preparedFinalObject,
-      "Bill[0].billDetails[0].manualReceiptDate"
-    )
-  ) {
-    isFormValid = validateFields(
-      `components.div.children.formwizardFirstStep.children.paymentDetails.children.cardContent.children.g8Details.children.cardContent.children.receiptDetailsCardContainer.children`,
-      state,
-      dispatch,
-      "pay"
-    );
-  }
-
-  //------------ Validation End -------------//
-
-  //------------- Form related ----------------//
-
-  const ReceiptDataTemp = get(
-    state.screenConfiguration.preparedFinalObject,
-    "ReceiptTemp[0]"
-  );
-  let finalReceiptData = cloneDeep(ReceiptDataTemp);
-
-  allDateToEpoch(finalReceiptData, [
-    "Bill[0].billDetails[0].manualReceiptDate",
-    "instrument.transactionDateInput"
-  ]);
-
-  set(
-    finalReceiptData,
-    "Bill[0].billDetails[0].additionalDetails.comment",
-    get(
-      state.screenConfiguration,
-      "preparedFinalObject.Challan.description",
-      ""
-    )
-  );
-
-  // if (get(finalReceiptData, "Bill[0].billDetails[0].manualReceiptDate")) {
-  //   convertDateFieldToEpoch(
-  //     finalReceiptData,
-  //     "Bill[0].billDetails[0].manualReceiptDate"
-  //   );
-  // }
-
-  // if (get(finalReceiptData, "instrument.transactionDateInput")) {
-  //   convertDateFieldToEpoch(
-  //     finalReceiptData,
-  //     "Bill[0].billDetails[0].manualReceiptDate"
-  //   );
-  // }
-  if (get(finalReceiptData, "instrument.transactionDateInput")) {
-    set(
-      finalReceiptData,
-      "instrument.instrumentDate",
-      get(finalReceiptData, "instrument.transactionDateInput")
-    );
-  }
-
-  if (get(finalReceiptData, "instrument.transactionNumber")) {
-    set(
-      finalReceiptData,
-      "instrument.instrumentNumber",
-      get(finalReceiptData, "instrument.transactionNumber")
-    );
-  }
-
-  if (selectedPaymentType === "Card") {
-    //Extra check - remove once clearing forms onTabChange is fixed
-    if (
-      get(finalReceiptData, "instrument.transactionNumber") !==
-      get(finalReceiptData, "instrument.transactionNumberConfirm")
-    ) {
+      } catch (e) {
+        dispatch(
+          toggleSnackbar(
+            true,
+            { labelName: e.message, labelKey: e.message },
+            "error"
+          )
+        );
+        console.log(e);
+      }
+    } else {
       dispatch(
         toggleSnackbar(
           true,
           {
-            labelName: "Transaction numbers don't match !",
-            labelKey: "ERR_TRANSACTION_NO_DONT_MATCH"
+            labelName: "Please fill all the mandatory fields",
+            labelKey: "ERR_FILL_ALL_FIELDS"
           },
-          "error"
+          "warning"
         )
       );
-      return;
     }
   }
 
-  //------------- Form End ----------------//
-
-  let ReceiptBody = {
-    Receipt: []
-  };
-  let ReceiptBodyNew = {
-    Payment: { paymentDetails: [] }
-  };
-  console.log("hereeeeeee",ReceiptBodyNew)
-  ReceiptBody.Receipt.push(finalReceiptData);
-  const totalAmount = Number(finalReceiptData.Bill[0].totalAmount);
-
-  ReceiptBodyNew.Payment["tenantId"] = finalReceiptData.tenantId;
-  ReceiptBodyNew.Payment["totalDue"] = totalAmount;
-  ReceiptBodyNew.Payment["additionalDetails"] =
-    finalReceiptData.Bill[0].billDetails[0].additionalDetails.comment;
-  ReceiptBodyNew.Payment["paymentMode"] =
-    finalReceiptData.instrument.instrumentType.name;
-  ReceiptBodyNew.Payment["paidBy"] = finalReceiptData.Bill[0].payer;
-  ReceiptBodyNew.Payment["mobileNumber"] =
-    finalReceiptData.Bill[0].payerMobileNumber;
-  ReceiptBodyNew.Payment["payerName"] = finalReceiptData.Bill[0].paidBy;
-  if (ReceiptBodyNew.Payment.paymentMode !== "Cash") {
-    ReceiptBodyNew.Payment["transactionNumber"] =
-      finalReceiptData.instrument.transactionNumber;
-    ReceiptBodyNew.Payment["instrumentNumber"] =
-      finalReceiptData.instrument.instrumentNumber;
-    if (ReceiptBodyNew.Payment.paymentMode === "Cheque" || ReceiptBodyNew.Payment.paymentMode === "DD" || ReceiptBodyNew.Payment.paymentMode === "OFFLINE_RTGS"|| ReceiptBodyNew.Payment.paymentMode === "POS") {
-      ReceiptBodyNew.Payment["instrumentDate"] =
-        finalReceiptData.instrument.instrumentDate;
-    }
-    if (finalReceiptData.instrument.ifscCode) {
-      ReceiptBodyNew.Payment["ifscCode"] =
-        finalReceiptData.instrument.ifscCode;
-    }
-  }
-
-  let amtPaid =
-    state.screenConfiguration.preparedFinalObject.AmountType ===
-    "partial_amount"
-      ? state.screenConfiguration.preparedFinalObject.AmountPaid
-      : finalReceiptData.Bill[0].totalAmount;
-  amtPaid = amtPaid ? Number(amtPaid) : totalAmount;
-
-
-  if(amtPaid>totalAmount&&!isAdvancePaymentAllowed){
-    alert("Advance Payment is not allowed");
-    return;
-  }
-
-  ReceiptBodyNew.Payment.paymentDetails.push({
-    manualReceiptDate:
-      finalReceiptData.Bill[0].billDetails[0].manualReceiptDate,
-    manualReceiptNumber:
-      finalReceiptData.Bill[0].billDetails[0].manualReceiptNumber,
-    businessService: finalReceiptData.Bill[0].businessService,
-    billId: finalReceiptData.Bill[0].id,
-    totalDue: totalAmount,
-    totalAmountPaid: amtPaid
-    });
-  ReceiptBodyNew.Payment["totalAmountPaid"] = amtPaid;
-
-  //---------------- Create Receipt ------------------//
-  if (isFormValid) {
-    try {
-      let response = await httpRequest(
-        "post",
-        "collection-services/payments/_create",
-        "_create",
-        [],
-        ReceiptBodyNew,
-        [],
-        {}
-      );
-      let receiptNumber = get(
-        response,
-        "Payments[0].paymentDetails[0].receiptNumber",
-        null
-      );
-
-      let businessService = get(
-        response,
-        "Payments[0].paymentDetails[0].bill.businessService"
-      );
-      // Search NOC application and update action to PAY
-      const consumerCode = getQueryArg(window.location, "consumerCode");
-      const tenantId = getQueryArg(window.location, "tenantId");
-      await updatePayAction(
-        state,
-        dispatch,
-        consumerCode,
-        tenantId,
-        receiptNumber,
-        businessService
-      );
-    } catch (e) {
-      dispatch(
-        toggleSnackbar(
-          true,
-          { labelName: e.message, labelKey: e.message },
-          "error"
-        )
-      );
-      console.log(e);
-    }
-  } else {
-    dispatch(
-      toggleSnackbar(
-        true,
-        {
-          labelName: "Please fill all the mandatory fields",
-          labelKey: "ERR_FILL_ALL_FIELDS"
-        },
-        "warning"
-      )
-    );
-  }
+  
 };
 
 export const getCommonApplyFooter = children => {
