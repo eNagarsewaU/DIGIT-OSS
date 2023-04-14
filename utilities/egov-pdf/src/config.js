@@ -16,8 +16,8 @@ module.exports = {
   PDF_BATCH_SIZE: process.env.PDF_BATCH_SIZE || 40,
   DB_USER: process.env.DB_USER || "postgres",
   DB_PASSWORD: process.env.DB_PASSWORD || "postgres",
-  DB_HOST: "10.67.54.101" ,
-  DB_NAME: "ukdprodbckp" ,
+  DB_HOST: process.env.DB_HOST || "localhost",
+  DB_NAME: process.env.DB_NAME || "postgres",
   DB_PORT: process.env.DB_PORT || 5432,
   pdf: {
     epass_pdf_template: process.env.EPASS_TEMPLATE || "tlcertificate",
