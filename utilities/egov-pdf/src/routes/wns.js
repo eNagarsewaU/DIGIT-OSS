@@ -385,6 +385,7 @@ router.post(
   router.post(
     "/wnsgroupbill",
     asyncMiddleware(async function (req, res, next) {
+      console.log("property bulk bill here");
       var tenantId = req.query.tenantId;
       var locality = req.query.locality;
       var bussinessService = req.query.bussinessService;
