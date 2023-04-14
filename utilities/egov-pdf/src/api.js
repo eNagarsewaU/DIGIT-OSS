@@ -298,6 +298,7 @@ async function create_bulk_pdf_pt(kafkaData){
       );
 
       propertyBills = propertyBills.data.Bills;
+      console.log("****propertyBills***",propertyBills);
 
       if(propertyBills.length>0){
         for(let propertyBill of propertyBills){
