@@ -13,6 +13,8 @@ import { toggleSnackbar } from "egov-ui-framework/ui-redux/screen-configuration/
 import { getTenantId,getUserInfo } from "egov-ui-kit/utils/localStorageUtils";
 import isEmpty from "lodash/isEmpty"
 import { loadUlbLogo } from "../../utils/receiptTransformer";
+import { getMergeAndDownloadList } from "../../utils";
+import cloneDeep from "lodash/cloneDeep";
 
 // const tenantId = getTenantId();
 const tenantId = getTenantId();
@@ -77,13 +79,21 @@ export const searchApiCall = async (state, dispatch) => {
       "searchScreenMdmsData.BillingService.BusinessService"
     ).filter(item => item.code === searchScreenObject.businesService);
 
+    console.log(searchScreenObject.businesService,"sad")
+    console.log(serviceObject&&serviceObject[0]&&serviceObject[0],"sad")
     searchScreenObject.url = serviceObject&&serviceObject[0]&&serviceObject[0].billGineiURL;
     searchScreenObject.tenantId = process.env.REACT_APP_NAME === "Employee" ?  getTenantId() : JSON.parse(getUserInfo()).permanentCity;
+    searchScreenObject.billActive = "ACTIVE";
     const responseFromAPI = await getGroupBillSearch(dispatch,searchScreenObject);
+    const businessUrl = cloneDeep(searchScreenObject.url);
     const bills = (responseFromAPI && responseFromAPI.Bills) || [];
     dispatch(
       prepareFinalObject("searchScreenMdmsData.billSearchResponse", bills)
     );
+
+    const uiConfigs = get(state.screenConfiguration.preparedFinalObject, "searchScreenMdmsData.common-masters.uiCommonPay");
+    const configObject = uiConfigs.filter(item => item.code === searchScreenObject.businesService);
+
     const response = [];
     for (let i = 0; i < bills.length; i++) {
       if(get(bills[i], "status") === "ACTIVE"){
@@ -105,9 +115,15 @@ export const searchApiCall = async (state, dispatch) => {
         ["ABG_COMMON_TABLE_COL_BILL_DATE"]:
           convertEpochToDate(item.billDate) || "-",
         ["ABG_COMMON_TABLE_COL_STATUS"]: item.status && getTextToLocalMapping(item.status.toUpperCase())  || "-",
-        ["TENANT_ID"]: item.tenantId
+        ["TENANT_ID"]: item.tenantId,
+        ["BUSINESS_URL"]: businessUrl,
+        ["BILL_KEY"]: get(configObject[0], "billKey","consolidatedbill")||"consolidatedbill",
+        ["BUSINESS_SERVICE"]: searchScreenObject.businesService,
       }));
-
+      const copyOfSearchScreenObject = cloneDeep(searchScreenObject);
+      dispatch(
+        prepareFinalObject("searchDetailsOfGroupBills", copyOfSearchScreenObject)
+      );
       dispatch(
         handleField(
           "groupBills",
@@ -123,7 +139,8 @@ export const searchApiCall = async (state, dispatch) => {
           "props.rows",
           data.length
         )
-      );      
+      );
+      getMergeAndDownloadList(state, dispatch, data.length);
       showHideTable(true, dispatch);
       if(!isEmpty(response)){
         showHideMergeButton(true, dispatch);
@@ -131,7 +148,6 @@ export const searchApiCall = async (state, dispatch) => {
       };
     } catch (error) {
       dispatch(toggleSnackbar(true, error.message, "error"));
-      console.log(error);
     }
   }
 };

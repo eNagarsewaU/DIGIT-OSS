@@ -99,20 +99,7 @@ export const searchApiCall = async (state, dispatch) => {
     const responseFromAPI = await getGroupBillSearch(dispatch, searchScreenObject)
     const bills = (responseFromAPI && responseFromAPI.Bills) || [];
     const billTableData = bills.map(item => {
-      if(item.businessService!='PT'){
-        let locale = item.billNumber
-          .split("-")[1]
-          .trim()
-          .split(".")[1]
-          .split("_")
-          .toString()
-          .replaceAll(",", " ");
-        item.billNumber = item.billNumber.replace(
-          item.billNumber.split("-")[1].trim(),
-          locale
-        );
-      }
-       return {
+      return {
         billNumber: get(item, "billNumber"),
         billId: get(item, "id"),
         consumerCode: get(item, "consumerCode"),
@@ -141,8 +128,8 @@ export const searchApiCall = async (state, dispatch) => {
         ['ABG_COMMON_TABLE_COL_STATUS']: item.status || "-",
         ['ABG_COMMON_TABLE_COL_ACTION']: item.action || "-",
         ["BUSINESS_SERVICE"]: searchScreenObject.businesService,
-        ["RECEIPT_KEY"]: get(configObject[0], "receiptKey"),
-        ["BILL_KEY"]: get(configObject[0], "billKey"),
+        ["RECEIPT_KEY"]: get(configObject[0], "receiptKey","consolidatedreceipt")||"consolidatedreceipt",
+        ["BILL_KEY"]: get(configObject[0], "billKey","consolidatedbill")||"consolidatedbill",
         ["TENANT_ID"]: item.tenantId,
         ["BILL_ID"]: item.billId,
         ["BILL_SEARCH_URL"]: searchScreenObject.url,
@@ -176,7 +163,6 @@ export const searchApiCall = async (state, dispatch) => {
       showHideTable(true, dispatch);
     } catch (error) {
       dispatch(toggleSnackbar(true, error.message, "error"));
-      console.log(error);
     }
   }
 };
@@ -194,10 +180,10 @@ const showHideTable = (booleanHideOrShow, dispatch) => {
 
 const getActionItem = (status) => {
   switch (status) {
-    case "ACTIVE": return "PAY";
+    case "ACTIVE": return "ABG_PAY";
     case "CANCELLED":
-    case "EXPIRED": return "GENERATE NEW BILL"
-    case "PAID": return "DOWNLOAD RECEIPT"
-    case "PARTIALLY_PAID": return "PARTIALLY PAID"
+    case "EXPIRED": return "ABG_GENERATE_NEW_BILL"
+    case "PAID": return "ABG_DOWNLOAD_RECEIPT"
+    case "PARTIALLY_PAID": return "ABG_PARTIALLY_PAID"
   }
 }
