@@ -239,7 +239,7 @@ const uploadFiles = async (
       chunks.push(chunk);
     });
     doc.on("end", function () {
-      // console.log("enddddd "+cr++);
+      console.log("enddddd "+cr++);
       var data = Buffer.concat(chunks);
       fileStoreAPICall(filename, tenantId, data)
         .then((result) => {
