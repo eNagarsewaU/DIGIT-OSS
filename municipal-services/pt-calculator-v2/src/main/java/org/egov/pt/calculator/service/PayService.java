@@ -34,6 +34,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import net.minidev.json.JSONArray;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Deals with the functionality that are performed 
