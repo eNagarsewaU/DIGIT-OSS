@@ -46,6 +46,7 @@ import net.minidev.json.JSONArray;
  *
  */
 @Service
+@Slf4j
 public class PayService {
 
 	@Autowired
