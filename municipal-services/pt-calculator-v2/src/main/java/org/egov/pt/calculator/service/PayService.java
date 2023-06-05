@@ -261,7 +261,9 @@ public class PayService {
 			BigDecimal interestPerTaxPeriod = BigDecimal.ZERO;
 			if (taxPeriod.getFromDate() > demand.getTaxPeriodFrom()) {
 				BigDecimal taxAmt = getTaxAmountToCalculateInterestOnApplicables(taxPeriod.getFromDate(), demand, payments);
+				log.info("taxPeriod : " + taxPeriod);
 				BigDecimal interestRateForTaxperiod = utils.getInterestRateForTaxperiod(taxPeriod.getFinancialYear(), jsonArray);
+				log.info("interestRateForTaxperiod : " + interestRateForTaxperiod);
 				interestPerTaxPeriod = taxAmt.multiply(interestRateForTaxperiod.divide(HUNDRED));
 			}
 			interestAmt = interestAmt.add(interestPerTaxPeriod);
