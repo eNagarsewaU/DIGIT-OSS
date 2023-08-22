@@ -139,7 +139,7 @@ export const downloadMultipleBill = async (
       item.additionalDetails = addDetail;
     });
 
-    var actualBills = [],size = 80;
+    var actualBills = [],size = 8;
     for (let i = 0; bills.length > 0; i++) {
       actualBills.push(bills.splice(0, size));
     }
