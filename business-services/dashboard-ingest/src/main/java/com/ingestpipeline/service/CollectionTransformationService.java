@@ -44,6 +44,8 @@ public class CollectionTransformationService implements TransformService {
     @Override
     public Boolean transformData(Map incomingData) {
 
+        LOGGER.info("incomingData at transformData :## "+incomingData.toString());
+
         Map incomingDataCopy = new HashMap<>();
         incomingDataCopy.putAll(incomingData);
         incomingData.clear();

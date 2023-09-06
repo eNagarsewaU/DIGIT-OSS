@@ -44,6 +44,7 @@ public class TransformConsumer implements KafkaConsumer {
 		try {
 			boolean isTransformed = false;
 			String dataContext = incomingData.get(Constants.DATA_CONTEXT).toString();
+			LOGGER.info("incomingData at TransformConsumer=="+incomingData.toString());
 			if(dataContext.equals(Constants.TransformationType.COLLECTION)) {
 
 				isTransformed = collectiontransformService.transformData(incomingData);

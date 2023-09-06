@@ -41,6 +41,7 @@ public class UpdateConsumer {
     public void processMessage(Map data,
                                @Header(KafkaHeaders.RECEIVED_TOPIC) final String topic) {
         LOGGER.info("##KafkaMessageAlert## : key:" + topic + ":" + "value:" + data.size());
+        LOGGER.info("data at UpdateConsumer: :"+data);
         try {
 
             String index =  data.get("_index").toString();
