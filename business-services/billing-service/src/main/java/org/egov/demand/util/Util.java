@@ -252,7 +252,7 @@ public class Util {
 	 */
 	public void validateTenantIdForUserType(String tenantId, RequestInfo requestInfo) {
 
-		String userType;
+		String userType = "";
 		if(requestInfo.getUserInfo()!=null)
 		  userType = requestInfo.getUserInfo().getType();
 		if(Constants.EMPLOYEE_TYPE_CODE.equalsIgnoreCase(userType) && tenantId.split("\\.").length == 1) {
