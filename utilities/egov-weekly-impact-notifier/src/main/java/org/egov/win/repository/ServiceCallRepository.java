@@ -35,6 +35,9 @@ public class ServiceCallRepository {
 		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 		RestTemplate restTemplate = utils.restTemplate();
 		Object response = null;
+		System.out.println("*******external service call******");
+		System.out.println(uri.toString());
+		System.out.println(request);
 		try {
 			response = restTemplate.postForObject(uri.toString(), request, JsonNode.class);
 		} catch (HttpClientErrorException e) {
