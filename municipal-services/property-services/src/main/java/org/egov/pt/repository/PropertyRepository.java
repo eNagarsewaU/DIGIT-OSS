@@ -144,7 +144,8 @@ public class PropertyRepository {
 
 		List<Property> properties;
 		
-		Boolean isOpenSearch = isInternal ? false : util.isPropertySearchOpen(requestInfo.getUserInfo());
+		if(requestInfo.getUserInfo()!=null)
+			Boolean isOpenSearch = isInternal ? false : util.isPropertySearchOpen(requestInfo.getUserInfo());
 
 		if (criteria.isAudit() && !isOpenSearch) {
 			properties = getPropertyAudit(criteria);
