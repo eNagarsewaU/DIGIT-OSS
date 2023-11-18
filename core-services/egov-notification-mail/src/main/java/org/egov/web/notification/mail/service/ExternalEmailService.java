@@ -58,10 +58,9 @@ public class ExternalEmailService implements EmailService {
 			log.error(EXCEPTION_MESSAGE, e);
 			throw new RuntimeException(e);
 		}
-		log.info("************sending HTML email*********** To: {}, Subject: {}, Body: {}",
+		log.info("************sending HTML email*********** To: {}, Subject: {}",
     		email.getEmailTo().toArray(new String[0]),
-    		email.getSubject(),
-    		email.getBody());
+    		email.getSubject());
 		mailSender.send(message);
 	}
 }
