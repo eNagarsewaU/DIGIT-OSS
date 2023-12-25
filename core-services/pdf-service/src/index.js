@@ -216,7 +216,7 @@ const uploadFiles = async (
   formatconfig,
   listDocDefinition,
   key,
-  isConsolidated,
+  isconsolidated,
   jobid,
   noOfDefinitions,
   entityIds,
@@ -232,7 +232,7 @@ const uploadFiles = async (
   let convertedListDocDefinition = [];
   let listOfFilestoreIds = [];
 
-  if (!isConsolidated) {
+  if (!isconsolidated) {
     listDocDefinition.forEach((docDefinition) => {
       docDefinition["content"].forEach((defn) => {
         var formatobject = JSON.parse(JSON.stringify(formatconfig));
@@ -272,14 +272,14 @@ const uploadFiles = async (
       fileStoreAPICall(filename, tenantId, data)
         .then((result) => {
           listOfFilestoreIds.push(result);
-          if (!isConsolidated) {
+          if (!isconsolidated) {
             dbInsertSingleRecords.push({
               jobid,
               id: uuidv4(),
               createdby: userid,
               modifiedby: userid,
               entityid: entityIds[i],
-              isConsolidated: false,
+              isconsolidated: false,
               filestoreids: [result],
               tenantId,
               createdtime: starttime,
@@ -292,7 +292,7 @@ const uploadFiles = async (
 
             // insertStoreIds(jobid,entityIds[i],[result],tenantId,starttime,successCallback,errorCallback,1,false);
           } else if (
-            isConsolidated &&
+            isconsolidated &&
             listOfFilestoreIds.length == noOfDefinitions
           ) {
             // insertStoreIds("",);
@@ -303,7 +303,7 @@ const uploadFiles = async (
               createdby: userid,
               modifiedby: userid,
               entityid: null,
-              isConsolidated: true,
+              isconsolidated: true,
               filestoreids: listOfFilestoreIds,
               tenantId,
               createdtime: starttime,
@@ -481,7 +481,7 @@ app.post(
     try {
       let tenantid = req.query.tenantid;
       let jobid = req.query.jobid;
-      let isConsolidated = req.query.isConsolidated;
+      let isconsolidated = req.query.isconsolidated;
       let entityid = req.query.entityid;
       requestInfo = get(req.body, "RequestInfo");
       if (
@@ -505,7 +505,7 @@ app.post(
         getFileStoreIds(
           jobid,
           tenantid,
-          isConsolidated,
+          isconsolidated,
           entityid,
           (responseBody) => {
             // doc successfully created
