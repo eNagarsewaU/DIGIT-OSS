@@ -143,8 +143,10 @@ public class PropertyRepository {
 	public List<Property> getPropertiesWithOwnerInfo(PropertyCriteria criteria, RequestInfo requestInfo, Boolean isInternal) {
 
 		List<Property> properties;
-		
-		Boolean isOpenSearch = isInternal ? false : util.isPropertySearchOpen(requestInfo.getUserInfo());
+
+		Boolean isOpenSearch = true;
+		if(requestInfo.getUserInfo()!=null)
+			isOpenSearch = isInternal ? false : util.isPropertySearchOpen(requestInfo.getUserInfo());
 
 		if (criteria.isAudit() && !isOpenSearch) {
 			properties = getPropertyAudit(criteria);

@@ -252,7 +252,9 @@ public class Util {
 	 */
 	public void validateTenantIdForUserType(String tenantId, RequestInfo requestInfo) {
 
-		String userType = requestInfo.getUserInfo().getType();
+		String userType = "";
+		if(requestInfo.getUserInfo()!=null)
+		  userType = requestInfo.getUserInfo().getType();
 		if(Constants.EMPLOYEE_TYPE_CODE.equalsIgnoreCase(userType) && tenantId.split("\\.").length == 1) {
 			throw new CustomException("EG_BS_INVALID_TENANTID","Employees cannot search based on state level tenantid");
 		}

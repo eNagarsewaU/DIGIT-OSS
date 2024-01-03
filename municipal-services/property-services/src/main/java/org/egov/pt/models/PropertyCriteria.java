@@ -58,7 +58,7 @@ public class PropertyCriteria {
 	private Set<String> creationReason;
 
 	@Builder.Default
-	private Boolean isInboxSearch = false;
+	private Boolean isInboxSearch = true;
 	
 	
 	
