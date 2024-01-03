@@ -196,18 +196,20 @@ public class AssessmentEnrichmentService {
 
         List<Unit> units  = property.getUnits();
 
-        for(Unit unit : units){
+        if (units != null){
+            for(Unit unit : units){
 
-            if(unitIdToUnitUsage.containsKey(unit.getId())){
-                UnitUsage unitUsage = unitIdToUnitUsage.get(unit.getId());
-                if(unitUsage.getOccupancyDate()!=null)
-                    unit.setOccupancyDate(unitUsage.getOccupancyDate());
+                if(unitIdToUnitUsage.containsKey(unit.getId())){
+                    UnitUsage unitUsage = unitIdToUnitUsage.get(unit.getId());
+                    if(unitUsage.getOccupancyDate()!=null)
+                        unit.setOccupancyDate(unitUsage.getOccupancyDate());
 
-                if(unitUsage.getOccupancyType()!=null)
-                    unit.setOccupancyType(unitUsage.getOccupancyType());
+                    if(unitUsage.getOccupancyType()!=null)
+                        unit.setOccupancyType(unitUsage.getOccupancyType());
 
-                if(unitUsage.getUsageCategory()!=null)
-                 unit.setUsageCategory(unitUsage.getUsageCategory());
+                    if(unitUsage.getUsageCategory()!=null)
+                    unit.setUsageCategory(unitUsage.getUsageCategory());
+                }
             }
         }
 
